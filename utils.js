@@ -1,15 +1,30 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
+const colors = {
+    reset:      '\x1b[0m',  // white
+    fail:       '\x1b[31m', // red
+    success:    '\x1b[32m', // green
+    highlight:  '\x1b[33m', // yellow
+    system:     '\x1b[35m', // magenta
+    neutral:    '\x1b[36m', // cian
+    control:    '\x1b[90m'  // gray
+}
+
+const timeStamp = (color) => {
+    let time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric' });
+
+    if (color) {
+        return `${colors[color]}[${time}]${colors['reset']}`;
+    } else {
+        return `[${time}]`;
+    }
+}
+
 const fetchAndLoad = async (url) => {
     const response = await fetch(url);
     const html = await response.text();
     return cheerio.load(html);
-}
-
-const timeStamp = () => {
-    let time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric' });
-    return `[${time}]`;
 }
 
 const promiseAllInBatches = async (task, items, batchSize) => {
@@ -28,11 +43,11 @@ const maxRetry = async (callback, retry) => {
         try {
             return await callback();
         } catch (error) {
-            console.log(`${timeStamp()} ERROR! Trying again...`);
+            console.log(`${timeStamp('error')} ERROR! Trying again...`);
             return maxRetry(callback, retry - 1);
         }
     } else {
-        console.log(`${timeStamp()} Max tries reached`);
+        console.log(`${timeStamp('error')} Max tries reached`);
         return null;
     }
 }

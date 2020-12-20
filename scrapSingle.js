@@ -1,4 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
+const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -6,17 +7,17 @@ var globalDataSize;
 var globalIndex = 0;
 
 const main = async () => {
-    console.log(`${timeStamp()} loading allCharacterData.json ...`);
+    console.log(`${timeStamp('system')} loading allCharacterData.json ...`);
     console.group();
     var data = await fs.readFile('./allCharacterData.json', 'utf-8');
     data = JSON.parse(data);
 
     globalDataSize = data.length;
 
-    console.log(`${timeStamp()} Scraping every single page:`);
+    console.log(`${timeStamp('highlight')} Scraping every single page:`);
     console.group();
 
-    let allSingleData = await promiseAllInBatches(retryWrapper, data, 15);
+    let allSingleData = await promiseAllInBatches(retryWrapper, data, MAX_CONCURRENT_REQUESTS);
 
     console.groupEnd();
     console.groupEnd();
@@ -24,20 +25,20 @@ const main = async () => {
     allSingleData = allSingleData.filter(element => element != null);
 
     await fs.writeFile('allSingleData.json', JSON.stringify(allSingleData));
-    console.log(`${timeStamp()} All single data saved to 'allSingleData.json'`);
+    console.log(`${timeStamp('success')} All single data saved to 'allSingleData.json'`);
 }
 
 const retryWrapper = async (url) => {
     return await maxRetry(async () => {
         return await scrapSinglePage(url);
-    }, 5);
+    }, MAX_RETRIES);
 }
 
 const scrapSinglePage = async (charObject) => {
     const { href, nickname } = charObject;
     const $ = await fetchAndLoad(href);
     globalIndex++;
-    console.log(`${timeStamp()} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
+    console.log(`${timeStamp('neutral')} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
 
     const serverElement = $('.AuctionHeader a');
 
@@ -73,10 +74,10 @@ const scrapSinglePage = async (charObject) => {
 }
 
 const getVocationId = (vocationString) => {
-    if(/knight/gi.test(vocationString)) return 1;
-    if(/paladin/gi.test(vocationString)) return 2;
-    if(/sorcerer/gi.test(vocationString)) return 3;
-    if(/druid/gi.test(vocationString)) return 4;
+    if (/knight/gi.test(vocationString)) return 1;
+    if (/paladin/gi.test(vocationString)) return 2;
+    if (/sorcerer/gi.test(vocationString)) return 3;
+    if (/druid/gi.test(vocationString)) return 4;
 
     return 0;
 }

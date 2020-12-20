@@ -1,4 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
+const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -8,7 +9,7 @@ var globalDataSize;
 var globalIndex = 0;
 
 const main = async () => {
-    console.log(`${timeStamp()} Loading first page...`);
+    console.log(`${timeStamp('system')} Loading first page...`);
     console.group();
     const $ = await fetchAndLoad(bazaarUrl);
 
@@ -23,10 +24,10 @@ const main = async () => {
         bazaarPages.push(`${bazaarUrl}&currentpage=${i}`);
     }
 
-    console.log(`${timeStamp()} Scraping every Bazaar page:`);
+    console.log(`${timeStamp('highlight')} Scraping every Bazaar page:`);
     console.group();
 
-    bazaarPages = await promiseAllInBatches(retryWrapper, bazaarPages, 15);
+    bazaarPages = await promiseAllInBatches(retryWrapper, bazaarPages, MAX_CONCURRENT_REQUESTS);
 
     let allBazaarCharacters = [];
     for (let i = 0; i < bazaarPages.length; i++) {
@@ -37,51 +38,46 @@ const main = async () => {
     console.groupEnd();
 
     await fs.writeFile('allCharacterData.json', JSON.stringify(allBazaarCharacters));
-    console.log(`${timeStamp()} All character data saved to 'allCharacterData.json'`);
+    console.log(`${timeStamp('success')} All character data saved to 'allCharacterData.json'`);
 }
 
 const retryWrapper = async (url) => {
     return await maxRetry(async () => {
         return await scrapBazaarPage(url);
-    }, 5);
+    }, MAX_RETRIES);
 }
 
 const scrapBazaarPage = async (url) => {
-    try {
-        const $ = await fetchAndLoad(url);
-        globalIndex++;
-        console.log(`${timeStamp()} Scraping Bazaar page [${globalIndex}/${globalDataSize}]`);
+    const $ = await fetchAndLoad(url);
+    globalIndex++;
+    console.log(`${timeStamp('neutral')} Scraping Bazaar page [${globalIndex}/${globalDataSize}]`);
 
-        const auctions = $('.Auction');
+    const auctions = $('.Auction');
 
-        let charactersData = [];
+    let charactersData = [];
 
-        auctions.each((index, element) => {
-            const $ = cheerio.load(element);
-            const charNameLink = $('.AuctionCharacterName a');
-            const charAuctionEnd = $('.AuctionTimer');
-            const charBidAmount = $('.ShortAuctionDataValue b');
-            const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
+    auctions.each((index, element) => {
+        const $ = cheerio.load(element);
+        const charNameLink = $('.AuctionCharacterName a');
+        const charAuctionEnd = $('.AuctionTimer');
+        const charBidAmount = $('.ShortAuctionDataValue b');
+        const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
-            const urlObj = new URL(charNameLink[0].attribs.href);
+        const urlObj = new URL(charNameLink[0].attribs.href);
 
-            const charObject = {
-                id: Number(urlObj.searchParams.get('auctionid')),
-                nickname: charNameLink[0].children[0].data,
-                href: urlObj.href,
-                auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
-                currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
-                hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
-            }
+        const charObject = {
+            id: Number(urlObj.searchParams.get('auctionid')),
+            nickname: charNameLink[0].children[0].data,
+            href: urlObj.href,
+            auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
+            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
+            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
+        }
 
-            charactersData.push(charObject);
-        });
+        charactersData.push(charObject);
+    });
 
-        return charactersData;
-    } catch (error) {
-        console.log(`${timeStamp()} '${url}' got DENIED! Trying again...`);
-        return await scrapSinglePage(charObject);
-    }
+    return charactersData;
 }
 
 main();
