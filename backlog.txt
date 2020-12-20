@@ -1,3 +1,2 @@
 vocation = ENUM
 logging colors
-max retry errors

@@ -1,4 +1,4 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches } = require('./utils');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -26,7 +26,7 @@ const main = async () => {
     console.log(`${timeStamp()} Scraping every Bazaar page:`);
     console.group();
 
-    bazaarPages = await promiseAllInBatches(scrapBazaarPage, bazaarPages, 15);
+    bazaarPages = await promiseAllInBatches(retryWrapper, bazaarPages, 15);
 
     let allBazaarCharacters = [];
     for (let i = 0; i < bazaarPages.length; i++) {
@@ -38,6 +38,12 @@ const main = async () => {
 
     await fs.writeFile('allCharacterData.json', JSON.stringify(allBazaarCharacters));
     console.log(`${timeStamp()} All character data saved to 'allCharacterData.json'`);
+}
+
+const retryWrapper = async (url) => {
+    return await maxRetry(async () => {
+        return await scrapBazaarPage(url);
+    }, 5);
 }
 
 const scrapBazaarPage = async (url) => {

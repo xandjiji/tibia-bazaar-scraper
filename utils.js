@@ -23,4 +23,18 @@ const promiseAllInBatches = async (task, items, batchSize) => {
     return results;
 }
 
-module.exports = { fetchAndLoad, timeStamp, promiseAllInBatches }
+const maxRetry = async (callback, retry) => {
+    if (retry > 0) {
+        try {
+            return await callback();
+        } catch (error) {
+            console.log(`${timeStamp()} ERROR! Trying again...`);
+            return maxRetry(callback, retry - 1);
+        }
+    } else {
+        console.log(`${timeStamp()} Max tries reached`);
+        return null;
+    }
+}
+
+module.exports = { fetchAndLoad, timeStamp, promiseAllInBatches, maxRetry };

@@ -1,4 +1,4 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches } = require('./utils');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -16,7 +16,7 @@ const main = async () => {
     console.log(`${timeStamp()} Scraping every single page:`);
     console.group();
 
-    let allSingleData = await promiseAllInBatches(scrapSinglePage, data, 15);
+    let allSingleData = await promiseAllInBatches(retryWrapper, data, 15);
 
     console.groupEnd();
     console.groupEnd();
@@ -27,43 +27,44 @@ const main = async () => {
     console.log(`${timeStamp()} All single data saved to 'allSingleData.json'`);
 }
 
+const retryWrapper = async (url) => {
+    return await maxRetry(async () => {
+        return await scrapSinglePage(url);
+    }, 5);
+}
+
 const scrapSinglePage = async (charObject) => {
     const { href, nickname } = charObject;
-    try {
-        const $ = await fetchAndLoad(href);
-        globalIndex++;
-        console.log(`${timeStamp()} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
+    const $ = await fetchAndLoad(href);
+    globalIndex++;
+    console.log(`${timeStamp()} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
 
-        const serverElement = $('.AuctionHeader a');
+    const serverElement = $('.AuctionHeader a');
 
-        const headerElement = $('.AuctionHeader');
-        let headerData = headerElement[0].children[2].data.split('|');
-        headerData = headerData.map(string => string.trim());
+    const headerElement = $('.AuctionHeader');
+    let headerData = headerElement[0].children[2].data.split('|');
+    headerData = headerData.map(string => string.trim());
 
-        const skillsTable = $('.TableContent tbody');
-        skillsTable[2].children.pop();
-        const skillsData = skillsTable[2].children.map(scrapSkill);
+    const skillsTable = $('.TableContent tbody');
+    skillsTable[2].children.pop();
+    const skillsData = skillsTable[2].children.map(scrapSkill);
 
-        return {
-            ...charObject,
-            server: serverElement[0].children[0].data,
-            vocation: headerData[1].replace(/vocation: /gi, ''),
-            sex: headerData[2],
-            level: Number(headerData[0].replace(/level: /gi, '')),
-            skills: {
-                magic: skillsData[5],
-                fist: skillsData[4],
-                club: skillsData[1],
-                sword: skillsData[7],
-                axe: skillsData[0],
-                distance: skillsData[2],
-                shielding: skillsData[6],
-                fishing: skillsData[3]
-            }
+    return {
+        ...charObject,
+        server: serverElement[0].children[0].data,
+        vocation: headerData[1].replace(/vocation: /gi, ''),
+        sex: headerData[2],
+        level: Number(headerData[0].replace(/level: /gi, '')),
+        skills: {
+            magic: skillsData[5],
+            fist: skillsData[4],
+            club: skillsData[1],
+            sword: skillsData[7],
+            axe: skillsData[0],
+            distance: skillsData[2],
+            shielding: skillsData[6],
+            fishing: skillsData[3]
         }
-    } catch (error) {
-        console.log(`${timeStamp()} ${nickname} got DENIED! Trying again...`);
-        return await scrapSinglePage(charObject);
     }
 }
 
