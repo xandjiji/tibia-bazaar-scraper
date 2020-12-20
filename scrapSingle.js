@@ -45,6 +45,9 @@ const scrapSinglePage = async (charObject) => {
     let headerData = headerElement[0].children[2].data.split('|');
     headerData = headerData.map(string => string.trim());
 
+    const vocationString = headerData[1].replace(/vocation: /gi, '');
+    const vocationId = getVocationId(vocationString);
+
     const skillsTable = $('.TableContent tbody');
     skillsTable[2].children.pop();
     const skillsData = skillsTable[2].children.map(scrapSkill);
@@ -52,7 +55,8 @@ const scrapSinglePage = async (charObject) => {
     return {
         ...charObject,
         server: serverElement[0].children[0].data,
-        vocation: headerData[1].replace(/vocation: /gi, ''),
+        vocationId: vocationId,
+        vocation: vocationString,
         sex: headerData[2],
         level: Number(headerData[0].replace(/level: /gi, '')),
         skills: {
@@ -66,6 +70,15 @@ const scrapSinglePage = async (charObject) => {
             fishing: skillsData[3]
         }
     }
+}
+
+const getVocationId = (vocationString) => {
+    if(/knight/gi.test(vocationString)) return 1;
+    if(/paladin/gi.test(vocationString)) return 2;
+    if(/sorcerer/gi.test(vocationString)) return 3;
+    if(/druid/gi.test(vocationString)) return 4;
+
+    return 0;
 }
 
 const scrapSkill = (element) => {
