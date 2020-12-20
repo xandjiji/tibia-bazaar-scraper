@@ -1,5 +1,5 @@
+const { timeStamp, fetchAndLoad } = require('./utils');
 const cheerio = require('cheerio');
-const fetch = require('node-fetch');
 const fs = require('fs').promises;
 
 const bazaarUrl = 'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades';
@@ -19,7 +19,7 @@ const main = async () => {
     for (let i = 1; i <= lastPageIndex; i++) {
         allBazaarCharacters = [
             ...allBazaarCharacters,
-            await scrapBazaarPage(i)
+            ...await scrapBazaarPage(i)
         ]
     }
 
@@ -28,17 +28,6 @@ const main = async () => {
 
     await fs.writeFile('allCharacterData.json', JSON.stringify(allBazaarCharacters));
     console.log(`${timeStamp()} All character data saved to 'allCharacterData.json'`);
-}
-
-const timeStamp = () => {
-    let time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric' });
-    return `[${time}]`;
-}
-
-const fetchAndLoad = async (url) => {
-    const response = await fetch(url);
-    const html = await response.text();
-    return cheerio.load(html);
 }
 
 const scrapBazaarPage = async (index) => {
@@ -55,10 +44,13 @@ const scrapBazaarPage = async (index) => {
         const charBidAmount = $('.ShortAuctionDataValue b');
         const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
+        const urlObj = new URL(charNameLink[0].attribs.href);
+
         const charObject = {
+            id: Number(urlObj.searchParams.get('auctionid')),
             nickname: charNameLink[0].children[0].data,
-            href: charNameLink[0].attribs.href,
-            auctionEnd: charAuctionEnd[0].attribs['data-timestamp'],
+            href: urlObj.href,
+            auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
             currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
             hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
         }

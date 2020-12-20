@@ -1,0 +1,4 @@
+vocation = ENUM
+logging colors
+max retry errors
+scrapMainPage retry
