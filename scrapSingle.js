@@ -1,4 +1,4 @@
-const { timeStamp, fetchAndLoad } = require('./utils');
+const { timeStamp, fetchAndLoad, promiseAllInBatches } = require('./utils');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -25,17 +25,6 @@ const main = async () => {
 
     await fs.writeFile('allSingleData.json', JSON.stringify(allSingleData));
     console.log(`${timeStamp()} All single data saved to 'allSingleData.json'`);
-}
-
-const promiseAllInBatches = async (task, items, batchSize) => {
-    let position = 0;
-    let results = [];
-    while (position < items.length) {
-        const itemsForBatch = items.slice(position, position + batchSize);
-        results = [...results, ...await Promise.all(itemsForBatch.map(item => task(item)))];
-        position += batchSize;
-    }
-    return results;
 }
 
 const scrapSinglePage = async (charObject) => {

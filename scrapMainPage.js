@@ -1,8 +1,11 @@
-const { timeStamp, fetchAndLoad } = require('./utils');
+const { timeStamp, fetchAndLoad, promiseAllInBatches } = require('./utils');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
 const bazaarUrl = 'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades';
+
+var globalDataSize;
+var globalIndex = 0;
 
 const main = async () => {
     console.log(`${timeStamp()} Loading first page...`);
@@ -13,14 +16,21 @@ const main = async () => {
     const href = new URL(lastPageElement[0].attribs.href);
     const lastPageIndex = Number(href.searchParams.get('currentpage'));
 
+    globalDataSize = lastPageIndex;
+
+    let bazaarPages = [];
+    for (let i = 1; i <= lastPageIndex; i++) {
+        bazaarPages.push(`${bazaarUrl}&currentpage=${i}`);
+    }
+
     console.log(`${timeStamp()} Scraping every Bazaar page:`);
     console.group();
+
+    bazaarPages = await promiseAllInBatches(scrapBazaarPage, bazaarPages, 15);
+
     let allBazaarCharacters = [];
-    for (let i = 1; i <= lastPageIndex; i++) {
-        allBazaarCharacters = [
-            ...allBazaarCharacters,
-            ...await scrapBazaarPage(i)
-        ]
+    for (let i = 0; i < bazaarPages.length; i++) {
+        allBazaarCharacters.push(...bazaarPages[i]);
     }
 
     console.groupEnd();
@@ -30,35 +40,42 @@ const main = async () => {
     console.log(`${timeStamp()} All character data saved to 'allCharacterData.json'`);
 }
 
-const scrapBazaarPage = async (index) => {
-    console.log(`${timeStamp()} Scraping Bazaar page [${index}]`);
-    const $ = await fetchAndLoad(`${bazaarUrl}&currentpage=${index}`);
-    const auctions = $('.Auction');
+const scrapBazaarPage = async (url) => {
+    try {
+        const $ = await fetchAndLoad(url);
+        globalIndex++;
+        console.log(`${timeStamp()} Scraping Bazaar page [${globalIndex}/${globalDataSize}]`);
 
-    let charactersData = [];
+        const auctions = $('.Auction');
 
-    auctions.each((index, element) => {
-        const $ = cheerio.load(element);
-        const charNameLink = $('.AuctionCharacterName a');
-        const charAuctionEnd = $('.AuctionTimer');
-        const charBidAmount = $('.ShortAuctionDataValue b');
-        const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
+        let charactersData = [];
 
-        const urlObj = new URL(charNameLink[0].attribs.href);
+        auctions.each((index, element) => {
+            const $ = cheerio.load(element);
+            const charNameLink = $('.AuctionCharacterName a');
+            const charAuctionEnd = $('.AuctionTimer');
+            const charBidAmount = $('.ShortAuctionDataValue b');
+            const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
-        const charObject = {
-            id: Number(urlObj.searchParams.get('auctionid')),
-            nickname: charNameLink[0].children[0].data,
-            href: urlObj.href,
-            auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
-            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
-            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
-        }
+            const urlObj = new URL(charNameLink[0].attribs.href);
 
-        charactersData.push(charObject);
-    });
+            const charObject = {
+                id: Number(urlObj.searchParams.get('auctionid')),
+                nickname: charNameLink[0].children[0].data,
+                href: urlObj.href,
+                auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
+                currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
+                hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
+            }
 
-    return charactersData;
+            charactersData.push(charObject);
+        });
+
+        return charactersData;
+    } catch (error) {
+        console.log(`${timeStamp()} '${url}' got DENIED! Trying again...`);
+        return await scrapSinglePage(charObject);
+    }
 }
 
 main();
