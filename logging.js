@@ -17,8 +17,3 @@ const timeStamp = (color) => {
         return `[${time}]`;
     }
 }
-
-console.log(`${timeStamp()} teste123`);
-console.log(`${timeStamp('fail')} teste456`);
-console.log(`${timeStamp('success')} teste789`);
-console.log(`${timeStamp('system')} asdadsada`);

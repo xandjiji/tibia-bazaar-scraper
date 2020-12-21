@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "scrap": "node scrapMainPage.js && node scrapSingle.js"
+    "scrap": "node scrapServers && node scrapMainPage.js && node scrapSingle.js"
   },
   "author": "xandjiji",
   "license": "ISC",

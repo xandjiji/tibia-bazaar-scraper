@@ -3,14 +3,22 @@ const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
+var serverData = {};
 var globalDataSize;
 var globalIndex = 0;
 
 const main = async () => {
     console.log(`${timeStamp('system')} loading allCharacterData.json ...`);
-    console.group();
     var data = await fs.readFile('./allCharacterData.json', 'utf-8');
     data = JSON.parse(data);
+
+    console.log(`${timeStamp('system')} loading serverData.json ...`);
+    console.group();
+    var serverListData = await fs.readFile('./serverData.json', 'utf-8');
+    serverListData = JSON.parse(serverListData);
+    for(server of serverListData) {
+        serverData[server.serverName] = server;
+    }
 
     globalDataSize = data.length;
 
@@ -49,13 +57,27 @@ const scrapSinglePage = async (charObject) => {
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
 
-    const skillsTable = $('.TableContent tbody');
-    skillsTable[2].children.pop();
-    const skillsData = skillsTable[2].children.map(scrapSkill);
+    const tableContent = $('.TableContent tbody');
+    tableContent[2].children.pop();
+    const skillsData = tableContent[2].children.map(scrapSkill);
+
+    tableContent[19].children.shift();
+    tableContent[19].children.pop();
+    const imbumentsData = tableContent[19].children.map(scrapImbuiments);
+    if(imbumentsData[imbumentsData.length - 1] === '') {
+        imbumentsData.pop();
+    }
+
+    tableContent[20].children.shift();
+    tableContent[20].children.pop();
+    const charmsData = tableContent[20].children.map(scrapCharms);
+    if(charmsData[charmsData.length - 1] === '') {
+        charmsData.pop();
+    }
 
     return {
         ...charObject,
-        server: serverElement[0].children[0].data,
+        server: serverData[serverElement[0].children[0].data],
         vocationId: vocationId,
         vocation: vocationString,
         sex: headerData[2],
@@ -69,7 +91,10 @@ const scrapSinglePage = async (charObject) => {
             distance: skillsData[2],
             shielding: skillsData[6],
             fishing: skillsData[3]
-        }
+        },
+        imbuiments: imbumentsData,
+        chams: charmsData
+
     }
 }
 
@@ -91,6 +116,14 @@ const scrapSkill = (element) => {
         level,
         percentage
     }
+}
+
+const scrapImbuiments = (element) => {
+    return cheerio('tr:not(.IndicateMoreEntries) td', element).text();
+}
+
+const scrapCharms = (element) => {
+    return cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
 }
 
 main();
