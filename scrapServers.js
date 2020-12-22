@@ -1,4 +1,4 @@
-const { timeStamp, fetchAndLoad, maxRetry } = require('./utils');
+const { timeStamp, fetchAndLoad } = require('./utils');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 

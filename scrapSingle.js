@@ -8,8 +8,8 @@ var globalDataSize;
 var globalIndex = 0;
 
 const main = async () => {
-    console.log(`${timeStamp('system')} loading allCharacterData.json ...`);
-    var data = await fs.readFile('./allCharacterData.json', 'utf-8');
+    console.log(`${timeStamp('system')} loading bazaarPages.json ...`);
+    var data = await fs.readFile('./bazaarPages.json', 'utf-8');
     data = JSON.parse(data);
 
     console.log(`${timeStamp('system')} loading serverData.json ...`);
@@ -32,8 +32,8 @@ const main = async () => {
 
     allSingleData = allSingleData.filter(element => element != null);
 
-    await fs.writeFile('allSingleData.json', JSON.stringify(allSingleData));
-    console.log(`${timeStamp('success')} All single data saved to 'allSingleData.json'`);
+    await fs.writeFile('AllCharacterData.json', JSON.stringify(allSingleData));
+    console.log(`${timeStamp('success')} All single data saved to 'AllCharacterData.json'`);
 }
 
 const retryWrapper = async (url) => {
@@ -97,8 +97,7 @@ const scrapSinglePage = async (charObject) => {
             fishing: skillsData[3]
         },
         imbuiments: imbumentsData,
-        chams: charmsData
-
+        charms: charmsData
     }
 }
 

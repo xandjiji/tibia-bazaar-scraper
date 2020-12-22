@@ -37,8 +37,8 @@ const main = async () => {
     console.groupEnd();
     console.groupEnd();
 
-    await fs.writeFile('allCharacterData.json', JSON.stringify(allBazaarCharacters));
-    console.log(`${timeStamp('success')} All character data saved to 'allCharacterData.json'`);
+    await fs.writeFile('bazaarPages.json', JSON.stringify(allBazaarCharacters));
+    console.log(`${timeStamp('success')} All character data saved to 'bazaarPages.json'`);
 }
 
 const retryWrapper = async (url) => {
