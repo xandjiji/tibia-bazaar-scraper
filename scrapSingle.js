@@ -57,6 +57,9 @@ const scrapSinglePage = async (charObject) => {
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
 
+    const outfitElement = $('.AuctionOutfitImage');  
+    const outfitId = outfitElement[0].attribs.src.split('/').pop();
+
     const tableContent = $('.TableContent tbody');
     tableContent[2].children.pop();
     const skillsData = tableContent[2].children.map(scrapSkill);
@@ -77,6 +80,7 @@ const scrapSinglePage = async (charObject) => {
 
     return {
         ...charObject,
+        outfitId: outfitId,
         server: serverData[serverElement[0].children[0].data],
         vocationId: vocationId,
         vocation: vocationString,

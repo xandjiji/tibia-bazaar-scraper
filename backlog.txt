@@ -1,15 +1,1 @@
 maintenance page exception
-
-
-
-    nickname
-    url
-    lvl
-    vocation
-    World
-    Server Type (pvp + battleye) (!zuna !zunera)
-    auction end
-    bidstatus + bid amount
-    8 skills
-    charms
-    imbuiments x/23

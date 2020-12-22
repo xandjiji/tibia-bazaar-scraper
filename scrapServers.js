@@ -1,4 +1,4 @@
-const { timeStamp, fetchAndLoad } = require('./utils');
+const { timeStamp, fetchAndLoad, maxRetry } = require('./utils');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -57,42 +57,42 @@ const scrapServer = (element) => {
     switch (item[3].children[0].data) {
         case 'Optional PvP':
             pvpType = {
-                string: 'Optional PvP',
+                string: 'Optional',
                 type: 0
             };
             break;
 
         case 'Open PvP':
             pvpType = {
-                string: 'Open PvP',
+                string: 'Open',
                 type: 1
             };
             break;
 
         case 'Retro Open PvP':
             pvpType = {
-                string: 'Retro Open PvP',
+                string: 'Retro Open',
                 type: 2
             };
             break;
 
         case 'Hardcore PvP':
             pvpType = {
-                string: 'Hardcore PvP',
+                string: 'Hardcore',
                 type: 3
             };
             break;
 
         case 'Retro Hardcore PvP':
             pvpType = {
-                string: 'Retro Hardcore PvP',
+                string: 'Retro Hardcore',
                 type: 4
             };
             break;
 
         default:
             pvpType = {
-                string: 'Optional PvP',
+                string: 'Optional',
                 type: 0
             };
             break;
