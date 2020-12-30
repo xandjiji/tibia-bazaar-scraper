@@ -1,5 +1,7 @@
 node_modules/
 
-allCharacterData.json
+AllCharacterData.json
 allSingleData.json
 serverData.json
+serverNames.json
+bazaarPages.json

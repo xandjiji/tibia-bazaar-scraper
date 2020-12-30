@@ -88,13 +88,13 @@ const scrapSinglePage = async (charObject) => {
         level: Number(headerData[0].replace(/level: /gi, '')),
         skills: {
             magic: skillsData[5],
-            fist: skillsData[4],
             club: skillsData[1],
+            fist: skillsData[4],
             sword: skillsData[7],
+            fishing: skillsData[3],
             axe: skillsData[0],
             distance: skillsData[2],
-            shielding: skillsData[6],
-            fishing: skillsData[3]
+            shielding: skillsData[6]
         },
         imbuiments: imbumentsData,
         charms: charmsData
