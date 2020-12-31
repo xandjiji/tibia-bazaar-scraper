@@ -64,12 +64,12 @@ const scrapSinglePage = async (charObject) => {
     tableContent[2].children.pop();
     const skillsData = tableContent[2].children.map(scrapSkill);
 
-    tableContent[19].children.shift();
+    /* tableContent[19].children.shift();
     tableContent[19].children.pop();
     const imbumentsData = tableContent[19].children.map(scrapImbuiments);
     if(imbumentsData[imbumentsData.length - 1] === '') {
         imbumentsData.pop();
-    }
+    } */
 
     tableContent[20].children.shift();
     tableContent[20].children.pop();
@@ -96,7 +96,7 @@ const scrapSinglePage = async (charObject) => {
             distance: skillsData[2],
             shielding: skillsData[6]
         },
-        imbuiments: imbumentsData,
+        /* imbuiments: imbumentsData, */
         charms: charmsData
     }
 }
