@@ -54,6 +54,9 @@ const scrapSinglePage = async (charObject) => {
     let headerData = headerElement[0].children[2].data.split('|');
     headerData = headerData.map(string => string.trim());
 
+    const featuredItems = $('.AuctionItemsViewBox');
+    const featuredItemsArray = featuredItems[0].children.map(scrapItems);
+
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
 
@@ -97,6 +100,7 @@ const scrapSinglePage = async (charObject) => {
             shielding: skillsData[6]
         },
         /* imbuiments: imbumentsData, */
+        items: featuredItemsArray,
         charms: charmsData
     }
 }
@@ -118,6 +122,23 @@ const scrapSkill = (element) => {
     return {
         level,
         percentage
+    }
+}
+
+const scrapItems = (element) => {
+    const itemTitle = element.attribs.title.split('"');
+
+    if(itemTitle[1] === '(no item for display selected)') return;
+
+    let amount = 0;
+    if(element.children[1]) {
+        amount = Number(element.children[1].children[0].data);
+    }
+    
+    return {
+        name: itemTitle[1],
+        src: element.children[0].attribs.src.split('/').pop(),
+        amount
     }
 }
 
