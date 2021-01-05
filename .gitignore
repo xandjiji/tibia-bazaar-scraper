@@ -1,5 +1,6 @@
 node_modules/
 
+LatestCharacterData.json
 AllCharacterData.json
 allSingleData.json
 serverData.json
