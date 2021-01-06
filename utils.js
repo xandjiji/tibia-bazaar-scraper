@@ -1,4 +1,4 @@
-const cloudflareScraper = require('cloudflare-scraper');
+const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
 const colors = {
@@ -22,8 +22,9 @@ const timeStamp = (color) => {
 }
 
 const fetchAndLoad = async (url) => {
-    const response = await cloudflareScraper.get(url);
-    return cheerio.load(response);
+    const response = await fetch(url);
+    const html = await response.text();
+    return cheerio.load(html);
 }
 
 const promiseAllInBatches = async (task, items, batchSize) => {
