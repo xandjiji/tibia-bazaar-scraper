@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const fetch = require('cloudscraper');
 const cheerio = require('cheerio');
 
 const colors = {
@@ -23,8 +23,7 @@ const timeStamp = (color) => {
 
 const fetchAndLoad = async (url) => {
     const response = await fetch(url);
-    const html = await response.text();
-    return cheerio.load(html);
+    return cheerio.load(response);
 }
 
 const promiseAllInBatches = async (task, items, batchSize) => {
