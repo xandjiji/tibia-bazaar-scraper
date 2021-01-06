@@ -11,8 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "cloudscraper": "^4.6.0",
+    "cloudflare-scraper": "^1.0.7",
     "node-fetch": "^2.6.1",
+    "puppeteer": "^5.5.0",
     "request": "^2.88.2"
   }
 }

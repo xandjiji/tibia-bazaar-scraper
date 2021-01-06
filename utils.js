@@ -1,4 +1,4 @@
-const fetch = require('cloudscraper');
+const cloudflareScraper = require('cloudflare-scraper');
 const cheerio = require('cheerio');
 
 const colors = {
@@ -22,7 +22,7 @@ const timeStamp = (color) => {
 }
 
 const fetchAndLoad = async (url) => {
-    const response = await fetch(url);
+    const response = await cloudflareScraper.get(url);
     return cheerio.load(response);
 }
 
