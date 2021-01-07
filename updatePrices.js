@@ -41,14 +41,10 @@ const main = async () => {
     var data = await fs.readFile('./AllCharacterData.json', 'utf-8');
     data = JSON.parse(data);
 
-    const startingIndex = getIndexById(allBazaarPrices[0].id, data);
-
-    console.log(startingIndex);
-
-    let currentIndex = 0;
-    for(const item of allBazaarPrices) {
-        data[startingIndex + currentIndex].currentBid = item.currentBid;
-        currentIndex++;
+    for(const updatedItem of allBazaarPrices) {
+        let indexFromData = getIndexById(updatedItem.id, data);
+        if(indexFromData === -1) continue;
+        data[indexFromData].currentBid = updatedItem.currentBid;
     }
 
     await fs.writeFile('LatestCharacterData.json', JSON.stringify(data));
