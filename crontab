@@ -1,0 +1,2 @@
+30 8 * * * /usr/bin/sh /home/pi/dailyScrap.sh
+*/10 * * * * /usr/bin/sh /home/pi/updateScrap.sh
