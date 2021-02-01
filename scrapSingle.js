@@ -43,8 +43,8 @@ const retryWrapper = async (url) => {
 }
 
 const scrapSinglePage = async (charObject) => {
-    const { href, nickname } = charObject;
-    const $ = await fetchAndLoad(href);
+    const { id, nickname } = charObject;
+    const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
     globalIndex++;
     console.log(`${timeStamp('neutral')} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
 
@@ -59,6 +59,8 @@ const scrapSinglePage = async (charObject) => {
 
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
+
+    /* const sexId = getSexId(headerData[2]); */
 
     const outfitElement = $('.AuctionOutfitImage');  
     const outfitId = outfitElement[0].attribs.src.split('/').pop();
@@ -83,11 +85,11 @@ const scrapSinglePage = async (charObject) => {
 
     return {
         ...charObject,
-        outfitId: outfitId,
+        outfitId: outfitId.slice(0, -4),
         server: serverData[serverElement[0].children[0].data],
         vocationId: vocationId,
         vocation: vocationString,
-        sex: headerData[2],
+        /* sex: sexId, */
         level: Number(headerData[0].replace(/level: /gi, '')),
         skills: {
             magic: skillsData[5],
@@ -114,6 +116,12 @@ const getVocationId = (vocationString) => {
     return 0;
 }
 
+const getSexId = (sexString) => {
+    if (/male/gi.test(sexString)) return 0;
+
+    return 1;
+}
+
 const scrapSkill = (element) => {
     const level = Number(cheerio('.LevelColumn', element).text());
     let percentage = cheerio('.PercentageColumn', element).text();
@@ -134,10 +142,12 @@ const scrapItems = (element) => {
     if(element.children[1]) {
         amount = Number(element.children[1].children[0].data);
     }
+
+    const itemSrc = element.children[0].attribs.src.split('/').pop();
     
     return {
         name: itemTitle[1],
-        src: element.children[0].attribs.src.split('/').pop(),
+        src: itemSrc.slice(0, -4),
         amount
     }
 }
