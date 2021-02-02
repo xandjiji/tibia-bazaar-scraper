@@ -3,7 +3,7 @@ const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
-var serverData = {};
+var serverData;
 var globalDataSize;
 var globalIndex = 0;
 
@@ -15,10 +15,10 @@ const main = async () => {
     console.log(`${timeStamp('system')} loading serverData.json ...`);
     console.group();
     var serverListData = await fs.readFile('./serverData.json', 'utf-8');
-    serverListData = JSON.parse(serverListData);
-    for(server of serverListData) {
+    serverData = JSON.parse(serverListData);
+    /* for(server of serverListData) {
         serverData[server.serverName] = server;
-    }
+    } */
 
     globalDataSize = data.length;
 
@@ -86,7 +86,7 @@ const scrapSinglePage = async (charObject) => {
     return {
         ...charObject,
         outfitId: outfitId.slice(0, -4),
-        server: serverData[serverElement[0].children[0].data],
+        server: getServerId(serverElement[0].children[0].data),
         vocationId: vocationId,
         vocation: vocationString,
         /* sex: sexId, */
@@ -105,6 +105,13 @@ const scrapSinglePage = async (charObject) => {
         items: featuredItemsArray,
         charms: charmsData
     }
+}
+
+const getServerId = (serverString) => {
+    for(let i = 0; i < serverData.length; i++) {
+        if(serverData[i].serverName === serverString) return i;
+    }
+    return -1;
 }
 
 const getVocationId = (vocationString) => {

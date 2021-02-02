@@ -16,10 +16,10 @@ const main = async () => {
     await fs.writeFile('serverData.json', JSON.stringify(serverData));
     console.log(`${timeStamp('success')} All server data saved to 'allSingleData.json'`);
 
-    const serverArray = serverData.map(item => item.serverName);
+    /* const serverArray = serverData.map(item => item.serverName);
 
     await fs.writeFile('serverNames.json', JSON.stringify(serverArray));
-    console.log(`${timeStamp('success')} All server names saved to 'serverNames.json'`);
+    console.log(`${timeStamp('success')} All server names saved to 'serverNames.json'`); */
 }
 
 const scrapServer = (element) => {
