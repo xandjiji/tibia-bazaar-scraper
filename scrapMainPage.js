@@ -1,4 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
+const { characterDictionary } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -66,11 +67,11 @@ const scrapBazaarPage = async (url) => {
         const urlObj = new URL(charNameLink[0].attribs.href);
 
         const charObject = {
-            id: Number(urlObj.searchParams.get('auctionid')),
-            nickname: charNameLink[0].children[0].data,
-            auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
-            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
-            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
+            [characterDictionary['id']]: Number(urlObj.searchParams.get('auctionid')),
+            [characterDictionary['nickname']]: charNameLink[0].children[0].data,
+            [characterDictionary['auctionEnd']]: Number(charAuctionEnd[0].attribs['data-timestamp']),
+            [characterDictionary['currentBid']]: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
+            [characterDictionary['hasBeenBidded']]: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
         }
 
         charactersData.push(charObject);

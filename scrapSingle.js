@@ -1,4 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
+const { characterDictionary, charmDictionary } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -40,7 +41,8 @@ const retryWrapper = async (url) => {
 }
 
 const scrapSinglePage = async (charObject) => {
-    const { id, nickname } = charObject;
+    const id = charObject[characterDictionary['id']];
+    const nickname = charObject[characterDictionary['nickname']];
     const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
     globalIndex++;
     console.log(`${timeStamp('neutral')} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
@@ -73,23 +75,22 @@ const scrapSinglePage = async (charObject) => {
 
     return {
         ...charObject,
-        outfitId: outfitId.slice(0, -4),
-        server: getServerId(serverElement[0].children[0].data),
-        vocationId: vocationId,
-        vocation: vocationString,
-        level: Number(headerData[0].replace(/level: /gi, '')),
-        skills: {
-            magic: skillsData[5],
-            club: skillsData[1],
-            fist: skillsData[4],
-            sword: skillsData[7],
-            fishing: skillsData[3],
-            axe: skillsData[0],
-            distance: skillsData[2],
-            shielding: skillsData[6]
+        [characterDictionary['outfitId']]: outfitId.slice(0, -4),
+        [characterDictionary['serverId']]: getServerId(serverElement[0].children[0].data),
+        [characterDictionary['vocationId']]: vocationId,
+        [characterDictionary['level']]: Number(headerData[0].replace(/level: /gi, '')),
+        [characterDictionary['skills']]: {
+            [characterDictionary['magic']]: skillsData[5],
+            [characterDictionary['club']]: skillsData[1],
+            [characterDictionary['fist']]: skillsData[4],
+            [characterDictionary['sword']]: skillsData[7],
+            [characterDictionary['fishing']]: skillsData[3],
+            [characterDictionary['axe']]: skillsData[0],
+            [characterDictionary['distance']]: skillsData[2],
+            [characterDictionary['shielding']]: skillsData[6]
         },
-        items: featuredItemsArray,
-        charms: charmsData
+        [characterDictionary['items']]: featuredItemsArray,
+        [characterDictionary['charms']]: charmsData
     }
 }
 
@@ -115,8 +116,8 @@ const scrapSkill = (element) => {
     percentage = parseFloat(percentage.slice(0, -2));
 
     return {
-        level,
-        percentage
+        [characterDictionary['level']]: level,
+        [characterDictionary['percentage']]: percentage
     }
 }
 
@@ -133,14 +134,15 @@ const scrapItems = (element) => {
     const itemSrc = element.children[0].attribs.src.split('/').pop();
     
     return {
-        name: itemTitle[1],
-        src: itemSrc.slice(0, -4),
-        amount
+        [characterDictionary['name']]: itemTitle[1],
+        [characterDictionary['src']]: itemSrc.slice(0, -4),
+        [characterDictionary['amount']]: amount
     }
 }
 
 const scrapCharms = (element) => {
-    return cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
+    const charmString = cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
+    return charmDictionary[charmString];
 }
 
 main();

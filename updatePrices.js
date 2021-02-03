@@ -1,4 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
+const { characterDictionary } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -74,8 +75,8 @@ const scrapBazaarPage = async (url) => {
         const urlObj = new URL(charNameLink[0].attribs.href);
 
         const charObject = {
-            id: Number(urlObj.searchParams.get('auctionid')),
-            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
+            [characterDictionary['id']]: Number(urlObj.searchParams.get('auctionid')),
+            [characterDictionary['currentBid']]: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
         }
 
         charactersData.push(charObject);
