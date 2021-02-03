@@ -43,9 +43,9 @@ const main = async () => {
     data = JSON.parse(data);
 
     for(const updatedItem of allBazaarPrices) {
-        let indexFromData = getIndexById(updatedItem.id, data);
+        let indexFromData = getIndexById(updatedItem[characterDictionary['id']], data);
         if(indexFromData === -1) continue;
-        data[indexFromData].currentBid = updatedItem.currentBid;
+        data[indexFromData][characterDictionary['currentBid']] = updatedItem[characterDictionary['currentBid']];
     }
 
     await fs.writeFile('LatestCharacterData.json', JSON.stringify(data));
