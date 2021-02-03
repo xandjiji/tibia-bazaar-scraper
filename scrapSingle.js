@@ -54,7 +54,8 @@ const scrapSinglePage = async (charObject) => {
     headerData = headerData.map(string => string.trim());
 
     const featuredItems = $('.AuctionItemsViewBox');
-    const featuredItemsArray = featuredItems[0].children.map(scrapItems);
+    let featuredItemsArray = featuredItems[0].children.map(scrapItems);
+    featuredItemsArray = popNull(featuredItemsArray);
 
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
@@ -68,10 +69,8 @@ const scrapSinglePage = async (charObject) => {
 
     tableContent[20].children.shift();
     tableContent[20].children.pop();
-    const charmsData = tableContent[20].children.map(scrapCharms);
-    if(charmsData[charmsData.length - 1] === '') {
-        charmsData.pop();
-    }
+    let charmsData = tableContent[20].children.map(scrapCharms);
+    charmsData = popNull(charmsData);
 
     return {
         ...charObject,
@@ -123,26 +122,28 @@ const scrapSkill = (element) => {
 
 const scrapItems = (element) => {
     const itemTitle = element.attribs.title.split('"');
-
     if(itemTitle[1] === '(no item for display selected)') return;
 
-    let amount = 0;
-    if(element.children[1]) {
-        amount = Number(element.children[1].children[0].data);
-    }
-
     const itemSrc = element.children[0].attribs.src.split('/').pop();
-    
-    return {
-        [characterDictionary['name']]: itemTitle[1],
-        [characterDictionary['src']]: itemSrc.slice(0, -4),
-        [characterDictionary['amount']]: amount
-    }
+    return itemSrc.slice(0, -4);
 }
 
 const scrapCharms = (element) => {
     const charmString = cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
+
     return charmDictionary[charmString];
+}
+
+const popNull = (array) => {
+    for(let i = array.length - 1; i >= 0; i--) {
+        if(array[i] === undefined || array[i] === '') {
+            array.pop()
+        } else {
+            break;
+        }
+    }
+
+    return array;
 }
 
 main();

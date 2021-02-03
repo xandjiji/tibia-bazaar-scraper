@@ -11,30 +11,31 @@ const dictionaryFactory = (keyArray) => {
 }
 
 const charmDictionary = dictionaryFactory([
-    'Wound',
-    'Enflame',
-    'Poison',
-    'Freeze',
-    'Zap',
-    'Curse',
-    'Cripple',
-    'Parry',
     'Dodge',
-    'Adrenaline Burst',
-    'Numb',
+    'Wound',
+    'Curse',
+    'Zap',
+    'Enflame',
+    'Freeze',
+    'Low Blow',
+    'Parry',
+    'Poison',
+    'Divine Wrath',
+    'Cripple',
     'Cleanse',
-    'Bless',
+    'Adrenaline Burst',
+    'Vampiric Embrace',
+    'Numb',
+    "Void's Call",
     'Scavenge',
     'Gut',
-    'Low Blow'
+    'Bless'
 ]);
 
 const characterDictionary = dictionaryFactory([
     'level',
     'percentage',
-    'name',
     'src',
-    'amount',
     'id',
     'nickname',
     'auctionEnd',
