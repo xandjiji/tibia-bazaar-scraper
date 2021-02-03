@@ -41,14 +41,15 @@ const main = async () => {
     console.log(`${timeStamp('system')} loading AllCharacterData.json ...`);
     var data = await fs.readFile('./AllCharacterData.json', 'utf-8');
     data = JSON.parse(data);
+    const dictionaryData = makeIdDictionary(data);
 
+    let updatedData = [];
     for(const updatedItem of allBazaarPrices) {
-        let indexFromData = getIndexById(updatedItem[characterDictionary['id']], data);
-        if(indexFromData === -1) continue;
-        data[indexFromData][characterDictionary['currentBid']] = updatedItem[characterDictionary['currentBid']];
+        dictionaryData[updatedItem[characterDictionary['id']]][characterDictionary['currentBid']] = updatedItem[characterDictionary['currentBid']];
+        updatedData.push(dictionaryData[updatedItem[characterDictionary['id']]]);
     }
 
-    await fs.writeFile('LatestCharacterData.json', JSON.stringify(data));
+    await fs.writeFile('LatestCharacterData.json', JSON.stringify(updatedData));
     console.log(`${timeStamp('success')} All character data saved to 'LatestCharacterData.json'`);
 }
 
@@ -85,12 +86,14 @@ const scrapBazaarPage = async (url) => {
     return charactersData;
 }
 
-const getIndexById = (id, array) => {
-    for (let i = 0; i < array.length; i++) {
-        if(array[i].id === id) return i;
+const makeIdDictionary = (array) => {
+    const dictionaryObject = {};
+
+    for(const arrayItem of array) {
+        dictionaryObject[arrayItem[characterDictionary['id']]] = arrayItem;
     }
 
-    return -1;
+    return dictionaryObject;
 }
 
 main();
