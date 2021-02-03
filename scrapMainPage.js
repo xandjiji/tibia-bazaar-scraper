@@ -68,7 +68,6 @@ const scrapBazaarPage = async (url) => {
         const charObject = {
             id: Number(urlObj.searchParams.get('auctionid')),
             nickname: charNameLink[0].children[0].data,
-            /* href: urlObj.href, */
             auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
             currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
             hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)

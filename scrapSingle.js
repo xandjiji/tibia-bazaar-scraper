@@ -16,9 +16,6 @@ const main = async () => {
     console.group();
     var serverListData = await fs.readFile('./serverData.json', 'utf-8');
     serverData = JSON.parse(serverListData);
-    /* for(server of serverListData) {
-        serverData[server.serverName] = server;
-    } */
 
     globalDataSize = data.length;
 
@@ -60,21 +57,12 @@ const scrapSinglePage = async (charObject) => {
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
 
-    /* const sexId = getSexId(headerData[2]); */
-
     const outfitElement = $('.AuctionOutfitImage');  
     const outfitId = outfitElement[0].attribs.src.split('/').pop();
 
     const tableContent = $('.TableContent tbody');
     tableContent[2].children.pop();
     const skillsData = tableContent[2].children.map(scrapSkill);
-
-    /* tableContent[19].children.shift();
-    tableContent[19].children.pop();
-    const imbumentsData = tableContent[19].children.map(scrapImbuiments);
-    if(imbumentsData[imbumentsData.length - 1] === '') {
-        imbumentsData.pop();
-    } */
 
     tableContent[20].children.shift();
     tableContent[20].children.pop();
@@ -89,7 +77,6 @@ const scrapSinglePage = async (charObject) => {
         server: getServerId(serverElement[0].children[0].data),
         vocationId: vocationId,
         vocation: vocationString,
-        /* sex: sexId, */
         level: Number(headerData[0].replace(/level: /gi, '')),
         skills: {
             magic: skillsData[5],
@@ -101,7 +88,6 @@ const scrapSinglePage = async (charObject) => {
             distance: skillsData[2],
             shielding: skillsData[6]
         },
-        /* imbuiments: imbumentsData, */
         items: featuredItemsArray,
         charms: charmsData
     }
@@ -121,12 +107,6 @@ const getVocationId = (vocationString) => {
     if (/druid/gi.test(vocationString)) return 4;
 
     return 0;
-}
-
-const getSexId = (sexString) => {
-    if (/male/gi.test(sexString)) return 0;
-
-    return 1;
 }
 
 const scrapSkill = (element) => {
@@ -157,10 +137,6 @@ const scrapItems = (element) => {
         src: itemSrc.slice(0, -4),
         amount
     }
-}
-
-const scrapImbuiments = (element) => {
-    return cheerio('tr:not(.IndicateMoreEntries) td', element).text();
 }
 
 const scrapCharms = (element) => {
