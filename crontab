@@ -1,3 +1,3 @@
-30 7 * * * /usr/bin/sh /home/pi/dailyScrap.sh
+20 7 * * * /usr/bin/sh /home/pi/dailyScrap.sh
 */30 0-6,8-23 * * * /usr/bin/sh /home/pi/updateScrap.sh
 20 0 * * * /usr/bin/sh /home/pi/deleteGit.sh
