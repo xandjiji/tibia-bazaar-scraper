@@ -14,7 +14,7 @@ const main = async () => {
     const serverData = tableContent[2].children.map(scrapServer);
 
     await fs.writeFile('serverData.json', JSON.stringify(serverData));
-    console.log(`${timeStamp('success')} All server data saved to 'allSingleData.json'`);
+    console.log(`${timeStamp('success')} All server data saved to 'serverData.json'`);
 }
 
 const scrapServer = (element) => {
