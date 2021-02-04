@@ -1,5 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { characterDictionary } = require('./dataDictionary');
+const { dictionary } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -45,8 +45,8 @@ const main = async () => {
 
     let updatedData = [];
     for(const updatedItem of allBazaarPrices) {
-        dictionaryData[updatedItem[characterDictionary['id']]][characterDictionary['currentBid']] = updatedItem[characterDictionary['currentBid']];
-        updatedData.push(dictionaryData[updatedItem[characterDictionary['id']]]);
+        dictionaryData[updatedItem[dictionary['id']]][dictionary['currentBid']] = updatedItem[dictionary['currentBid']];
+        updatedData.push(dictionaryData[updatedItem[dictionary['id']]]);
     }
 
     await fs.writeFile('LatestCharacterData.json', JSON.stringify(updatedData));
@@ -76,8 +76,8 @@ const scrapBazaarPage = async (url) => {
         const urlObj = new URL(charNameLink[0].attribs.href);
 
         const charObject = {
-            [characterDictionary['id']]: Number(urlObj.searchParams.get('auctionid')),
-            [characterDictionary['currentBid']]: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
+            [dictionary['id']]: Number(urlObj.searchParams.get('auctionid')),
+            [dictionary['currentBid']]: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
         }
 
         charactersData.push(charObject);
@@ -90,7 +90,7 @@ const makeIdDictionary = (array) => {
     const dictionaryObject = {};
 
     for(const arrayItem of array) {
-        dictionaryObject[arrayItem[characterDictionary['id']]] = arrayItem;
+        dictionaryObject[arrayItem[dictionary['id']]] = arrayItem;
     }
 
     return dictionaryObject;
