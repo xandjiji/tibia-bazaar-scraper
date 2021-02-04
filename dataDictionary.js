@@ -28,7 +28,7 @@ const translateObjectOrArray = (variable) => {
     }
 }
 
-export const translateCharObject = (charObject) => {
+const translateCharObject = (charObject) => {
     const newCharObject = translateObjectOrArray(charObject);
 
     newCharObject.charms = translateObjectOrArray(newCharObject.charms);
@@ -40,7 +40,7 @@ export const translateCharObject = (charObject) => {
     return newCharObject;
 }
 
-export const dictionary = dictionaryFactory([
+const dictionary = dictionaryFactory([
     'level',
     'percentage',
     'Dodge',
@@ -83,3 +83,5 @@ export const dictionary = dictionaryFactory([
     'items',
     'charms'
 ]);
+
+module.exports = { translateCharObject, dictionary }
