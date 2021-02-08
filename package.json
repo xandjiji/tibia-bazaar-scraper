@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "scrap": "node scrapServers.js && node scrapMainPage.js && node scrapSingle.js",
-    "update": "node updatePrices.js"
+    "update": "node updatePrices.js",
+    "items": "node scrapItems.js"
   },
   "author": "xandjiji",
   "license": "ISC",

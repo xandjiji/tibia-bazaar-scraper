@@ -3,9 +3,11 @@ const { dictionary } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
-const { log } = require('console');
 
 const bazaarUrl = 'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades';
+
+var globalDataSize;
+var globalIndex = 0;
 
 /*
     &searchstring=Cobra
@@ -20,16 +22,22 @@ for (const item of itemList) {
 }
 
 const main = async () => {
-
+    console.log(`${timeStamp('highlight')} Creating a list with all item urls...`);
+    console.group();
     let allUrls = await promiseAllInBatches(retryScrapItemUrls, itemList, MAX_CONCURRENT_REQUESTS);
+    console.groupEnd();
 
     allUrls = allUrls.flat();
     allUrls = allUrls.filter(item => item);
+    globalDataSize = allUrls.length;
 
-    console.log(`${timeStamp('system')} Scraping all item urls [${allUrls.length} pages]...`);
+    console.log(`${timeStamp('highlight')} Scraping all item urls...`);
+    console.group();
     await promiseAllInBatches(retryScrapItemIds, allUrls, MAX_CONCURRENT_REQUESTS);
+    console.groupEnd();
 
-    console.log(itemListObject);
+    await fs.writeFile('ItemsData.json', JSON.stringify(itemListObject));
+    console.log(`${timeStamp('success')} All item data saved to 'ItemsData.json'`);
 }
 
 const retryScrapItemUrls = async (itemName) => {
@@ -39,7 +47,7 @@ const retryScrapItemUrls = async (itemName) => {
 }
 
 const scrapItemUrls = async (itemName) => {
-    console.log(`${timeStamp('system')} Loading ${itemName}'s first page...`);
+    console.log(`${timeStamp('neutral')} Loading ${itemName}'s first page...`);
 
     const encodedURI = encodeURI(`${bazaarUrl}&searchstring=${itemName}&searchtype=2&currentpage=`)
     const $ = await fetchAndLoad(`${encodedURI}`);
@@ -68,6 +76,8 @@ const retryScrapItemIds = async (itemObj) => {
 }
 
 const scrapItemIds = async (itemObj) => {
+    globalIndex++;
+    console.log(`${timeStamp('neutral')} Scraping bazaar page [${globalIndex}/${globalDataSize}]...`);
     const $ = await fetchAndLoad(`${itemObj.url}`);
 
     const auctions = $('.Auction');
