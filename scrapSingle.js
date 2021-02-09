@@ -122,7 +122,8 @@ const scrapSkill = (element) => {
 
 const scrapItems = (element) => {
     const itemTitle = element.attribs.title.split('"');
-    if(itemTitle[1] === '(no item for display selected)') return;
+    if(!itemTitle) return;
+    if(itemTitle[0] === '(no item for display selected)') return;
 
     const itemSrc = element.children[0].attribs.src.split('/').pop();
     return itemSrc.slice(0, -4);
