@@ -44,6 +44,7 @@ const maxRetry = async (callback, retry) => {
             return await callback();
         } catch (error) {
             console.log(`${timeStamp('fail')} ERROR! Trying again...`);
+            console.log(error);
             return maxRetry(callback, retry - 1);
         }
     } else {
