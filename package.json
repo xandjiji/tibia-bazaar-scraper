@@ -1,17 +1,16 @@
 {
-  "name": "bazaar-scrapper",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "scrap": "node scrapServers.js && node scrapMainPage.js && node scrapSingle.js",
-    "update": "node updatePrices.js",
-    "items": "node scrapItems.js"
-  },
-  "author": "xandjiji",
-  "license": "ISC",
-  "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
-    "node-fetch": "^2.6.1"
+    "name": "bazaar-scrapper",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "scrap": "node scrapServers.js && node scrapMainPage.js && node scrapSingle.js && node scrapItems.js",
+      "update": "node updatePrices.js"
+    },
+    "author": "xandjiji",
+    "license": "ISC",
+    "dependencies": {
+      "cheerio": "^1.0.0-rc.3",
+      "node-fetch": "^2.6.1"
+    }
   }
-}

@@ -1,5 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { dictionary } = require('./dataDictionary');
+const { itemList } = require('./itemList');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -15,7 +15,6 @@ var globalIndex = 0;
     &currentpage=1
 */
 
-const itemList = ['Dwarven Shield', 'Cobra Axe', 'Cobra Sword', 'Cobra Club', 'Cobra Rod', 'Cobra Boots', 'Falcon Sword', 'Falcon Mace', 'Falcon Greaves'];
 var itemListObject = {}
 for (const item of itemList) {
     itemListObject[item] = [];
