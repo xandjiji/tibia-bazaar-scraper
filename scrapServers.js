@@ -4,6 +4,8 @@ const fs = require('fs').promises;
 
 const baseUrl = 'https://www.tibia.com/community/?subtopic=worlds';
 
+const allServersObject = {};
+
 const main = async () => {
     console.log(`${timeStamp('highlight')} Scraping server list`);
     const $ = await fetchAndLoad(baseUrl);
@@ -11,13 +13,16 @@ const main = async () => {
     const tableContent = $('.TableContent tbody');
     tableContent[2].children.shift();
     tableContent[2].children.pop();
-    const serverData = tableContent[2].children.map(scrapServer);
 
-    await fs.writeFile('serverData.json', JSON.stringify(serverData));
-    console.log(`${timeStamp('success')} All server data saved to 'serverData.json'`);
+    for(const [index, serverElement] of tableContent[2].children.entries()) {
+        scrapServer(serverElement, index);
+    }
+
+    await fs.writeFile('ServerData.json', JSON.stringify(allServersObject));
+    console.log(`${timeStamp('success')} All server data saved to 'ServerData.json'`);
 }
 
-const scrapServer = (element) => {
+const scrapServer = (element, serverId) => {
 
     const item = cheerio('td', element);
     const serverName = item[0].children[0].children[0].data;
@@ -105,7 +110,8 @@ const scrapServer = (element) => {
         }
     }
 
-    return {
+    allServersObject[serverName] = {
+        serverId,
         serverName,
         serverLocation,
         pvpType,

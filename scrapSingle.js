@@ -13,9 +13,9 @@ const main = async () => {
     var data = await fs.readFile('./bazaarPages.json', 'utf-8');
     data = JSON.parse(data);
 
-    console.log(`${timeStamp('system')} loading serverData.json ...`);
+    console.log(`${timeStamp('system')} loading ServerData.json ...`);
     console.group();
-    var serverListData = await fs.readFile('./serverData.json', 'utf-8');
+    var serverListData = await fs.readFile('./ServerData.json', 'utf-8');
     serverData = JSON.parse(serverListData);
 
     globalDataSize = data.length;
@@ -60,7 +60,7 @@ const scrapSinglePage = async (charObject) => {
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
 
-    const outfitElement = $('.AuctionOutfitImage');  
+    const outfitElement = $('.AuctionOutfitImage');
     const outfitId = outfitElement[0].attribs.src.split('/').pop();
 
     const tableContent = $('.TableContent tbody');
@@ -94,10 +94,11 @@ const scrapSinglePage = async (charObject) => {
 }
 
 const getServerId = (serverString) => {
-    for(let i = 0; i < serverData.length; i++) {
-        if(serverData[i].serverName === serverString) return i;
+    if (serverData[serverString]) {
+        return serverData[serverString].serverId;
+    } else {
+        return -1;
     }
-    return -1;
 }
 
 const getVocationId = (vocationString) => {
@@ -122,8 +123,8 @@ const scrapSkill = (element) => {
 
 const scrapItems = (element) => {
     const itemTitle = element.attribs.title.split('"');
-    if(!itemTitle) return;
-    if(itemTitle[0] === '(no item for display selected)') return;
+    if (!itemTitle) return;
+    if (itemTitle[0] === '(no item for display selected)') return;
 
     const itemSrc = element.children[0].attribs.src.split('/').pop();
     return itemSrc.slice(0, -4);
@@ -136,8 +137,8 @@ const scrapCharms = (element) => {
 }
 
 const popNull = (array) => {
-    for(let i = array.length - 1; i >= 0; i--) {
-        if(array[i] === undefined || array[i] === '') {
+    for (let i = array.length - 1; i >= 0; i--) {
+        if (array[i] === undefined || array[i] === '') {
             array.pop()
         } else {
             break;
