@@ -15,5 +15,5 @@ mv -v ~/exevo-pan/build/* ~/exevo-pan-deploy/
 
 cd ~/exevo-pan-deploy
 git add .
-git commit -m "new build"
+git commit -m "`date`"
 git push --set-upstream origin deploy
