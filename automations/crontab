@@ -1,3 +1,4 @@
 20 7 * * * /usr/bin/sh /home/pi/dailyScrap.sh
-0 0,4,12,16,20 * * * /usr/bin/sh /home/pi/updateScrap.sh
-20 0 * * * /usr/bin/sh /home/pi/deleteGit.sh
+*/12 * * * * /usr/bin/sh /home/pi/updateScrap.sh
+
+#20 0 * * * /usr/bin/sh /home/pi/deleteGit.sh
