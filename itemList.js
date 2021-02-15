@@ -18,7 +18,7 @@ const itemList = [
     'Gamemaster Doll',
     'Golden Crown',
     'Golden Helmet',
-    'Golden Rune',
+    /* 'Golden Rune', */
     'Green Tome',
     'Grey Tome',
     'Hammer of Prophecy',
