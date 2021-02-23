@@ -81,7 +81,8 @@ const dictionary = dictionaryFactory([
     'distance',
     'shielding',
     'items',
-    'charms'
+    'charms',
+    'transfer'
 ]);
 
 module.exports = { translateCharObject, dictionary }

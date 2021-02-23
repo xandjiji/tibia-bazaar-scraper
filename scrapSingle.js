@@ -72,6 +72,13 @@ const scrapSinglePage = async (charObject) => {
     let charmsData = tableContent[20].children.map(scrapCharms);
     charmsData = popNull(charmsData);
 
+    const transferText = tableContent[4].children[0].children[0].children[1].children[0].data;
+    let transferAvailability = false;
+    if(transferText === 'can be purchased and used immediately') {
+        transferAvailability = true;
+    }
+
+
     return {
         ...charObject,
         [dictionary['outfitId']]: outfitId.slice(0, -4),
@@ -89,7 +96,8 @@ const scrapSinglePage = async (charObject) => {
             [dictionary['shielding']]: skillsData[6]
         },
         [dictionary['items']]: featuredItemsArray,
-        [dictionary['charms']]: charmsData
+        [dictionary['charms']]: charmsData,
+        [dictionary['transfer']]: transferAvailability
     }
 }
 
