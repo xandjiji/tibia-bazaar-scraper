@@ -1,5 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { dictionary } = require('./dataDictionary');
+const { dictionary, powerfulToReadable } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -74,8 +74,15 @@ const scrapSinglePage = async (charObject) => {
 
     const transferText = tableContent[4].children[0].children[0].children[1].children[0].data;
     let transferAvailability = false;
-    if(transferText === 'can be purchased and used immediately') {
+    if (transferText === 'can be purchased and used immediately') {
         transferAvailability = true;
+    }
+
+    tableContent[19].children.shift();
+    tableContent[19].children.pop();
+    const imbuementsData = tableContent[19].children.map(iscrapImbuements);
+    if (!imbuementsData[imbuementsData.length - 1]) {
+        imbuementsData.pop();
     }
 
 
@@ -97,7 +104,8 @@ const scrapSinglePage = async (charObject) => {
         },
         [dictionary['items']]: featuredItemsArray,
         [dictionary['charms']]: charmsData,
-        [dictionary['transfer']]: transferAvailability
+        [dictionary['transfer']]: transferAvailability,
+        [dictionary['imbuements']]: imbuementsData
     }
 }
 
@@ -136,6 +144,11 @@ const scrapItems = (element) => {
 
     const itemSrc = element.children[0].attribs.src.split('/').pop();
     return itemSrc.slice(0, -4);
+}
+
+const iscrapImbuements = (element) => {
+    const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
+    return dictionary[powerfulToReadable[imbuementText]];
 }
 
 const scrapCharms = (element) => {
