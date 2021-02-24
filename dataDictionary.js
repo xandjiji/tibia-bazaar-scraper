@@ -106,7 +106,8 @@ const dictionary = dictionaryFactory([
     'Fire Protection',
     'Death Protection',
     'Ice Protection',
-    'Earth Protection'
+    'Earth Protection',
+    'hasSoulwar'
 ]);
 
 const powerfulToReadable = {

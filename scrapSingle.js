@@ -57,6 +57,8 @@ const scrapSinglePage = async (charObject) => {
     let featuredItemsArray = featuredItems[0].children.map(scrapItems);
     featuredItemsArray = popNull(featuredItemsArray);
 
+    const characterlevel = Number(headerData[0].replace(/level: /gi, ''));
+
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
 
@@ -85,13 +87,17 @@ const scrapSinglePage = async (charObject) => {
         imbuementsData.pop();
     }
 
+    let hasSoulwar = false;
+    if(characterlevel >= 400) {
+        hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
+    }
 
     return {
         ...charObject,
         [dictionary['outfitId']]: outfitId.slice(0, -4),
         [dictionary['serverId']]: getServerId(serverElement[0].children[0].data),
         [dictionary['vocationId']]: vocationId,
-        [dictionary['level']]: Number(headerData[0].replace(/level: /gi, '')),
+        [dictionary['level']]: characterlevel,
         [dictionary['skills']]: {
             [dictionary['magic']]: skillsData[5],
             [dictionary['club']]: skillsData[1],
@@ -105,7 +111,8 @@ const scrapSinglePage = async (charObject) => {
         [dictionary['items']]: featuredItemsArray,
         [dictionary['charms']]: charmsData,
         [dictionary['transfer']]: transferAvailability,
-        [dictionary['imbuements']]: imbuementsData
+        [dictionary['imbuements']]: imbuementsData,
+        [dictionary['hasSoulwar']]: hasSoulwar
     }
 }
 
@@ -155,6 +162,14 @@ const scrapCharms = (element) => {
     const charmString = cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
 
     return dictionary[charmString];
+}
+
+const searchSoulwar = (elementArray) => {
+    for (let i = elementArray.length - 1; i >= 0; i--) {
+        const outfitText = elementArray[i].attribs.title;
+        if (/Revenant/.test(outfitText)) return true;
+    }
+    return false;
 }
 
 const popNull = (array) => {
