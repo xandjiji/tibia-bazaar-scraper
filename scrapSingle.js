@@ -1,5 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { dictionary } = require('./dataDictionary');
+const { dictionary, powerfulToReadable } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -57,6 +57,8 @@ const scrapSinglePage = async (charObject) => {
     let featuredItemsArray = featuredItems[0].children.map(scrapItems);
     featuredItemsArray = popNull(featuredItemsArray);
 
+    const characterlevel = Number(headerData[0].replace(/level: /gi, ''));
+
     const vocationString = headerData[1].replace(/vocation: /gi, '');
     const vocationId = getVocationId(vocationString);
 
@@ -72,12 +74,30 @@ const scrapSinglePage = async (charObject) => {
     let charmsData = tableContent[20].children.map(scrapCharms);
     charmsData = popNull(charmsData);
 
+    const transferText = tableContent[4].children[0].children[0].children[1].children[0].data;
+    let transferAvailability = false;
+    if (transferText === 'can be purchased and used immediately') {
+        transferAvailability = true;
+    }
+
+    tableContent[19].children.shift();
+    tableContent[19].children.pop();
+    const imbuementsData = tableContent[19].children.map(iscrapImbuements);
+    if (!imbuementsData[imbuementsData.length - 1]) {
+        imbuementsData.pop();
+    }
+
+    let hasSoulwar = false;
+    if(characterlevel >= 400) {
+        hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
+    }
+
     return {
         ...charObject,
         [dictionary['outfitId']]: outfitId.slice(0, -4),
         [dictionary['serverId']]: getServerId(serverElement[0].children[0].data),
         [dictionary['vocationId']]: vocationId,
-        [dictionary['level']]: Number(headerData[0].replace(/level: /gi, '')),
+        [dictionary['level']]: characterlevel,
         [dictionary['skills']]: {
             [dictionary['magic']]: skillsData[5],
             [dictionary['club']]: skillsData[1],
@@ -89,7 +109,10 @@ const scrapSinglePage = async (charObject) => {
             [dictionary['shielding']]: skillsData[6]
         },
         [dictionary['items']]: featuredItemsArray,
-        [dictionary['charms']]: charmsData
+        [dictionary['charms']]: charmsData,
+        [dictionary['transfer']]: transferAvailability,
+        [dictionary['imbuements']]: imbuementsData,
+        [dictionary['hasSoulwar']]: hasSoulwar
     }
 }
 
@@ -130,10 +153,23 @@ const scrapItems = (element) => {
     return itemSrc.slice(0, -4);
 }
 
+const iscrapImbuements = (element) => {
+    const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
+    return dictionary[powerfulToReadable[imbuementText]];
+}
+
 const scrapCharms = (element) => {
     const charmString = cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
 
     return dictionary[charmString];
+}
+
+const searchSoulwar = (elementArray) => {
+    for (let i = elementArray.length - 1; i >= 0; i--) {
+        const outfitText = elementArray[i].attribs.title;
+        if (/Revenant/.test(outfitText)) return true;
+    }
+    return false;
 }
 
 const popNull = (array) => {
