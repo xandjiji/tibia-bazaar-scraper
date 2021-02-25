@@ -45,6 +45,10 @@ const main = async () => {
 
     let updatedData = [];
     for(const updatedItem of allBazaarPrices) {
+        if(!dictionaryData[updatedItem[dictionary['id']]]) {
+            console.log(updatedItem[dictionary['id']]);
+            continue;
+        }
         dictionaryData[updatedItem[dictionary['id']]][dictionary['currentBid']] = updatedItem[dictionary['currentBid']];
         updatedData.push(dictionaryData[updatedItem[dictionary['id']]]);
     }
