@@ -82,13 +82,13 @@ const scrapSinglePage = async (charObject) => {
 
     tableContent[19].children.shift();
     tableContent[19].children.pop();
-    const imbuementsData = tableContent[19].children.map(iscrapImbuements);
+    const imbuementsData = tableContent[19].children.map(scrapImbuements);
     if (!imbuementsData[imbuementsData.length - 1]) {
         imbuementsData.pop();
     }
 
     let hasSoulwar = false;
-    if(characterlevel >= 400) {
+    if (characterlevel >= 400) {
         hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
     }
 
@@ -111,7 +111,7 @@ const scrapSinglePage = async (charObject) => {
         [dictionary['items']]: featuredItemsArray,
         [dictionary['charms']]: charmsData,
         [dictionary['transfer']]: transferAvailability,
-        [dictionary['imbuements']]: imbuementsData,
+        [dictionary['imbuements']]: imbuementsData.sort(),
         [dictionary['hasSoulwar']]: hasSoulwar
     }
 }
@@ -153,7 +153,7 @@ const scrapItems = (element) => {
     return itemSrc.slice(0, -4);
 }
 
-const iscrapImbuements = (element) => {
+const scrapImbuements = (element) => {
     const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
     return dictionary[powerfulToReadable[imbuementText]];
 }
