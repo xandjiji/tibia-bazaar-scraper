@@ -13,6 +13,8 @@ const main = async () => {
     var data = await fs.readFile('./bazaarPages.json', 'utf-8');
     data = JSON.parse(data);
 
+    data = data.slice(0, 20);
+
     console.log(`${timeStamp('system')} loading ServerData.json ...`);
     console.group();
     var serverListData = await fs.readFile('./ServerData.json', 'utf-8');
@@ -150,7 +152,7 @@ const scrapItems = (element) => {
     if (itemTitle[0] === '(no item for display selected)') return;
 
     const itemSrc = element.children[0].attribs.src.split('/').pop();
-    return itemSrc.slice(0, -4);
+    return Number(itemSrc.slice(0, -4));
 }
 
 const scrapImbuements = (element) => {
