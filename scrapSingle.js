@@ -136,14 +136,12 @@ const getVocationId = (vocationString) => {
 }
 
 const scrapSkill = (element) => {
-    const level = Number(cheerio('.LevelColumn', element).text());
+    let level = Number(cheerio('.LevelColumn', element).text());
     let percentage = cheerio('.PercentageColumn', element).text();
     percentage = parseFloat(percentage.slice(0, -2));
+    percentage = Math.round(percentage);
 
-    return {
-        [dictionary['level']]: level,
-        [dictionary['percentage']]: percentage
-    }
+    return Number(`${level}.${percentage}`);
 }
 
 const scrapItems = (element) => {

@@ -42,7 +42,6 @@ const translateCharObject = (charObject) => {
 
 const dictionary = dictionaryFactory([
     'level',
-    'percentage',
     'Dodge',
     'Wound',
     'Curse',
