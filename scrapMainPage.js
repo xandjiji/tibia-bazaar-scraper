@@ -71,7 +71,13 @@ const scrapBazaarPage = async (url) => {
             [dictionary['nickname']]: charNameLink[0].children[0].data,
             [dictionary['auctionEnd']]: Number(charAuctionEnd[0].attribs['data-timestamp']),
             [dictionary['currentBid']]: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
-            [dictionary['hasBeenBidded']]: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
+            /* [dictionary['hasBeenBidded']]: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false) */
+        }
+
+        const bidStatus = (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false);
+
+        if(bidStatus) {
+            charObject[dictionary['hasBeenBidded']] = bidStatus;
         }
 
         charactersData.push(charObject);
