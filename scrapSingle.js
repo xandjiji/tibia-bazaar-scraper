@@ -84,17 +84,19 @@ const scrapSinglePage = async (charObject) => {
 
     tableContent[19].children.shift();
     tableContent[19].children.pop();
-    const imbuementsData = tableContent[19].children.map(scrapImbuements);
+    let imbuementsData = tableContent[19].children.map(scrapImbuements);
     if (!imbuementsData[imbuementsData.length - 1]) {
         imbuementsData.pop();
     }
+    imbuementsData = imbuementsData.sort();
+
 
     let hasSoulwar = false;
     if (characterlevel >= 400) {
         hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
     }
 
-    return {
+    let newCharObject = {
         ...charObject,
         [dictionary['outfitId']]: outfitId.slice(0, -4),
         [dictionary['serverId']]: getServerId(serverElement[0].children[0].data),
@@ -110,12 +112,34 @@ const scrapSinglePage = async (charObject) => {
             [dictionary['distance']]: skillsData[2],
             [dictionary['shielding']]: skillsData[6]
         },
-        [dictionary['items']]: featuredItemsArray,
-        [dictionary['charms']]: charmsData,
-        [dictionary['transfer']]: transferAvailability,
-        [dictionary['imbuements']]: imbuementsData.sort(),
-        [dictionary['hasSoulwar']]: hasSoulwar
+        /* [dictionary['items']]: featuredItemsArray, */
+        /* [dictionary['charms']]: charmsData, */
+        /* [dictionary['transfer']]: transferAvailability, */
+        /* [dictionary['imbuements']]: imbuementsData, */
+        /* [dictionary['hasSoulwar']]: hasSoulwar */
+    };
+
+    if(featuredItemsArray.length > 0) {
+        newCharObject[dictionary['items']] = featuredItemsArray;
     }
+
+    if(charmsData.length > 0) {
+        newCharObject[dictionary['charms']] = charmsData;
+    }
+
+    if(imbuementsData.length > 0) {
+        newCharObject[dictionary['imbuements']] = imbuementsData;
+    }
+
+    if(transferAvailability) {
+        newCharObject[dictionary['transfer']] = transferAvailability;
+    }
+
+    if(hasSoulwar) {
+        newCharObject[dictionary['hasSoulwar']] = hasSoulwar;
+    }
+
+    return newCharObject;
 }
 
 const getServerId = (serverString) => {
