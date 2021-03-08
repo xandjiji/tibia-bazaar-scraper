@@ -35,7 +35,7 @@ const objectToMinified = (charObject) => {
     }
     minifiedData[charObjectDictionary['imbuements']] = imbuementsArray;
 
-    return minifiedData;
+    return [...minifiedData];
 }
 
 const minifiedToObject = (minifiedArray) => {
@@ -63,7 +63,7 @@ const minifiedToObject = (minifiedArray) => {
     }
     charObject.imbuements = imbuementsArray;
 
-    return charObject;
+    return { ...charObject };
 }
 
 const charObjectDictionary = dictionaryFactory([

@@ -44,9 +44,12 @@ const main = async () => {
     const dictionaryData = makeIdDictionary(data);
 
     let updatedData = [];
-    for(const updatedItem of allBazaarPrices) {
-        if(!dictionaryData[updatedItem.id]) continue;
+    console.log(allBazaarPrices);
+    for (const updatedItem of allBazaarPrices) {
+        if (!dictionaryData[updatedItem.id]) continue;
+
         dictionaryData[updatedItem.id].currentBid = updatedItem.currentBid;
+        dictionaryData[updatedItem.id].hasBeenBidded = updatedItem.hasBeenBidded;
         updatedData.push(dictionaryData[updatedItem.id]);
     }
 
@@ -78,12 +81,14 @@ const scrapBazaarPage = async (url) => {
         const $ = cheerio.load(element);
         const charNameLink = $('.AuctionCharacterName a');
         const charBidAmount = $('.ShortAuctionDataValue b');
+        const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
         const urlObj = new URL(charNameLink[0].attribs.href);
 
         const charObject = {
             id: Number(urlObj.searchParams.get('auctionid')),
-            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
+            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
+            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
         }
 
         charactersData.push(charObject);
@@ -95,7 +100,7 @@ const scrapBazaarPage = async (url) => {
 const makeIdDictionary = (array) => {
     const dictionaryObject = {};
 
-    for(const arrayItem of array) {
+    for (const arrayItem of array) {
         dictionaryObject[arrayItem.id] = arrayItem;
     }
 
