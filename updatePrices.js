@@ -44,7 +44,6 @@ const main = async () => {
     const dictionaryData = makeIdDictionary(data);
 
     let updatedData = [];
-    console.log(allBazaarPrices);
     for (const updatedItem of allBazaarPrices) {
         if (!dictionaryData[updatedItem.id]) continue;
 
