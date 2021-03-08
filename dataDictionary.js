@@ -38,6 +38,34 @@ const objectToMinified = (charObject) => {
     return minifiedData;
 }
 
+const minifiedToObject = (minifiedArray) => {
+
+    const charObject = {};
+    for (const [index, item] of minifiedArray.entries()) {
+        charObject[charObjectDictionary[index]] = item;
+    }
+
+    const skillObject = {};
+    for (const [index, item] of charObject.skills.entries()) {
+        skillObject[skillsDictionary[index]] = item;
+    }
+    charObject.skills = skillObject;
+
+    const charmsArray = [];
+    for (const charm of charObject.charms) {
+        charmsArray.push(charmDictionary[charm]);
+    }
+    charObject.charms = charmsArray;
+
+    const imbuementsArray = [];
+    for (const imbuement of charObject.imbuements) {
+        imbuementsArray.push(imbuementDictionary[imbuement]);
+    }
+    charObject.imbuements = imbuementsArray;
+
+    return charObject;
+}
+
 const charObjectDictionary = dictionaryFactory([
     'id',
     'nickname',
@@ -143,6 +171,7 @@ const powerfulToReadable = {
 
 module.exports = {
     objectToMinified,
+    minifiedToObject,
     charObjectDictionary,
     skillsDictionary,
     charmDictionary,
