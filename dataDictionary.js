@@ -10,61 +10,84 @@ const dictionaryFactory = (keyArray) => {
     return dictionaryObject;
 }
 
-const translateObjectOrArray = (variable) => {
-    if (Array.isArray(variable)) {
-        const newArray = [];
-        for (const key of variable) {
-            newArray.push(dictionary[key]);
-        }
-        return newArray;
+const objectToMinified = (charObject) => {
 
-    } else {
-        const newObject = {};
-
-        for (const key in variable) {
-            newObject[dictionary[key]] = variable[key];
-        }
-        return newObject;
-    }
-}
-
-const translateCharObject = (charObject) => {
-    const newCharObject = translateObjectOrArray(charObject);
-
-    newCharObject.charms = translateObjectOrArray(newCharObject.charms);
-    newCharObject.skills = translateObjectOrArray(newCharObject.skills);
-    for(const key of Object.keys(newCharObject.skills)) {
-        newCharObject.skills[key] = translateObjectOrArray(newCharObject.skills[key]);
+    const minifiedData = [];
+    for (const attribute in charObject) {
+        minifiedData[charObjectDictionary[attribute]] = charObject[attribute];
     }
 
-    return newCharObject;
+    const skillsArray = [];
+    for (const skill in charObject.skills) {
+        skillsArray[skillsDictionary[skill]] = charObject.skills[skill];
+    }
+    minifiedData[charObjectDictionary['skills']] = skillsArray;
+
+    const charmsArray = [];
+    for (const charm of charObject.charms) {
+        charmsArray.push(charmDictionary[charm]);
+    }
+    minifiedData[charObjectDictionary['charms']] = charmsArray;
+
+    const imbuementsArray = [];
+    for (const imbuement of charObject.imbuements) {
+        imbuementsArray.push(imbuementDictionary[imbuement]);
+    }
+    minifiedData[charObjectDictionary['imbuements']] = imbuementsArray;
+
+    return minifiedData;
 }
 
-const powerfulToReadable = {
-    'Powerful Strike': 'Critical Hit',
-    'Powerful Vampirism': 'Life Leech',
-    'Powerful Void': 'Mana Leech',
-    'Powerful Bash': 'Club Skill',
-    'Powerful Blockade': 'Shield Skill',
-    'Powerful Chop': 'Axe Skill',
-    'Powerful Epiphany': 'Magic Level',
-    'Powerful Precision': 'Distance Skill',
-    'Powerful Slash': 'Sword Skill',
-    'Powerful Featherweight': 'Capacity',
-    'Powerful Swiftness': 'Speed',
-    'Powerful Vibrancy': 'Paralize Removal',
-    'Powerful Electrify': 'Energy Damage',
-    'Powerful Frost': 'Ice Damage',
-    'Powerful Reap': 'Death Damage',
-    'Powerful Scorch': 'Fire Damage',
-    'Powerful Venom': 'Earth Damage',
-    'Powerful Cloud Fabric': 'Energy Protection',
-    'Powerful Demon Presence': 'Holy Protection',
-    'Powerful Dragon Hide': 'Fire Protection',
-    'Powerful Lich Shroud': 'Death Protection',
-    'Powerful Quara Scale': 'Ice Protection',
-    'Powerful Snake Skin': 'Earth Protection'
-}
+const charObjectDictionary = dictionaryFactory([
+    'id',
+    'nickname',
+    'auctionEnd',
+    'currentBid',
+    'hasBeenBidded',
+    'outfitId',
+    'serverId',
+    'vocationId',
+    'level',
+    'skills',
+    'items',
+    'charms',
+    'transfer',
+    'imbuements',
+    'hasSoulwar'
+]);
+
+const skillsDictionary = dictionaryFactory([
+    'magic',
+    'club',
+    'fist',
+    'sword',
+    'fishing',
+    'axe',
+    'distance',
+    'shielding'
+]);
+
+const charmDictionary = dictionaryFactory([
+    'Dodge',
+    'Wound',
+    'Curse',
+    'Zap',
+    'Enflame',
+    'Freeze',
+    'Low Blow',
+    'Parry',
+    'Poison',
+    'Divine Wrath',
+    'Cripple',
+    'Cleanse',
+    'Adrenaline Burst',
+    'Vampiric Embrace',
+    'Numb',
+    "Void's Call",
+    'Scavenge',
+    'Gut',
+    'Bless'
+]);
 
 const imbuementDictionary = dictionaryFactory([
     'Critical Hit',
@@ -92,26 +115,37 @@ const imbuementDictionary = dictionaryFactory([
     'Earth Protection'
 ]);
 
-const charmDictionary = dictionaryFactory([
-    'Dodge',
-    'Wound',
-    'Curse',
-    'Zap',
-    'Enflame',
-    'Freeze',
-    'Low Blow',
-    'Parry',
-    'Poison',
-    'Divine Wrath',
-    'Cripple',
-    'Cleanse',
-    'Adrenaline Burst',
-    'Vampiric Embrace',
-    'Numb',
-    "Void's Call",
-    'Scavenge',
-    'Gut',
-    'Bless'
-]);
+const powerfulToReadable = {
+    'Powerful Strike': 'Critical Hit',
+    'Powerful Vampirism': 'Life Leech',
+    'Powerful Void': 'Mana Leech',
+    'Powerful Bash': 'Club Skill',
+    'Powerful Blockade': 'Shield Skill',
+    'Powerful Chop': 'Axe Skill',
+    'Powerful Epiphany': 'Magic Level',
+    'Powerful Precision': 'Distance Skill',
+    'Powerful Slash': 'Sword Skill',
+    'Powerful Featherweight': 'Capacity',
+    'Powerful Swiftness': 'Speed',
+    'Powerful Vibrancy': 'Paralize Removal',
+    'Powerful Electrify': 'Energy Damage',
+    'Powerful Frost': 'Ice Damage',
+    'Powerful Reap': 'Death Damage',
+    'Powerful Scorch': 'Fire Damage',
+    'Powerful Venom': 'Earth Damage',
+    'Powerful Cloud Fabric': 'Energy Protection',
+    'Powerful Demon Presence': 'Holy Protection',
+    'Powerful Dragon Hide': 'Fire Protection',
+    'Powerful Lich Shroud': 'Death Protection',
+    'Powerful Quara Scale': 'Ice Protection',
+    'Powerful Snake Skin': 'Earth Protection'
+}
 
-module.exports = { translateCharObject, powerfulToReadable, imbuementDictionary, charmDictionary }
+module.exports = {
+    objectToMinified,
+    charObjectDictionary,
+    skillsDictionary,
+    charmDictionary,
+    imbuementDictionary,
+    powerfulToReadable
+}

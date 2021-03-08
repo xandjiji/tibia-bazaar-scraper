@@ -1,5 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { dictionary } = require('./dataDictionary');
+const { objectToMinified } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -52,6 +52,11 @@ const main = async () => {
 
     await fs.writeFile('LatestCharacterData.json', JSON.stringify(updatedData));
     console.log(`${timeStamp('success')} All character data saved to 'LatestCharacterData.json'`);
+
+    console.log(`${timeStamp('highlight')} Minifying data...`);
+    const minifiedData = updatedData.map(objectToMinified);
+    await fs.writeFile('MinifiedCharacterData.json', JSON.stringify(minifiedData));
+    console.log(`${timeStamp('success')} All minified data saved to 'MinifiedCharacterData.json'`);
 }
 
 const retryWrapper = async (url) => {
