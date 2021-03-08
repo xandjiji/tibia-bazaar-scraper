@@ -1,5 +1,5 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { dictionary } = require('./dataDictionary');
+const { objectToMinified } = require('./dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -44,14 +44,22 @@ const main = async () => {
     const dictionaryData = makeIdDictionary(data);
 
     let updatedData = [];
-    for(const updatedItem of allBazaarPrices) {
-        if(!dictionaryData[updatedItem[dictionary['id']]]) continue;
-        dictionaryData[updatedItem[dictionary['id']]][dictionary['currentBid']] = updatedItem[dictionary['currentBid']];
-        updatedData.push(dictionaryData[updatedItem[dictionary['id']]]);
+    console.log(allBazaarPrices);
+    for (const updatedItem of allBazaarPrices) {
+        if (!dictionaryData[updatedItem.id]) continue;
+
+        dictionaryData[updatedItem.id].currentBid = updatedItem.currentBid;
+        dictionaryData[updatedItem.id].hasBeenBidded = updatedItem.hasBeenBidded;
+        updatedData.push(dictionaryData[updatedItem.id]);
     }
 
     await fs.writeFile('LatestCharacterData.json', JSON.stringify(updatedData));
     console.log(`${timeStamp('success')} All character data saved to 'LatestCharacterData.json'`);
+
+    console.log(`${timeStamp('highlight')} Minifying data...`);
+    const minifiedData = updatedData.map(objectToMinified);
+    await fs.writeFile('MinifiedCharacterData.json', JSON.stringify(minifiedData));
+    console.log(`${timeStamp('success')} All minified data saved to 'MinifiedCharacterData.json'`);
 }
 
 const retryWrapper = async (url) => {
@@ -73,12 +81,14 @@ const scrapBazaarPage = async (url) => {
         const $ = cheerio.load(element);
         const charNameLink = $('.AuctionCharacterName a');
         const charBidAmount = $('.ShortAuctionDataValue b');
+        const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
         const urlObj = new URL(charNameLink[0].attribs.href);
 
         const charObject = {
-            [dictionary['id']]: Number(urlObj.searchParams.get('auctionid')),
-            [dictionary['currentBid']]: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
+            id: Number(urlObj.searchParams.get('auctionid')),
+            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
+            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
         }
 
         charactersData.push(charObject);
@@ -90,8 +100,8 @@ const scrapBazaarPage = async (url) => {
 const makeIdDictionary = (array) => {
     const dictionaryObject = {};
 
-    for(const arrayItem of array) {
-        dictionaryObject[arrayItem[dictionary['id']]] = arrayItem;
+    for (const arrayItem of array) {
+        dictionaryObject[arrayItem.id] = arrayItem;
     }
 
     return dictionaryObject;

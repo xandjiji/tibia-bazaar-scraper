@@ -10,39 +10,92 @@ const dictionaryFactory = (keyArray) => {
     return dictionaryObject;
 }
 
-const translateObjectOrArray = (variable) => {
-    if (Array.isArray(variable)) {
-        const newArray = [];
-        for (const key of variable) {
-            newArray.push(dictionary[key]);
-        }
-        return newArray;
+const objectToMinified = (charObject) => {
 
-    } else {
-        const newObject = {};
-
-        for (const key in variable) {
-            newObject[dictionary[key]] = variable[key];
-        }
-        return newObject;
-    }
-}
-
-const translateCharObject = (charObject) => {
-    const newCharObject = translateObjectOrArray(charObject);
-
-    newCharObject.charms = translateObjectOrArray(newCharObject.charms);
-    newCharObject.skills = translateObjectOrArray(newCharObject.skills);
-    for(const key of Object.keys(newCharObject.skills)) {
-        newCharObject.skills[key] = translateObjectOrArray(newCharObject.skills[key]);
+    const minifiedData = [];
+    for (const attribute in charObject) {
+        minifiedData[charObjectDictionary[attribute]] = charObject[attribute];
     }
 
-    return newCharObject;
+    const skillsArray = [];
+    for (const skill in charObject.skills) {
+        skillsArray[skillsDictionary[skill]] = charObject.skills[skill];
+    }
+    minifiedData[charObjectDictionary['skills']] = skillsArray;
+
+    const charmsArray = [];
+    for (const charm of charObject.charms) {
+        charmsArray.push(charmDictionary[charm]);
+    }
+    minifiedData[charObjectDictionary['charms']] = charmsArray;
+
+    const imbuementsArray = [];
+    for (const imbuement of charObject.imbuements) {
+        imbuementsArray.push(imbuementDictionary[imbuement]);
+    }
+    minifiedData[charObjectDictionary['imbuements']] = imbuementsArray;
+
+    return [...minifiedData];
 }
 
-const dictionary = dictionaryFactory([
+const minifiedToObject = (minifiedArray) => {
+
+    const charObject = {};
+    for (const [index, item] of minifiedArray.entries()) {
+        charObject[charObjectDictionary[index]] = item;
+    }
+
+    const skillObject = {};
+    for (const [index, item] of charObject.skills.entries()) {
+        skillObject[skillsDictionary[index]] = item;
+    }
+    charObject.skills = skillObject;
+
+    const charmsArray = [];
+    for (const charm of charObject.charms) {
+        charmsArray.push(charmDictionary[charm]);
+    }
+    charObject.charms = charmsArray;
+
+    const imbuementsArray = [];
+    for (const imbuement of charObject.imbuements) {
+        imbuementsArray.push(imbuementDictionary[imbuement]);
+    }
+    charObject.imbuements = imbuementsArray;
+
+    return { ...charObject };
+}
+
+const charObjectDictionary = dictionaryFactory([
+    'id',
+    'nickname',
+    'auctionEnd',
+    'currentBid',
+    'hasBeenBidded',
+    'outfitId',
+    'serverId',
+    'vocationId',
     'level',
-    'percentage',
+    'skills',
+    'items',
+    'charms',
+    'transfer',
+    'imbuements',
+    'hasSoulwar'
+]);
+
+const skillsDictionary = dictionaryFactory([
+    'magic',
+    'club',
+    'fist',
+    'sword',
+    'fishing',
+    'axe',
+    'distance',
+    'shielding'
+]);
+
+const charmDictionary = dictionaryFactory([
     'Dodge',
     'Wound',
     'Curse',
@@ -61,29 +114,10 @@ const dictionary = dictionaryFactory([
     "Void's Call",
     'Scavenge',
     'Gut',
-    'Bless',
-    'src',
-    'id',
-    'nickname',
-    'auctionEnd',
-    'currentBid',
-    'hasBeenBidded',
-    'outfitId',
-    'serverId',
-    'vocationId',
-    'skills',
-    'magic',
-    'club',
-    'fist',
-    'sword',
-    'fishing',
-    'axe',
-    'distance',
-    'shielding',
-    'items',
-    'charms',
-    'transfer',
-    'imbuements',
+    'Bless'
+]);
+
+const imbuementDictionary = dictionaryFactory([
     'Critical Hit',
     'Life Leech',
     'Mana Leech',
@@ -106,8 +140,7 @@ const dictionary = dictionaryFactory([
     'Fire Protection',
     'Death Protection',
     'Ice Protection',
-    'Earth Protection',
-    'hasSoulwar'
+    'Earth Protection'
 ]);
 
 const powerfulToReadable = {
@@ -136,4 +169,12 @@ const powerfulToReadable = {
     'Powerful Snake Skin': 'Earth Protection'
 }
 
-module.exports = { translateCharObject, dictionary, powerfulToReadable }
+module.exports = {
+    objectToMinified,
+    minifiedToObject,
+    charObjectDictionary,
+    skillsDictionary,
+    charmDictionary,
+    imbuementDictionary,
+    powerfulToReadable
+}
