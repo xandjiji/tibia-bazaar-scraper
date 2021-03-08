@@ -45,9 +45,9 @@ const main = async () => {
 
     let updatedData = [];
     for(const updatedItem of allBazaarPrices) {
-        if(!dictionaryData[updatedItem[dictionary['id']]]) continue;
-        dictionaryData[updatedItem[dictionary['id']]][dictionary['currentBid']] = updatedItem[dictionary['currentBid']];
-        updatedData.push(dictionaryData[updatedItem[dictionary['id']]]);
+        if(!dictionaryData[updatedItem.id]) continue;
+        dictionaryData[updatedItem.id].currentBid = updatedItem.currentBid;
+        updatedData.push(dictionaryData[updatedItem.id]);
     }
 
     await fs.writeFile('LatestCharacterData.json', JSON.stringify(updatedData));
@@ -77,8 +77,8 @@ const scrapBazaarPage = async (url) => {
         const urlObj = new URL(charNameLink[0].attribs.href);
 
         const charObject = {
-            [dictionary['id']]: Number(urlObj.searchParams.get('auctionid')),
-            [dictionary['currentBid']]: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
+            id: Number(urlObj.searchParams.get('auctionid')),
+            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, ''))
         }
 
         charactersData.push(charObject);
@@ -91,7 +91,7 @@ const makeIdDictionary = (array) => {
     const dictionaryObject = {};
 
     for(const arrayItem of array) {
-        dictionaryObject[arrayItem[dictionary['id']]] = arrayItem;
+        dictionaryObject[arrayItem.id] = arrayItem;
     }
 
     return dictionaryObject;
