@@ -27,13 +27,15 @@ const fetchAndLoad = async (url) => {
     return cheerio.load(html);
 }
 
-const promiseAllInBatches = async (task, items, batchSize) => {
+const promiseAllInBatches = async (task, items, batchSize, onEachBatch) => {
     let position = 0;
     let results = [];
     while (position < items.length) {
         const itemsForBatch = items.slice(position, position + batchSize);
-        results = [...results, ...await Promise.all(itemsForBatch.map(item => task(item)))];
+        let currentResults = await Promise.all(itemsForBatch.map(item => task(item)));
+        results = [...results, ...currentResults];
         position += batchSize;
+        if(onEachBatch) await onEachBatch(currentResults);
     }
     return results;
 }

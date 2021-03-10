@@ -4,13 +4,22 @@ const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
+var serverData;
 var latestAuctionId;
-var currentAuctionId = 0;
+var currentAuctionId;
 
 const main = async () => {
 
     latestAuctionId = await getLatestAuctionId();
     currentAuctionId = await getLastScrapedId();
+    serverData = await loadServerData();
+
+    const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
+
+    console.log(`${timeStamp('highlight')} Scraping every single page:`);
+    console.group();
+
+    await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
 
     /*
     console.log(`${timeStamp('system')} loading ServerData.json ...`);
@@ -52,90 +61,126 @@ const getLastScrapedId = async () => {
     return scrapHistoryData.lastScrapedId;
 }
 
-const retryWrapper = async (url) => {
+const makeRangeArray = (start, end) => {
+    const array = [];
+    for (let i = start; i <= end; i++) {
+        array.push(i);
+    }
+    return array;
+}
+
+const retryWrapper = async (id) => {
     return await maxRetry(async () => {
-        return await scrapSinglePage(url);
+        return await scrapSinglePage(id);
     }, MAX_RETRIES);
 }
 
-const scrapSinglePage = async (charObject) => {
-    const id = charObject.id;
-    const nickname = charObject.nickname;
-    const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
-    globalIndex++;
-    console.log(`${timeStamp('neutral')} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
+const onEachBatch = async (batchArray) => {
+    batchArray = batchArray.filter(item => item);
+    
+    /* append to readableBazarHistory.json */
+    /* update scrapHistoryData.json with last item auctionId*/
+    
+    console.log(`${timeStamp('highlight')} successfully scraped and saved ${batchArray.length} auctions`);
 
-    const serverElement = $('.AuctionHeader a');
+    console.log(batchArray);
+}
 
-    const headerElement = $('.AuctionHeader');
-    let headerData = headerElement[0].children[2].data.split('|');
-    headerData = headerData.map(string => string.trim());
+const loadServerData = async () => {
+    console.log(`${timeStamp('system')} loading ServerData.json ...`);
+    console.group();
+    var serverListData = await fs.readFile('./ServerData.json', 'utf-8');
+    return JSON.parse(serverListData);
+}
 
-    const featuredItems = $('.AuctionItemsViewBox');
-    let featuredItemsArray = featuredItems[0].children.map(scrapItems);
-    featuredItemsArray = popNull(featuredItemsArray);
+const scrapSinglePage = async (id) => {
+    try {
+        console.log(`${timeStamp('neutral')} Scraping single page [${id}/${latestAuctionId}]`);
+        const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
 
-    const characterlevel = Number(headerData[0].replace(/level: /gi, ''));
+        /*
+        SCRAP
+            ID
+            NICKNAME
+            AUCTIONEND
+            CURRENTBID
+            HASBEENBIDDED
 
-    const vocationString = headerData[1].replace(/vocation: /gi, '');
-    const vocationId = getVocationId(vocationString);
+            NEW DATA
+        */
+        const serverElement = $('.AuctionHeader a');
 
-    const outfitElement = $('.AuctionOutfitImage');
-    const outfitId = outfitElement[0].attribs.src.split('/').pop();
+        const headerElement = $('.AuctionHeader');
+        let headerData = headerElement[0].children[2].data.split('|');
+        headerData = headerData.map(string => string.trim());
 
-    const tableContent = $('.TableContent tbody');
-    tableContent[2].children.pop();
-    const skillsData = tableContent[2].children.map(scrapSkill);
+        const featuredItems = $('.AuctionItemsViewBox');
+        let featuredItemsArray = featuredItems[0].children.map(scrapItems);
+        featuredItemsArray = popNull(featuredItemsArray);
 
-    tableContent[20].children.shift();
-    tableContent[20].children.pop();
-    let charmsData = tableContent[20].children.map(scrapCharms);
-    charmsData = popNull(charmsData);
+        const characterlevel = Number(headerData[0].replace(/level: /gi, ''));
 
-    const transferText = tableContent[4].children[0].children[0].children[1].children[0].data;
-    let transferAvailability = false;
-    if (transferText === 'can be purchased and used immediately') {
-        transferAvailability = true;
+        const vocationString = headerData[1].replace(/vocation: /gi, '');
+        const vocationId = getVocationId(vocationString);
+
+        const outfitElement = $('.AuctionOutfitImage');
+        const outfitId = outfitElement[0].attribs.src.split('/').pop();
+
+        const tableContent = $('.TableContent tbody');
+        tableContent[2].children.pop();
+        const skillsData = tableContent[2].children.map(scrapSkill);
+
+        tableContent[20].children.shift();
+        tableContent[20].children.pop();
+        let charmsData = tableContent[20].children.map(scrapCharms);
+        charmsData = popNull(charmsData);
+
+        const transferText = tableContent[4].children[0].children[0].children[1].children[0].data;
+        let transferAvailability = false;
+        if (transferText === 'can be purchased and used immediately') {
+            transferAvailability = true;
+        }
+
+        tableContent[19].children.shift();
+        tableContent[19].children.pop();
+        let imbuementsData = tableContent[19].children.map(scrapImbuements);
+        if (!imbuementsData[imbuementsData.length - 1]) {
+            imbuementsData.pop();
+        }
+        imbuementsData = imbuementsData.sort();
+
+
+        let hasSoulwar = false;
+        if (characterlevel >= 400) {
+            hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
+        }
+
+        let newCharObject = {
+            outfitId: outfitId.slice(0, -4),
+            serverId: getServerId(serverElement[0].children[0].data),
+            vocationId: vocationId,
+            level: characterlevel,
+            skills: {
+                magic: skillsData[5],
+                club: skillsData[1],
+                fist: skillsData[4],
+                sword: skillsData[7],
+                fishing: skillsData[3],
+                axe: skillsData[0],
+                distance: skillsData[2],
+                shielding: skillsData[6]
+            },
+            items: featuredItemsArray,
+            charms: charmsData,
+            transfer: transferAvailability,
+            imbuements: imbuementsData,
+            hasSoulwar: hasSoulwar
+        };
+
+        return newCharObject;
+    } catch (error) {
+        return;
     }
-
-    tableContent[19].children.shift();
-    tableContent[19].children.pop();
-    let imbuementsData = tableContent[19].children.map(scrapImbuements);
-    if (!imbuementsData[imbuementsData.length - 1]) {
-        imbuementsData.pop();
-    }
-    imbuementsData = imbuementsData.sort();
-
-
-    let hasSoulwar = false;
-    if (characterlevel >= 400) {
-        hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
-    }
-
-    let newCharObject = {
-        ...charObject,
-        outfitId: outfitId.slice(0, -4),
-        serverId: getServerId(serverElement[0].children[0].data),
-        vocationId: vocationId,
-        level: characterlevel,
-        skills: {
-            magic: skillsData[5],
-            club: skillsData[1],
-            fist: skillsData[4],
-            sword: skillsData[7],
-            fishing: skillsData[3],
-            axe: skillsData[0],
-            distance: skillsData[2],
-            shielding: skillsData[6]
-        },
-        items: featuredItemsArray,
-        charms: charmsData,
-        transfer: transferAvailability,
-        imbuements: imbuementsData,
-        hasSoulwar: hasSoulwar
-    };
-
-    return newCharObject;
 }
 
 const getServerId = (serverString) => {

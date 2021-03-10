@@ -1,5 +1,8 @@
 node_modules/
 
+readableBazarHistory.json
+scrapHistoryData.json
+
 MinifiedCharacterData.json
 LatestCharacterData.json
 AllCharacterData.json
