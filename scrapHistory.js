@@ -5,6 +5,7 @@ const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
 const MAX_CONCURRENT_REQUESTS = 3;
+const SLEEP_INTERVAL = 5000;
 
 var serverData;
 var latestAuctionId;
@@ -28,27 +29,6 @@ const main = async () => {
     console.group();
 
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
-
-    /*
-    console.log(`${timeStamp('system')} loading ServerData.json ...`);
-    console.group();
-    var serverListData = await fs.readFile('./ServerData.json', 'utf-8');
-    serverData = JSON.parse(serverListData);
-
-    globalDataSize = data.length;
-
-    console.log(`${timeStamp('highlight')} Scraping every single page:`);
-    console.group();
-
-    let allSingleData = await promiseAllInBatches(retryWrapper, data, MAX_CONCURRENT_REQUESTS);
-
-    console.groupEnd();
-    console.groupEnd();
-
-    allSingleData = allSingleData.filter(element => element != null);
-
-    await fs.writeFile('AllCharacterData.json', JSON.stringify(allSingleData));
-    console.log(`${timeStamp('success')} All single data saved to 'AllCharacterData.json'`); */
 }
 
 const getLatestAuctionId = async () => {
@@ -95,7 +75,7 @@ const onEachBatch = async (batchArray) => {
 
     console.log(`${timeStamp('system')} ${batchArray.length} new items were saved to readableBazaarHistory.json [${currentAuctionId}/${latestAuctionId}]`);
 
-    await sleep(5000);
+    await sleep(SLEEP_INTERVAL);
 }
 
 const sleep = (ms) => {
@@ -111,7 +91,6 @@ const loadServerData = async () => {
 
 const scrapSinglePage = async (id) => {
     try {
-        /* console.log(`${timeStamp('neutral')} Scraping single page [${id}/${latestAuctionId}]`); */
         const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
 
         const nickname = $('.Auction .AuctionCharacterName').text();
