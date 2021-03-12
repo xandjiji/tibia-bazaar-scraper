@@ -95,16 +95,8 @@ const loadServerData = async () => {
 
 const scrapSinglePage = async (id) => {
     try {
-        id = 4; /* REMOVERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR */
         console.log(`${timeStamp('neutral')} Scraping single page [${id}/${latestAuctionId}]`);
         const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
-
-        /*
-        SCRAP
-            HASBEENBIDDED
-
-            NEW DATA
-        */
 
         const nickname = $('.Auction .AuctionCharacterName').text();
 
@@ -113,8 +105,11 @@ const scrapSinglePage = async (id) => {
 
         let currentBid = $('.ShortAuctionDataValue b').text();
         currentBid = Number(currentBid.replace(/,/g, ''));
-        console.log(currentBid);
-        console.log(888888888888);
+
+
+        let hasBeenBidded = $('.ShortAuctionDataLabel');
+        hasBeenBidded = hasBeenBidded[2].children[0].data;
+        hasBeenBidded = hasBeenBidded === 'Winning Bid:' ? true : false;
 
         const serverElement = $('.AuctionHeader a');
 
@@ -168,6 +163,7 @@ const scrapSinglePage = async (id) => {
             nickname,
             auctionEnd,
             currentBid,
+            hasBeenBidded,
             outfitId: outfitId.slice(0, -4),
             serverId: getServerId(serverElement[0].children[0].data),
             vocationId: vocationId,
@@ -262,7 +258,7 @@ const popNull = (array) => {
 }
 
 const dateParsing = (dateString) => {
-    
+
     dateString = dateString.split(',');
     dateString = [...dateString[0].split(' '), ...dateString[1].split(' ')];
 
