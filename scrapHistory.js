@@ -20,7 +20,7 @@ const main = async () => {
     historyFileBuffer = JSON.parse(historyFileBuffer);
 
     latestAuctionId = await retryGetLatestAuctionId();
-    currentAuctionId = await getLastScrapedId();
+    currentAuctionId = await getLastScrapedId() + 1;
     serverData = await loadServerData();
 
     const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
@@ -75,11 +75,10 @@ const onEachBatch = async (batchArray) => {
 
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
     await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
+    await fs.writeFile('scrapHistoryData.json', JSON.stringify({ lastScrapedId: currentAuctionId }));
+    console.log(`${timeStamp('system')} ${batchArray.length} new items appended to readableBazaarHistory.json [${currentAuctionId}/${latestAuctionId}]`);
 
     currentAuctionId += MAX_CONCURRENT_REQUESTS;
-    await fs.writeFile('scrapHistoryData.json', JSON.stringify({ lastScrapedId: currentAuctionId }));
-    
-    console.log(`${timeStamp('system')} ${batchArray.length} new items appended to readableBazaarHistory.json [${currentAuctionId-1}/${latestAuctionId}]`);
 
     await sleep(SLEEP_INTERVAL);
 }
