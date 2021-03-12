@@ -101,7 +101,6 @@ const scrapSinglePage = async (id) => {
 
         /*
         SCRAP
-            CURRENTBID
             HASBEENBIDDED
 
             NEW DATA
@@ -111,6 +110,11 @@ const scrapSinglePage = async (id) => {
 
         let auctionEnd = $('.ShortAuctionDataValue');
         auctionEnd = dateParsing(auctionEnd[1].children[0].data);
+
+        let currentBid = $('.ShortAuctionDataValue b').text();
+        currentBid = Number(currentBid.replace(/,/g, ''));
+        console.log(currentBid);
+        console.log(888888888888);
 
         const serverElement = $('.AuctionHeader a');
 
@@ -163,6 +167,7 @@ const scrapSinglePage = async (id) => {
             id,
             nickname,
             auctionEnd,
+            currentBid,
             outfitId: outfitId.slice(0, -4),
             serverId: getServerId(serverElement[0].children[0].data),
             vocationId: vocationId,
