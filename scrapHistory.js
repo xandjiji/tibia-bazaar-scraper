@@ -31,7 +31,7 @@ const main = async () => {
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
 }
 
-const retryGetLatestAuctionId = async (id) => {
+const retryGetLatestAuctionId = async () => {
     return await maxRetry(async () => {
         return await getLatestAuctionId();
     }, MAX_RETRIES);

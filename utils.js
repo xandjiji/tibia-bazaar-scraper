@@ -1,14 +1,15 @@
 const fetch = require('node-fetch');
+const UserAgent = require('user-agents');
 const cheerio = require('cheerio');
 
 const colors = {
-    reset:      '\x1b[0m',  // white
-    fail:       '\x1b[31m', // red
-    success:    '\x1b[32m', // green
-    highlight:  '\x1b[33m', // yellow
-    system:     '\x1b[35m', // magenta
-    neutral:    '\x1b[36m', // cian
-    control:    '\x1b[90m'  // gray
+    reset: '\x1b[0m',  // white
+    fail: '\x1b[31m', // red
+    success: '\x1b[32m', // green
+    highlight: '\x1b[33m', // yellow
+    system: '\x1b[35m', // magenta
+    neutral: '\x1b[36m', // cian
+    control: '\x1b[90m'  // gray
 }
 
 const timeStamp = (color) => {
@@ -22,7 +23,13 @@ const timeStamp = (color) => {
 }
 
 const fetchAndLoad = async (url) => {
-    const response = await fetch(url);
+    const userAgent = new UserAgent();
+
+    const response = await fetch(url, {
+        headers: {
+            'User-Agent': userAgent.toString()
+        }
+    });
     const html = await response.text();
     return cheerio.load(html);
 }
@@ -35,7 +42,7 @@ const promiseAllInBatches = async (task, items, batchSize, onEachBatch) => {
         let currentResults = await Promise.all(itemsForBatch.map(item => task(item)));
         results = [...results, ...currentResults];
         position += batchSize;
-        if(onEachBatch) await onEachBatch(currentResults);
+        if (onEachBatch) await onEachBatch(currentResults);
     }
     return results;
 }
@@ -46,11 +53,11 @@ const maxRetry = async (callback, retry) => {
             return await callback();
         } catch (error) {
             console.log(`${timeStamp('fail')} ERROR! Trying again...`);
-            console.log(error);
             return maxRetry(callback, retry - 1);
         }
     } else {
         console.log(`${timeStamp('control')} Max tries reached`);
+        process.exit();
         return null;
     }
 }
