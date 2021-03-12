@@ -1,14 +1,22 @@
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
 const { powerfulToReadable } = require('./dataDictionary');
-const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
+const { MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
+
+const MAX_CONCURRENT_REQUESTS = 3;
 
 var serverData;
 var latestAuctionId;
 var currentAuctionId;
 
+var historyFileBuffer;
+
 const main = async () => {
+
+    console.log(`${timeStamp('system')} loading readableBazaarHistory.json ...`);
+    historyFileBuffer = await fs.readFile('./readableBazaarHistory.json', 'utf-8');
+    historyFileBuffer = JSON.parse(historyFileBuffer);
 
     latestAuctionId = await getLatestAuctionId();
     currentAuctionId = await getLastScrapedId();
@@ -77,13 +85,21 @@ const retryWrapper = async (id) => {
 
 const onEachBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
+    batchArray.reverse();
 
-    /* append to readableBazarHistory.json */
-    /* update scrapHistoryData.json with last item auctionId*/
+    historyFileBuffer = [...batchArray, ...historyFileBuffer];
+    await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
 
-    console.log(`${timeStamp('highlight')} successfully scraped and saved ${batchArray.length} auctions`);
+    currentAuctionId += MAX_CONCURRENT_REQUESTS;
+    await fs.writeFile('scrapHistoryData.json', JSON.stringify({ lastScrapedId: currentAuctionId }));
 
-    console.log(batchArray);
+    console.log(`${timeStamp('system')} ${batchArray.length} new items were saved to readableBazaarHistory.json [${currentAuctionId}/${latestAuctionId}]`);
+
+    await sleep(5000);
+}
+
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const loadServerData = async () => {
@@ -95,7 +111,7 @@ const loadServerData = async () => {
 
 const scrapSinglePage = async (id) => {
     try {
-        console.log(`${timeStamp('neutral')} Scraping single page [${id}/${latestAuctionId}]`);
+        /* console.log(`${timeStamp('neutral')} Scraping single page [${id}/${latestAuctionId}]`); */
         const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
 
         const nickname = $('.Auction .AuctionCharacterName').text();
