@@ -262,8 +262,6 @@ const dateParsing = (dateString) => {
     dateString = dateString.split(',');
     dateString = [...dateString[0].split(' '), ...dateString[1].split(' ')];
 
-    console.log(dateString);
-
     const month = dateString[0];
     const day = dateString[1];
     const year = dateString[2];
