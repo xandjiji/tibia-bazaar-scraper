@@ -77,10 +77,10 @@ const retryWrapper = async (id) => {
 
 const onEachBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
-    
+
     /* append to readableBazarHistory.json */
     /* update scrapHistoryData.json with last item auctionId*/
-    
+
     console.log(`${timeStamp('highlight')} successfully scraped and saved ${batchArray.length} auctions`);
 
     console.log(batchArray);
@@ -95,19 +95,23 @@ const loadServerData = async () => {
 
 const scrapSinglePage = async (id) => {
     try {
+        id = 4; /* REMOVERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR */
         console.log(`${timeStamp('neutral')} Scraping single page [${id}/${latestAuctionId}]`);
         const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
 
         /*
         SCRAP
-            ID
-            NICKNAME
-            AUCTIONEND
             CURRENTBID
             HASBEENBIDDED
 
             NEW DATA
         */
+
+        const nickname = $('.Auction .AuctionCharacterName').text();
+
+        let auctionEnd = $('.ShortAuctionDataValue');
+        auctionEnd = dateParsing(auctionEnd[1].children[0].data);
+
         const serverElement = $('.AuctionHeader a');
 
         const headerElement = $('.AuctionHeader');
@@ -156,6 +160,9 @@ const scrapSinglePage = async (id) => {
         }
 
         let newCharObject = {
+            id,
+            nickname,
+            auctionEnd,
             outfitId: outfitId.slice(0, -4),
             serverId: getServerId(serverElement[0].children[0].data),
             vocationId: vocationId,
@@ -247,6 +254,24 @@ const popNull = (array) => {
     }
 
     return array;
+}
+
+const dateParsing = (dateString) => {
+    
+    dateString = dateString.split(',');
+    dateString = [...dateString[0].split(' '), ...dateString[1].split(' ')];
+
+    console.log(dateString);
+
+    const month = dateString[0];
+    const day = dateString[1];
+    const year = dateString[2];
+    const time = dateString[3].trim();
+    /* const timezone = dateString[4]; */
+
+    const UTCDate = new Date(`${month} ${day}, ${year} ${time}:00`);
+
+    return UTCDate / 1000;
 }
 
 main();
