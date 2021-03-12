@@ -5,7 +5,7 @@ const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
 const MAX_CONCURRENT_REQUESTS = 1;
-const SLEEP_INTERVAL = 2000;
+const SLEEP_INTERVAL = 0;
 
 var serverData;
 var latestAuctionId;
@@ -96,104 +96,100 @@ const loadServerData = async () => {
 }
 
 const scrapSinglePage = async (id) => {
-    try {
-        const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
+    const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
 
-        let errorElement = $('.Text');
-        errorElement = errorElement[0].children[0].data;
-        if(errorElement === 'Error') return
+    let errorElement = $('.Text');
+    errorElement = errorElement[0].children[0].data;
+    if (errorElement === 'Error') return
 
-        const nickname = $('.Auction .AuctionCharacterName').text();
+    const nickname = $('.Auction .AuctionCharacterName').text();
 
-        let auctionEnd = $('.ShortAuctionDataValue');
-        auctionEnd = dateParsing(auctionEnd[1].children[0].data);
+    let auctionEnd = $('.ShortAuctionDataValue');
+    auctionEnd = dateParsing(auctionEnd[1].children[0].data);
 
-        let currentBid = $('.ShortAuctionDataValue b').text();
-        currentBid = Number(currentBid.replace(/,/g, ''));
-
-
-        let hasBeenBidded = $('.ShortAuctionDataLabel');
-        hasBeenBidded = hasBeenBidded[2].children[0].data;
-        hasBeenBidded = hasBeenBidded === 'Winning Bid:' ? true : false;
-
-        const serverElement = $('.AuctionHeader a');
-
-        const headerElement = $('.AuctionHeader');
-        let headerData = headerElement[0].children[2].data.split('|');
-        headerData = headerData.map(string => string.trim());
-
-        const featuredItems = $('.AuctionItemsViewBox');
-        let featuredItemsArray = featuredItems[0].children.map(scrapItems);
-        featuredItemsArray = popNull(featuredItemsArray);
-
-        const characterlevel = Number(headerData[0].replace(/level: /gi, ''));
-
-        const vocationString = headerData[1].replace(/vocation: /gi, '');
-        const vocationId = getVocationId(vocationString);
-
-        const outfitElement = $('.AuctionOutfitImage');
-        const outfitId = outfitElement[0].attribs.src.split('/').pop();
-
-        const tableContent = $('.TableContent tbody');
-        tableContent[2].children.pop();
-        const skillsData = tableContent[2].children.map(scrapSkill);
-
-        tableContent[20].children.shift();
-        tableContent[20].children.pop();
-        let charmsData = tableContent[20].children.map(scrapCharms);
-        charmsData = popNull(charmsData);
-
-        const transferText = tableContent[4].children[0].children[0].children[1].children[0].data;
-        let transferAvailability = false;
-        if (transferText === 'can be purchased and used immediately') {
-            transferAvailability = true;
-        }
-
-        tableContent[19].children.shift();
-        tableContent[19].children.pop();
-        let imbuementsData = tableContent[19].children.map(scrapImbuements);
-        if (!imbuementsData[imbuementsData.length - 1]) {
-            imbuementsData.pop();
-        }
-        imbuementsData = imbuementsData.sort();
+    let currentBid = $('.ShortAuctionDataValue b').text();
+    currentBid = Number(currentBid.replace(/,/g, ''));
 
 
-        let hasSoulwar = false;
-        if (characterlevel >= 400) {
-            hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
-        }
+    let hasBeenBidded = $('.ShortAuctionDataLabel');
+    hasBeenBidded = hasBeenBidded[2].children[0].data;
+    hasBeenBidded = hasBeenBidded === 'Winning Bid:' ? true : false;
 
-        let newCharObject = {
-            id,
-            nickname,
-            auctionEnd,
-            currentBid,
-            hasBeenBidded,
-            outfitId: outfitId.slice(0, -4),
-            serverId: getServerId(serverElement[0].children[0].data),
-            vocationId: vocationId,
-            level: characterlevel,
-            skills: {
-                magic: skillsData[5],
-                club: skillsData[1],
-                fist: skillsData[4],
-                sword: skillsData[7],
-                fishing: skillsData[3],
-                axe: skillsData[0],
-                distance: skillsData[2],
-                shielding: skillsData[6]
-            },
-            items: featuredItemsArray,
-            charms: charmsData,
-            transfer: transferAvailability,
-            imbuements: imbuementsData,
-            hasSoulwar: hasSoulwar
-        };
+    const serverElement = $('.AuctionHeader a');
 
-        return newCharObject;
-    } catch (error) {
-        return;
+    const headerElement = $('.AuctionHeader');
+    let headerData = headerElement[0].children[2].data.split('|');
+    headerData = headerData.map(string => string.trim());
+
+    const featuredItems = $('.AuctionItemsViewBox');
+    let featuredItemsArray = featuredItems[0].children.map(scrapItems);
+    featuredItemsArray = popNull(featuredItemsArray);
+
+    const characterlevel = Number(headerData[0].replace(/level: /gi, ''));
+
+    const vocationString = headerData[1].replace(/vocation: /gi, '');
+    const vocationId = getVocationId(vocationString);
+
+    const outfitElement = $('.AuctionOutfitImage');
+    const outfitId = outfitElement[0].attribs.src.split('/').pop();
+
+    const tableContent = $('.TableContent tbody');
+    tableContent[2].children.pop();
+    const skillsData = tableContent[2].children.map(scrapSkill);
+
+    tableContent[20].children.shift();
+    tableContent[20].children.pop();
+    let charmsData = tableContent[20].children.map(scrapCharms);
+    charmsData = popNull(charmsData);
+
+    const transferText = tableContent[4].children[0].children[0].children[1].children[0].data;
+    let transferAvailability = false;
+    if (transferText === 'can be purchased and used immediately') {
+        transferAvailability = true;
     }
+
+    tableContent[19].children.shift();
+    tableContent[19].children.pop();
+    let imbuementsData = tableContent[19].children.map(scrapImbuements);
+    if (!imbuementsData[imbuementsData.length - 1]) {
+        imbuementsData.pop();
+    }
+    imbuementsData = imbuementsData.sort();
+
+
+    let hasSoulwar = false;
+    if (characterlevel >= 400) {
+        hasSoulwar = searchSoulwar(tableContent[15].children[0].children[0].children[0].children[1].children);
+    }
+
+    let newCharObject = {
+        id,
+        nickname,
+        auctionEnd,
+        currentBid,
+        hasBeenBidded,
+        outfitId: outfitId.slice(0, -4),
+        serverId: getServerId(serverElement[0].children[0].data),
+        vocationId: vocationId,
+        level: characterlevel,
+        skills: {
+            magic: skillsData[5],
+            club: skillsData[1],
+            fist: skillsData[4],
+            sword: skillsData[7],
+            fishing: skillsData[3],
+            axe: skillsData[0],
+            distance: skillsData[2],
+            shielding: skillsData[6]
+        },
+        items: featuredItemsArray,
+        charms: charmsData,
+        transfer: transferAvailability,
+        imbuements: imbuementsData,
+        hasSoulwar: hasSoulwar
+    };
+
+    return newCharObject;
 }
 
 const getServerId = (serverString) => {
