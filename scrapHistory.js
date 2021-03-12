@@ -4,8 +4,8 @@ const { MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
-const MAX_CONCURRENT_REQUESTS = 3;
-const SLEEP_INTERVAL = 5000;
+const MAX_CONCURRENT_REQUESTS = 1;
+const SLEEP_INTERVAL = 2000;
 
 var serverData;
 var latestAuctionId;
@@ -19,7 +19,7 @@ const main = async () => {
     historyFileBuffer = await fs.readFile('./readableBazaarHistory.json', 'utf-8');
     historyFileBuffer = JSON.parse(historyFileBuffer);
 
-    latestAuctionId = await getLatestAuctionId();
+    latestAuctionId = await retryGetLatestAuctionId();
     currentAuctionId = await getLastScrapedId();
     serverData = await loadServerData();
 
@@ -29,6 +29,12 @@ const main = async () => {
     console.group();
 
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
+}
+
+const retryGetLatestAuctionId = async (id) => {
+    return await maxRetry(async () => {
+        return await getLatestAuctionId();
+    }, MAX_RETRIES);
 }
 
 const getLatestAuctionId = async () => {
@@ -92,6 +98,10 @@ const loadServerData = async () => {
 const scrapSinglePage = async (id) => {
     try {
         const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
+
+        let errorElement = $('.Text');
+        errorElement = errorElement[0].children[0].data;
+        if(errorElement === 'Error') return
 
         const nickname = $('.Auction .AuctionCharacterName').text();
 
