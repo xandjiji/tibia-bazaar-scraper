@@ -78,8 +78,8 @@ const onEachBatch = async (batchArray) => {
 
     currentAuctionId += MAX_CONCURRENT_REQUESTS;
     await fs.writeFile('scrapHistoryData.json', JSON.stringify({ lastScrapedId: currentAuctionId }));
-
-    console.log(`${timeStamp('system')} ${batchArray.length} new items were saved to readableBazaarHistory.json [${currentAuctionId}/${latestAuctionId}]`);
+    
+    console.log(`${timeStamp('system')} ${batchArray.length} new items appended to readableBazaarHistory.json [${currentAuctionId-1}/${latestAuctionId}]`);
 
     await sleep(SLEEP_INTERVAL);
 }
