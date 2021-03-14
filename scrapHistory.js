@@ -12,23 +12,21 @@ var latestAuctionId;
 var currentAuctionId;
 
 var historyFileBuffer;
+var unfinishedFileBuffer;
 
 const main = async () => {
-
-    console.log(`${timeStamp('system')} loading readableBazaarHistory.json ...`);
-    historyFileBuffer = await fs.readFile('./readableBazaarHistory.json', 'utf-8');
-    historyFileBuffer = JSON.parse(historyFileBuffer);
-
-    latestAuctionId = await retryGetLatestAuctionId();
-    currentAuctionId = await getLastScrapedId() + 1;
-    serverData = await loadServerData();
+    await loadGlobalVariables();
 
     const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
 
     console.log(`${timeStamp('highlight')} Scraping every single page:`);
     console.group();
 
+    /* scraping most recent */
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
+
+    /* scraping old unfinished */
+    await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachUnfinishedAuctionsBatch);
 }
 
 const retryGetLatestAuctionId = async () => {
@@ -46,13 +44,22 @@ const getLatestAuctionId = async () => {
     return Number(href.searchParams.get('auctionid'));
 }
 
-const getLastScrapedId = async () => {
-    console.log(`${timeStamp('system')} loading scrapHistoryData.json ...`);
+const loadGlobalVariables = async () => {
+    console.log(`${timeStamp('system')} loading readableBazaarHistory.json ...`);
+    historyFileBuffer = await fs.readFile('./readableBazaarHistory.json', 'utf-8');
+    historyFileBuffer = JSON.parse(historyFileBuffer);
 
+    console.log(`${timeStamp('system')} loading scrapHistoryData.json ...`);
     var scrapHistoryData = await fs.readFile('./scrapHistoryData.json', 'utf-8');
     scrapHistoryData = JSON.parse(scrapHistoryData);
 
-    return scrapHistoryData.lastScrapedId;
+    const { lastScrapedId, unfinishedAuctions } = scrapHistoryData;
+    currentAuctionId = lastScrapedId + 1;
+    unfinishedFileBuffer = [...unfinishedAuctions];
+
+    serverData = await loadServerData();
+
+    latestAuctionId = await retryGetLatestAuctionId();
 }
 
 const makeRangeArray = (start, end) => {
@@ -75,12 +82,23 @@ const onEachBatch = async (batchArray) => {
 
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
     await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
-    await fs.writeFile('scrapHistoryData.json', JSON.stringify({ lastScrapedId: currentAuctionId }));
+    await fs.writeFile('scrapHistoryData.json', JSON.stringify({
+        lastScrapedId: currentAuctionId,
+        unfinishedAuctions: unfinishedFileBuffer
+    }));
     console.log(`${timeStamp('system')} ${batchArray.length} new items appended to readableBazaarHistory.json [${currentAuctionId}/${latestAuctionId}]`);
 
     currentAuctionId += MAX_CONCURRENT_REQUESTS;
 
     await sleep(SLEEP_INTERVAL);
+}
+
+const onEachUnfinishedAuctionsBatch = async (batchArray) => {
+    batchArray = batchArray.filter(item => item);
+
+    historyFileBuffer = [...batchArray, ...historyFileBuffer];
+    await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
+    console.log(`${timeStamp('highlight')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
 }
 
 const sleep = (ms) => {
@@ -95,11 +113,16 @@ const loadServerData = async () => {
 }
 
 const scrapSinglePage = async (id) => {
-    const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
+    const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
 
     let errorElement = $('.Text');
     errorElement = errorElement[0].children[0].data;
-    if (errorElement === 'Error') return
+    if (errorElement === 'Error') return;
+
+    if (!isFinished()) {
+        unfinishedFileBuffer.push(id);
+        return;
+    }
 
     const nickname = $('.Auction .AuctionCharacterName').text();
 
@@ -189,6 +212,12 @@ const scrapSinglePage = async (id) => {
     };
 
     return newCharObject;
+
+    function isFinished() {
+        const bidElement = $('.MyMaxBidLabel')[0];
+        if (bidElement) return false;
+        return true;
+    }
 }
 
 const getServerId = (serverString) => {
