@@ -26,7 +26,7 @@ var unfinishedFileBuffer;
 const main = async () => {
     await loadGlobalVariables();
 
-    if(currentAuctionId > latestAuctionId) {
+    if (currentAuctionId > latestAuctionId) {
         console.log(`${timeStamp('fail')} [Latest Auction ID] is less than [Current Auction ID]`);
         return;
     }
@@ -54,8 +54,15 @@ const getLatestAuctionId = async () => {
 
     const $ = await fetchAndLoad('https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades');
     const latestAuctionLink = $('.AuctionCharacterName a');
-    const href = new URL(latestAuctionLink[0].attribs.href);
-    return Number(href.searchParams.get('auctionid'));
+
+    const latestIdArray = [];
+    latestAuctionLink.each((index, element) => {
+        const href = new URL(element.attribs.href);
+        latestIdArray.push(Number(href.searchParams.get('auctionid')));
+    });
+    latestIdArray.sort();
+
+    return latestIdArray[latestIdArray.length - 1];
 }
 
 const loadGlobalVariables = async () => {
