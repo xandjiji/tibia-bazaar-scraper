@@ -1,4 +1,13 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
+const {
+    timeStamp,
+    makeRangeArray,
+    fetchAndLoad,
+    promiseAllInBatches,
+    maxRetry,
+    sleep,
+    popNull,
+    dateParsing
+} = require('./utils');
 const { powerfulToReadable } = require('./dataDictionary');
 const { MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
@@ -62,14 +71,6 @@ const loadGlobalVariables = async () => {
     latestAuctionId = await retryGetLatestAuctionId();
 }
 
-const makeRangeArray = (start, end) => {
-    const array = [];
-    for (let i = start; i <= end; i++) {
-        array.push(i);
-    }
-    return array;
-}
-
 const retryWrapper = async (id) => {
     return await maxRetry(async () => {
         return await scrapSinglePage(id);
@@ -99,10 +100,6 @@ const onEachUnfinishedAuctionsBatch = async (batchArray) => {
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
     await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
     console.log(`${timeStamp('highlight')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
-}
-
-const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const loadServerData = async () => {
@@ -272,34 +269,6 @@ const searchSoulwar = (elementArray) => {
         if (/Revenant/.test(outfitText)) return true;
     }
     return false;
-}
-
-const popNull = (array) => {
-    for (let i = array.length - 1; i >= 0; i--) {
-        if (array[i] === undefined || array[i] === '') {
-            array.pop()
-        } else {
-            break;
-        }
-    }
-
-    return array;
-}
-
-const dateParsing = (dateString) => {
-
-    dateString = dateString.split(',');
-    dateString = [...dateString[0].split(' '), ...dateString[1].split(' ')];
-
-    const month = dateString[0];
-    const day = dateString[1];
-    const year = dateString[2];
-    const time = dateString[3].trim();
-    /* const timezone = dateString[4]; */
-
-    const UTCDate = new Date(`${month} ${day}, ${year} ${time}:00`);
-
-    return UTCDate / 1000;
 }
 
 main();

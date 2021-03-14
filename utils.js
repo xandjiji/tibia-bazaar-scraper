@@ -62,4 +62,53 @@ const maxRetry = async (callback, retry) => {
     }
 }
 
-module.exports = { fetchAndLoad, timeStamp, promiseAllInBatches, maxRetry };
+const makeRangeArray = (start, end) => {
+    const array = [];
+    for (let i = start; i <= end; i++) {
+        array.push(i);
+    }
+    return array;
+}
+
+const popNull = (array) => {
+    for (let i = array.length - 1; i >= 0; i--) {
+        if (array[i] === undefined || array[i] === '') {
+            array.pop()
+        } else {
+            break;
+        }
+    }
+
+    return array;
+}
+
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const dateParsing = (dateString) => {
+
+    dateString = dateString.split(',');
+    dateString = [...dateString[0].split(' '), ...dateString[1].split(' ')];
+
+    const month = dateString[0];
+    const day = dateString[1];
+    const year = dateString[2];
+    const time = dateString[3].trim();
+    /* const timezone = dateString[4]; */
+
+    const UTCDate = new Date(`${month} ${day}, ${year} ${time}:00`);
+
+    return UTCDate / 1000;
+}
+
+module.exports = {
+    sleep,
+    dateParsing,
+    makeRangeArray,
+    popNull,
+    fetchAndLoad,
+    timeStamp,
+    promiseAllInBatches,
+    maxRetry
+};
