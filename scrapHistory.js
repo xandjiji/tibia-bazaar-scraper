@@ -79,7 +79,6 @@ const retryWrapper = async (id) => {
 
 const onEachBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
-    batchArray.reverse();
 
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
     await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
@@ -98,8 +97,14 @@ const onEachUnfinishedAuctionsBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
 
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
+    historyFileBuffer.sort(byAuctionEnd);
+
     await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
     console.log(`${timeStamp('highlight')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
+
+    function byAuctionEnd(a, b) {
+        return b.auctionEnd - a.auctionEnd;
+    }
 }
 
 const loadServerData = async () => {
