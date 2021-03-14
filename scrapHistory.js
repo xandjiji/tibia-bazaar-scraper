@@ -33,14 +33,17 @@ const main = async () => {
 
     const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
 
+    /* scraping most recent */
     console.log(`${timeStamp('highlight')} Scraping every single page:`);
     console.group();
-
-    /* scraping most recent */
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
+    console.groupEnd();
 
     /* scraping old unfinished */
+    console.log(`${timeStamp('highlight')} Scraping every single old unfinished auction:`);
+    console.group();
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachUnfinishedAuctionsBatch);
+    console.groupEnd();
 }
 
 const retryGetLatestAuctionId = async () => {
@@ -121,7 +124,7 @@ const onEachUnfinishedAuctionsBatch = async (batchArray) => {
         unfinishedAuctions: filteredUnfinishedAuctions
     }));
 
-    console.log(`${timeStamp('highlight')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
+    console.log(`${timeStamp('system')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
 
     await sleep(SLEEP_INTERVAL);
 }
