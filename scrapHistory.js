@@ -8,7 +8,7 @@ const {
     popNull,
     dateParsing
 } = require('./utils');
-const { powerfulToReadable } = require('./dataDictionary');
+const { powerfulToReadable, objectToMinified } = require('./dataDictionary');
 const { MAX_RETRIES } = require('./config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -33,17 +33,40 @@ const main = async () => {
 
     const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
 
-    /* scraping most recent */
     console.log(`${timeStamp('highlight')} Scraping every single page:`);
     console.group();
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
     console.groupEnd();
 
-    /* scraping old unfinished */
     console.log(`${timeStamp('highlight')} Scraping every single old unfinished auction:`);
     console.group();
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachUnfinishedAuctionsBatch);
     console.groupEnd();
+
+    await setupFinalData();
+}
+
+const setupFinalData = async () => {
+    console.log(`${timeStamp('highlight')} Sorting, filtering and minifying data...`);
+    console.groupEnd();
+    const uniqueCharacterArray = removeDuplicatesFromArrayByKey('id', historyFileBuffer);
+
+    uniqueCharacterArray.sort((a, b) => {
+        return b.auctionEnd - a.auctionEnd;
+    });
+
+    const minifiedFinalData = uniqueCharacterArray.map(objectToMinified);
+
+    await fs.writeFile('MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
+    console.log(`${timeStamp('success')} minified data was saved to MinifiedBazaarHistory.json`);
+}
+
+const removeDuplicatesFromArrayByKey = (key, array) => {
+    const uniqueIdArray = Array.from(new Set(array.map(object => object[key])));
+
+    return uniqueIdArray.map(itemKey => {
+        return array.find(object => object[key] === itemKey)
+    });
 }
 
 const retryGetLatestAuctionId = async () => {
@@ -144,7 +167,7 @@ const scrapSinglePage = async (id) => {
     if (errorElement === 'Error') return;
 
     if (!isFinished()) {
-        if(!unfinishedFileBuffer.includes(id)) unfinishedFileBuffer.push(id);
+        if (!unfinishedFileBuffer.includes(id)) unfinishedFileBuffer.push(id);
         return;
     }
 

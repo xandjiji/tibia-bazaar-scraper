@@ -1,5 +1,8 @@
 node_modules/
 
+test.js
+
+MinifiedBazaarHistory.json
 readableBazaarHistory.json
 scrapHistoryData.json
 
