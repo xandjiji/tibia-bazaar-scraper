@@ -59,7 +59,7 @@ const loadGlobalVariables = async () => {
     historyFileBuffer = JSON.parse(historyFileBuffer);
 
     console.log(`${timeStamp('system')} loading scrapHistoryData.json ...`);
-    var scrapHistoryData = await fs.readFile('./scrapHistoryData.json', 'utf-8');
+    const scrapHistoryData = await fs.readFile('./scrapHistoryData.json', 'utf-8');
     scrapHistoryData = JSON.parse(scrapHistoryData);
 
     const { lastScrapedId, unfinishedAuctions } = scrapHistoryData;
@@ -95,11 +95,21 @@ const onEachBatch = async (batchArray) => {
 
 const onEachUnfinishedAuctionsBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
-
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
     historyFileBuffer.sort(byAuctionEnd);
-
     await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
+
+    const scrapHistoryData = await fs.readFile('./scrapHistoryData.json', 'utf-8');
+    scrapHistoryData = JSON.parse(scrapHistoryData);
+    const { lastScrapedId, unfinishedAuctions } = scrapHistoryData;
+    const recentAddedFinished = batchArray.map(item => item.id);
+
+    const filteredUnfinishedAuctions = unfinishedAuctions.filter(id => !recentAddedFinished.includes(id));
+    await fs.writeFile('scrapHistoryData.json', JSON.stringify({
+        lastScrapedId: lastScrapedId,
+        unfinishedAuctions: filteredUnfinishedAuctions
+    }));
+
     console.log(`${timeStamp('highlight')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
 
     function byAuctionEnd(a, b) {
