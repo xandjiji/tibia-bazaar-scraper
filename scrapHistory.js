@@ -26,6 +26,11 @@ var unfinishedFileBuffer;
 const main = async () => {
     await loadGlobalVariables();
 
+    if(currentAuctionId > latestAuctionId) {
+        console.log(`${timeStamp('fail')} [Latest Auction ID] is less than [Current Auction ID]`);
+        return;
+    }
+
     const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
 
     console.log(`${timeStamp('highlight')} Scraping every single page:`);
