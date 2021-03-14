@@ -108,7 +108,6 @@ const onEachBatch = async (batchArray) => {
 const onEachUnfinishedAuctionsBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
-    historyFileBuffer.sort(byAuctionEnd);
     await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
 
     let scrapHistoryData = await fs.readFile('./scrapHistoryData.json', 'utf-8');
@@ -124,9 +123,7 @@ const onEachUnfinishedAuctionsBatch = async (batchArray) => {
 
     console.log(`${timeStamp('highlight')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
 
-    function byAuctionEnd(a, b) {
-        return b.auctionEnd - a.auctionEnd;
-    }
+    await sleep(SLEEP_INTERVAL);
 }
 
 const loadServerData = async () => {
@@ -144,7 +141,7 @@ const scrapSinglePage = async (id) => {
     if (errorElement === 'Error') return;
 
     if (!isFinished()) {
-        unfinishedFileBuffer.push(id);
+        if(!unfinishedFileBuffer.includes(id)) unfinishedFileBuffer.push(id);
         return;
     }
 
