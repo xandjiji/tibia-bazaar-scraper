@@ -62,11 +62,19 @@ const setupFinalData = async () => {
 }
 
 const removeDuplicatesFromArrayByKey = (key, array) => {
-    const uniqueIdArray = Array.from(new Set(array.map(object => object[key])));
+    const addedSet = new Set([]);
+    const newUniqueArray = [];
+    for (let i = 0; i < array.length; i++) {
 
-    return uniqueIdArray.map(itemKey => {
-        return array.find(object => object[key] === itemKey)
-    });
+        const currentKey = array[i][key];
+
+        if (!addedSet.has(currentKey)) {
+            addedSet.add(currentKey);
+            newUniqueArray.push(array[i]);
+        }
+    }
+
+    return newUniqueArray;
 }
 
 const retryGetLatestAuctionId = async () => {
