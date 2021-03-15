@@ -1,6 +1,6 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
 const { itemList } = require('./itemList');
-const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
+const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -8,12 +8,6 @@ const bazaarUrl = 'https://www.tibia.com/charactertrade/?subtopic=currentcharact
 
 var globalDataSize;
 var globalIndex = 0;
-
-/*
-    &searchstring=Cobra
-    &searchtype=2
-    &currentpage=1
-*/
 
 var itemListObject = {}
 for (const item of itemList) {
@@ -35,7 +29,7 @@ const main = async () => {
     await promiseAllInBatches(retryScrapItemIds, allUrls, MAX_CONCURRENT_REQUESTS);
     console.groupEnd();
 
-    await fs.writeFile('ItemsData.json', JSON.stringify(itemListObject));
+    await fs.writeFile('./Output/ItemsData.json', JSON.stringify(itemListObject));
     console.log(`${timeStamp('success')} All item data saved to 'ItemsData.json'`);
 }
 

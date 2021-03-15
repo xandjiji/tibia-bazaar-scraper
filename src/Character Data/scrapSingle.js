@@ -1,6 +1,6 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { powerfulToReadable } = require('./dataDictionary');
-const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
+const { powerfulToReadable } = require('../dataDictionary');
+const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -10,14 +10,14 @@ var globalIndex = 0;
 
 const main = async () => {
     console.log(`${timeStamp('system')} loading bazaarPages.json ...`);
-    var data = await fs.readFile('./bazaarPages.json', 'utf-8');
+    var data = await fs.readFile('./Output/bazaarPages.json', 'utf-8');
     data = JSON.parse(data);
 
     /* data = data.slice(0, 20); */
 
     console.log(`${timeStamp('system')} loading ServerData.json ...`);
     console.group();
-    var serverListData = await fs.readFile('./ServerData.json', 'utf-8');
+    var serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
     serverData = JSON.parse(serverListData);
 
     globalDataSize = data.length;
@@ -32,7 +32,7 @@ const main = async () => {
 
     allSingleData = allSingleData.filter(element => element != null);
 
-    await fs.writeFile('AllCharacterData.json', JSON.stringify(allSingleData));
+    await fs.writeFile('./Output/AllCharacterData.json', JSON.stringify(allSingleData));
     console.log(`${timeStamp('success')} All single data saved to 'AllCharacterData.json'`);
 }
 

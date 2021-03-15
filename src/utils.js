@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const UserAgent = require('user-agents');
 const cheerio = require('cheerio');
+const { DELAY } = require('./config');
 
 const colors = {
     reset: '\x1b[0m',  // white
@@ -43,6 +44,7 @@ const promiseAllInBatches = async (task, items, batchSize, onEachBatch) => {
         results = [...results, ...currentResults];
         position += batchSize;
         if (onEachBatch) await onEachBatch(currentResults);
+        await sleep(DELAY);
     }
     return results;
 }

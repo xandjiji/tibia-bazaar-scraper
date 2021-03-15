@@ -1,4 +1,4 @@
-const { timeStamp, fetchAndLoad } = require('./utils');
+const { timeStamp, fetchAndLoad } = require('../utils');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -18,7 +18,7 @@ const main = async () => {
         scrapServer(serverElement, index);
     }
 
-    await fs.writeFile('ServerData.json', JSON.stringify(allServersObject));
+    await fs.writeFile('./Output/ServerData.json', JSON.stringify(allServersObject));
     console.log(`${timeStamp('success')} All server data saved to 'ServerData.json'`);
 }
 

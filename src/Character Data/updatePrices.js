@@ -1,5 +1,6 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
+const { objectToMinified } = require('../dataDictionary');
+const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -29,16 +30,35 @@ const main = async () => {
 
     bazaarPages = await promiseAllInBatches(retryWrapper, bazaarPages, MAX_CONCURRENT_REQUESTS);
 
-    let allBazaarCharacters = [];
+    let allBazaarPrices = [];
     for (let i = 0; i < bazaarPages.length; i++) {
-        allBazaarCharacters.push(...bazaarPages[i]);
+        allBazaarPrices.push(...bazaarPages[i]);
     }
 
     console.groupEnd();
     console.groupEnd();
 
-    await fs.writeFile('bazaarPages.json', JSON.stringify(allBazaarCharacters));
-    console.log(`${timeStamp('success')} All character data saved to 'bazaarPages.json'`);
+    console.log(`${timeStamp('system')} loading AllCharacterData.json ...`);
+    var data = await fs.readFile('./Output/AllCharacterData.json', 'utf-8');
+    data = JSON.parse(data);
+    const dictionaryData = makeIdDictionary(data);
+
+    let updatedData = [];
+    for (const updatedItem of allBazaarPrices) {
+        if (!dictionaryData[updatedItem.id]) continue;
+
+        dictionaryData[updatedItem.id].currentBid = updatedItem.currentBid;
+        dictionaryData[updatedItem.id].hasBeenBidded = updatedItem.hasBeenBidded;
+        updatedData.push(dictionaryData[updatedItem.id]);
+    }
+
+    await fs.writeFile('./Output/LatestCharacterData.json', JSON.stringify(updatedData));
+    console.log(`${timeStamp('success')} All character data saved to 'LatestCharacterData.json'`);
+
+    console.log(`${timeStamp('highlight')} Minifying data...`);
+    const minifiedData = updatedData.map(objectToMinified);
+    await fs.writeFile('./Output/MinifiedCharacterData.json', JSON.stringify(minifiedData));
+    console.log(`${timeStamp('success')} All minified data saved to 'MinifiedCharacterData.json'`);
 }
 
 const retryWrapper = async (url) => {
@@ -59,7 +79,6 @@ const scrapBazaarPage = async (url) => {
     auctions.each((index, element) => {
         const $ = cheerio.load(element);
         const charNameLink = $('.AuctionCharacterName a');
-        const charAuctionEnd = $('.AuctionTimer');
         const charBidAmount = $('.ShortAuctionDataValue b');
         const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
@@ -67,8 +86,6 @@ const scrapBazaarPage = async (url) => {
 
         const charObject = {
             id: Number(urlObj.searchParams.get('auctionid')),
-            nickname: charNameLink[0].children[0].data,
-            auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
             currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
             hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
         }
@@ -77,6 +94,16 @@ const scrapBazaarPage = async (url) => {
     });
 
     return charactersData;
+}
+
+const makeIdDictionary = (array) => {
+    const dictionaryObject = {};
+
+    for (const arrayItem of array) {
+        dictionaryObject[arrayItem.id] = arrayItem;
+    }
+
+    return dictionaryObject;
 }
 
 main();

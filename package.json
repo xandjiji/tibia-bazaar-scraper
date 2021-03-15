@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "scrap": "node scrapServers.js && node scrapMainPage.js && node scrapSingle.js && node scrapItems.js",
-        "update": "node updatePrices.js",
-        "full": "node scrapServers.js && node scrapMainPage.js && node scrapSingle.js && node scrapItems.js && node updatePrices.js"
+        "scrap": "node src/Server\\ Data/scrapServers.js && node src/Character\\ Data/scrapMainPage.js && node src/Character\\ Data/scrapSingle.js && node src/Item\\ Data/scrapItems.js",
+        "update": "node src/Character\\ Data/updatePrices.js",
+        "full": "npm run scrap && npm run update"
     },
     "author": "xandjiji",
     "license": "ISC",

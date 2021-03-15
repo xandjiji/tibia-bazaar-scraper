@@ -7,9 +7,9 @@ const {
     sleep,
     popNull,
     dateParsing
-} = require('./utils');
-const { powerfulToReadable, objectToMinified } = require('./dataDictionary');
-const { MAX_RETRIES } = require('./config');
+} = require('../utils');
+const { powerfulToReadable, objectToMinified } = require('../../dataDictionary');
+const { MAX_RETRIES } = require('../../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -57,7 +57,7 @@ const setupFinalData = async () => {
 
     const minifiedFinalData = uniqueCharacterArray.map(objectToMinified);
 
-    await fs.writeFile('MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
+    await fs.writeFile('./Output/MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
     console.log(`${timeStamp('success')} minified data was saved to MinifiedBazaarHistory.json`);
 }
 
@@ -101,11 +101,11 @@ const getLatestAuctionId = async () => {
 
 const loadGlobalVariables = async () => {
     console.log(`${timeStamp('system')} loading readableBazaarHistory.json ...`);
-    historyFileBuffer = await fs.readFile('./readableBazaarHistory.json', 'utf-8');
+    historyFileBuffer = await fs.readFile('./Output/readableBazaarHistory.json', 'utf-8');
     historyFileBuffer = JSON.parse(historyFileBuffer);
 
     console.log(`${timeStamp('system')} loading scrapHistoryData.json ...`);
-    let scrapHistoryData = await fs.readFile('./scrapHistoryData.json', 'utf-8');
+    let scrapHistoryData = await fs.readFile('./Output/scrapHistoryData.json', 'utf-8');
     scrapHistoryData = JSON.parse(scrapHistoryData);
 
     const { lastScrapedId, unfinishedAuctions } = scrapHistoryData;
@@ -127,8 +127,8 @@ const onEachBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
 
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
-    await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
-    await fs.writeFile('scrapHistoryData.json', JSON.stringify({
+    await fs.writeFile('./Output/readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
+    await fs.writeFile('./Output/scrapHistoryData.json', JSON.stringify({
         lastScrapedId: currentAuctionId,
         unfinishedAuctions: unfinishedFileBuffer
     }));
@@ -142,9 +142,9 @@ const onEachBatch = async (batchArray) => {
 const onEachUnfinishedAuctionsBatch = async (batchArray) => {
     batchArray = batchArray.filter(item => item);
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
-    await fs.writeFile('readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
+    await fs.writeFile('./Output/readableBazaarHistory.json', JSON.stringify(historyFileBuffer));
 
-    let scrapHistoryData = await fs.readFile('./scrapHistoryData.json', 'utf-8');
+    let scrapHistoryData = await fs.readFile('./Output/scrapHistoryData.json', 'utf-8');
     scrapHistoryData = JSON.parse(scrapHistoryData);
     const { lastScrapedId, unfinishedAuctions } = scrapHistoryData;
     const recentAddedFinished = batchArray.map(item => item.id);
@@ -163,7 +163,7 @@ const onEachUnfinishedAuctionsBatch = async (batchArray) => {
 const loadServerData = async () => {
     console.log(`${timeStamp('system')} loading ServerData.json ...`);
     console.group();
-    var serverListData = await fs.readFile('./ServerData.json', 'utf-8');
+    var serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
     return JSON.parse(serverListData);
 }
 
