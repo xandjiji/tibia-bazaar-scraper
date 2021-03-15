@@ -44,7 +44,7 @@ const promiseAllInBatches = async (task, items, batchSize, onEachBatch) => {
         results = [...results, ...currentResults];
         position += batchSize;
         if (onEachBatch) await onEachBatch(currentResults);
-        await sleep(DELAY);
+        if(DELAY > 0) await sleep(DELAY);
     }
     return results;
 }
