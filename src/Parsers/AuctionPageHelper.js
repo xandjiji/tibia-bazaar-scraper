@@ -42,7 +42,7 @@ class AuctionPageHelper {
     auctionEnd() {
         const timestampElement = this.$('.AuctionTimer')[0];
 
-        if(timestampElement) {
+        if (timestampElement) {
             const timestamp = timestampElement.attribs['data-timestamp'];
             return Number(timestamp);
         }
@@ -56,6 +56,17 @@ class AuctionPageHelper {
         const currentBidText = this.$('.ShortAuctionDataValue b').text();
         const currentBid = Number(currentBidText.replace(/,/g, ''));
         return currentBid;
+    }
+
+    hasBeenBidded() {
+        const hasBeenBiddedElement = this.$('.ShortAuctionDataLabel');
+        const hasBeenBiddedText = hasBeenBiddedElement[2].children[0].data;
+
+        if(hasBeenBiddedText === 'Winning Bid:' || hasBeenBiddedText === 'Current Bid:') {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
