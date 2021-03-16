@@ -62,11 +62,17 @@ class AuctionPageHelper {
         const hasBeenBiddedElement = this.$('.ShortAuctionDataLabel');
         const hasBeenBiddedText = hasBeenBiddedElement[2].children[0].data;
 
-        if(hasBeenBiddedText === 'Winning Bid:' || hasBeenBiddedText === 'Current Bid:') {
+        if (hasBeenBiddedText === 'Winning Bid:' || hasBeenBiddedText === 'Current Bid:') {
             return true;
         } else {
             return false;
         }
+    }
+
+    outfitId() {
+        const outfitElement = this.$('.AuctionOutfitImage');
+        const outfitId = outfitElement[0].attribs.src.split('/').pop();
+        return outfitId.slice(0, -4);
     }
 }
 
