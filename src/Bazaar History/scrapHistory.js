@@ -9,12 +9,9 @@ const {
     dateParsing
 } = require('../utils');
 const { powerfulToReadable, objectToMinified } = require('../dataDictionary');
-const { MAX_RETRIES } = require('../config');
+const { MAX_CONCURRENT_REQUESTS, DELAY, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
-
-const MAX_CONCURRENT_REQUESTS = 1;
-const SLEEP_INTERVAL = 0;
 
 var serverData;
 var latestAuctionId;
@@ -136,7 +133,7 @@ const onEachBatch = async (batchArray) => {
 
     currentAuctionId += MAX_CONCURRENT_REQUESTS;
 
-    await sleep(SLEEP_INTERVAL);
+    if (DELAY > 0) await sleep(DELAY);
 }
 
 const onEachUnfinishedAuctionsBatch = async (batchArray) => {
@@ -157,7 +154,7 @@ const onEachUnfinishedAuctionsBatch = async (batchArray) => {
 
     console.log(`${timeStamp('system')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
 
-    await sleep(SLEEP_INTERVAL);
+    if (DELAY > 0) await sleep(DELAY);
 }
 
 const loadServerData = async () => {
