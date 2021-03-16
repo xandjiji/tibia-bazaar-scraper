@@ -32,7 +32,7 @@ class AuctionPageHelper {
         const buttonElement = this.$('.BigButtonText')[1];
         const splittedString = buttonElement.attribs.onclick.split('auctionid=')[1];
         const id = splittedString.slice(0, splittedString.indexOf('&'));
-        return id;
+        return Number(id);
     }
 
     nickname() {
@@ -44,7 +44,7 @@ class AuctionPageHelper {
 
         if(timestampElement) {
             const timestamp = timestampElement.attribs['data-timestamp'];
-            return timestamp;
+            return Number(timestamp);
         }
 
         const auctionEndElement = this.$('.ShortAuctionDataValue');
@@ -52,7 +52,11 @@ class AuctionPageHelper {
         return auctionEnd;
     }
 
-
+    currentBid() {
+        const currentBidText = this.$('.ShortAuctionDataValue b').text();
+        const currentBid = Number(currentBidText.replace(/,/g, ''));
+        return currentBid;
+    }
 }
 
 module.exports = AuctionPageHelper;
