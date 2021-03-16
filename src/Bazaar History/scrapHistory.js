@@ -8,8 +8,8 @@ const {
     popNull,
     dateParsing
 } = require('../utils');
-const { powerfulToReadable, objectToMinified } = require('../../dataDictionary');
-const { MAX_RETRIES } = require('../../config');
+const { powerfulToReadable, objectToMinified } = require('../dataDictionary');
+const { MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
