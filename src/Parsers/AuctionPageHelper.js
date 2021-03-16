@@ -1,3 +1,5 @@
+const { dateParsing } = require('../utils');
+
 class AuctionPageHelper {
     constructor($) {
         this.$ = $;
@@ -35,6 +37,19 @@ class AuctionPageHelper {
 
     nickname() {
         return this.$('.Auction .AuctionCharacterName').text();
+    }
+
+    auctionEnd() {
+        const timestampElement = this.$('.AuctionTimer')[0];
+
+        if(timestampElement) {
+            const timestamp = timestampElement.attribs['data-timestamp'];
+            return timestamp;
+        }
+
+        const auctionEndElement = this.$('.ShortAuctionDataValue');
+        const auctionEnd = dateParsing(auctionEndElement[1].children[0].data);
+        return auctionEnd;
     }
 
 
