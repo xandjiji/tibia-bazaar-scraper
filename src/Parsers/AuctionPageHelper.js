@@ -10,6 +10,13 @@ class AuctionPageHelper {
 
     setHtml($) {
         this.$ = $;
+        this.setHeaderData();
+    }
+
+    setHeaderData() {
+        const headerElement = this.$('.AuctionHeader')[0];
+        const headerData = headerElement.children[2].data.split('|');
+        this.headerDataArray = headerData.map(string => string.trim());
     }
 
     fetchError() {
@@ -96,9 +103,7 @@ class AuctionPageHelper {
     }
 
     vocationId() {
-        const headerElement = this.$('.AuctionHeader')[0];
-        const headerDataArray = headerElement.children[2].data.split('|');
-        const vocationString = headerDataArray[1].trim();
+        const vocationString = this.headerDataArray[1];
 
         /* UTILS DE PARSERS? */
         if (/knight/gi.test(vocationString)) return 1;
@@ -107,6 +112,10 @@ class AuctionPageHelper {
         if (/druid/gi.test(vocationString)) return 4;
 
         return 0;
+    }
+
+    level() {
+        return Number(this.headerDataArray[0].replace(/level: /gi, ''));
     }
 }
 
