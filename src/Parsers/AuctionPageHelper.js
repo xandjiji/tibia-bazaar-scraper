@@ -1,3 +1,4 @@
+const cheerio = require('cheerio');
 const { timeStamp, dateParsing } = require('../utils');
 const fs = require('fs').promises;
 
@@ -115,6 +116,33 @@ class AuctionPageHelper {
         const levelRawText = headerData[0];
 
         return Number(levelRawText.replace(/level: /gi, ''));
+    }
+
+    skills() {
+        const tableContent = this.$('.TableContent tbody')[2];
+        tableContent.children.pop();
+        const skillsData = tableContent.children.map(scrapSkill);
+
+        return {
+            magic: skillsData[5],
+            club: skillsData[1],
+            fist: skillsData[4],
+            sword: skillsData[7],
+            fishing: skillsData[3],
+            axe: skillsData[0],
+            distance: skillsData[2],
+            shielding: skillsData[6]
+        }
+
+        /* UTIL DE PARSERS? */
+        function scrapSkill(element) {
+            let level = Number(cheerio('.LevelColumn', element).text());
+            let percentage = cheerio('.PercentageColumn', element).text();
+            percentage = parseFloat(percentage.slice(0, -2));
+            percentage = Math.round(percentage);
+        
+            return Number(`${level}.${percentage}`);
+        }
     }
 }
 
