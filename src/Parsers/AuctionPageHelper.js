@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const { timeStamp, dateParsing, popNull } = require('../utils');
+const { powerfulToReadable } = require('../dataDictionary');
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -183,6 +184,24 @@ class AuctionPageHelper {
             return true;
         } else {
             return false;
+        }
+    }
+
+    imbuements() {
+        const imbuementsElement = this.$('.TableContent tbody')[19];
+        imbuementsElement.children.shift();
+        imbuementsElement.children.pop();
+
+        const imbuementsData = imbuementsElement.children.map(scrapImbuements);
+        if (!imbuementsData[imbuementsData.length - 1]) {
+            imbuementsData.pop();
+        }
+
+        return imbuementsData.sort();
+
+        function scrapImbuements(element) {
+            const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
+            return powerfulToReadable[imbuementText];
         }
     }
 }
