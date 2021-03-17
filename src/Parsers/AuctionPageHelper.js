@@ -1,7 +1,14 @@
 const { dateParsing } = require('../utils');
+const fs = require('fs').promises;
 
 class AuctionPageHelper {
-    constructor($) {
+    async init() {
+        console.log(`${timeStamp('system')} loading ServerData.json ...`);
+        const serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
+        this.serverData = JSON.parse(serverListData);
+    }
+
+    setHtml($) {
         this.$ = $;
     }
 
@@ -74,6 +81,19 @@ class AuctionPageHelper {
         const outfitId = outfitElement[0].attribs.src.split('/').pop();
         return outfitId.slice(0, -4);
     }
+
+    serverId() {
+        const serverElement = this.$('.AuctionHeader a');
+        const serverString = serverElement[0].children[0].data;
+        const serverId = this.serverData[serverString];
+
+        if (serverId) {
+            return serverId;
+        } else {
+            return -1;
+        }
+    }
+
 }
 
 module.exports = AuctionPageHelper;
