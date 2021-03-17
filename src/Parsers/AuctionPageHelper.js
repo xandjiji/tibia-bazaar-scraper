@@ -1,4 +1,4 @@
-const { dateParsing } = require('../utils');
+const { timeStamp, dateParsing } = require('../utils');
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -87,13 +87,27 @@ class AuctionPageHelper {
         const serverString = serverElement[0].children[0].data;
         const serverId = this.serverData[serverString];
 
+        /* UTILS DE PARSERS? */
         if (serverId) {
-            return serverId;
+            return serverId.serverId;
         } else {
             return -1;
         }
     }
 
+    vocationId() {
+        const headerElement = this.$('.AuctionHeader')[0];
+        const headerDataArray = headerElement.children[2].data.split('|');
+        const vocationString = headerDataArray[1].trim();
+
+        /* UTILS DE PARSERS? */
+        if (/knight/gi.test(vocationString)) return 1;
+        if (/paladin/gi.test(vocationString)) return 2;
+        if (/sorcerer/gi.test(vocationString)) return 3;
+        if (/druid/gi.test(vocationString)) return 4;
+
+        return 0;
+    }
 }
 
 module.exports = AuctionPageHelper;
