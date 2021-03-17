@@ -1,5 +1,5 @@
 const cheerio = require('cheerio');
-const { timeStamp, dateParsing } = require('../utils');
+const { timeStamp, dateParsing, popNull } = require('../utils');
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -140,8 +140,25 @@ class AuctionPageHelper {
             let percentage = cheerio('.PercentageColumn', element).text();
             percentage = parseFloat(percentage.slice(0, -2));
             percentage = Math.round(percentage);
-        
+
             return Number(`${level}.${percentage}`);
+        }
+    }
+
+    items() {
+        const featuredItems = this.$('.AuctionItemsViewBox');
+        const featuredItemsArray = featuredItems[0].children.map(scrapItems);
+
+        return popNull(featuredItemsArray);
+
+        /* UTIL DE PARSERS? */
+        function scrapItems(element) {
+            const itemTitle = element.attribs.title.split('"');
+            if (!itemTitle) return;
+            if (itemTitle[0] === '(no item for display selected)') return;
+
+            const itemSrc = element.children[0].attribs.src.split('/').pop();
+            return Number(itemSrc.slice(0, -4));
         }
     }
 }
