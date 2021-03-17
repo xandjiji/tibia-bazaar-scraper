@@ -174,6 +174,17 @@ class AuctionPageHelper {
             return cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
         }
     }
+
+    transfer() {
+        const transferElement = this.$('.TableContent tbody')[4];
+        const transferText = transferElement.children[0].children[0].children[1].children[0].data;
+
+        if (transferText === 'can be purchased and used immediately') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 module.exports = AuctionPageHelper;
