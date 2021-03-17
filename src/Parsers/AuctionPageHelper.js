@@ -10,13 +10,6 @@ class AuctionPageHelper {
 
     setHtml($) {
         this.$ = $;
-        this.setHeaderData();
-    }
-
-    setHeaderData() {
-        const headerElement = this.$('.AuctionHeader')[0];
-        const headerData = headerElement.children[2].data.split('|');
-        this.headerDataArray = headerData.map(string => string.trim());
     }
 
     fetchError() {
@@ -103,7 +96,9 @@ class AuctionPageHelper {
     }
 
     vocationId() {
-        const vocationString = this.headerDataArray[1];
+        const headerElement = this.$('.AuctionHeader')[0];
+        const headerData = headerElement.children[2].data.split('|');
+        const vocationString = headerData[1];
 
         /* UTILS DE PARSERS? */
         if (/knight/gi.test(vocationString)) return 1;
@@ -115,7 +110,11 @@ class AuctionPageHelper {
     }
 
     level() {
-        return Number(this.headerDataArray[0].replace(/level: /gi, ''));
+        const headerElement = this.$('.AuctionHeader')[0];
+        const headerData = headerElement.children[2].data.split('|');
+        const levelRawText = headerData[0];
+
+        return Number(levelRawText.replace(/level: /gi, ''));
     }
 }
 
