@@ -119,9 +119,9 @@ class AuctionPageHelper {
     }
 
     skills() {
-        const tableContent = this.$('.TableContent tbody')[2];
-        tableContent.children.pop();
-        const skillsData = tableContent.children.map(scrapSkill);
+        const skillsElement = this.$('.TableContent tbody')[2];
+        skillsElement.children.pop();
+        const skillsData = skillsElement.children.map(scrapSkill);
 
         return {
             magic: skillsData[5],
@@ -146,8 +146,8 @@ class AuctionPageHelper {
     }
 
     items() {
-        const featuredItems = this.$('.AuctionItemsViewBox');
-        const featuredItemsArray = featuredItems[0].children.map(scrapItems);
+        const featuredItemsElement = this.$('.AuctionItemsViewBox')[0];
+        const featuredItemsArray = featuredItemsElement.children.map(scrapItems);
 
         return popNull(featuredItemsArray);
 
@@ -159,6 +159,19 @@ class AuctionPageHelper {
 
             const itemSrc = element.children[0].attribs.src.split('/').pop();
             return Number(itemSrc.slice(0, -4));
+        }
+    }
+
+    charms() {
+        const charmsElement = this.$('.TableContent tbody')[20];
+        charmsElement.children.shift();
+        charmsElement.children.pop();
+
+        const charmsData = charmsElement.children.map(scrapCharms);
+        return popNull(charmsData);
+
+        function scrapCharms(element) {
+            return cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
         }
     }
 }
