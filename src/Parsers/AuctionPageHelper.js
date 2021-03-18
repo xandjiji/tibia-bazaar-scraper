@@ -204,6 +204,24 @@ class AuctionPageHelper {
             return powerfulToReadable[imbuementText];
         }
     }
+
+    hasSoulwar() {
+        const outfitsElement = this.$('.TableContent tbody')[15];
+
+        if (this.level < 400) {
+            return false;
+        } else {
+            return searchSoulwar(outfitsElement.children[0].children[0].children[0].children[1].children);
+        }
+
+        function searchSoulwar(elementArray) {
+            for (let i = elementArray.length - 1; i >= 0; i--) {
+                const outfitText = elementArray[i].attribs.title;
+                if (/Revenant/.test(outfitText)) return true;
+            }
+            return false;
+        }
+    }
 }
 
 module.exports = AuctionPageHelper;
