@@ -171,6 +171,7 @@ class AuctionPageHelper {
         const charmsData = charmsElement.children.map(scrapCharms);
         return popNull(charmsData);
 
+        /* UTIL DE PARSERS? */
         function scrapCharms(element) {
             return cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
         }
@@ -199,6 +200,7 @@ class AuctionPageHelper {
 
         return imbuementsData.sort();
 
+        /* UTIL DE PARSERS? */
         function scrapImbuements(element) {
             const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
             return powerfulToReadable[imbuementText];
@@ -208,12 +210,13 @@ class AuctionPageHelper {
     hasSoulwar() {
         const outfitsElement = this.$('.TableContent tbody')[15];
 
-        if (this.level < 400) {
+        if (this.level() < 400) {
             return false;
         } else {
             return searchSoulwar(outfitsElement.children[0].children[0].children[0].children[1].children);
         }
 
+        /* UTIL DE PARSERS? */
         function searchSoulwar(elementArray) {
             for (let i = elementArray.length - 1; i >= 0; i--) {
                 const outfitText = elementArray[i].attribs.title;
