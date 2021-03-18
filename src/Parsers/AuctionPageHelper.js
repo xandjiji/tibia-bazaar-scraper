@@ -38,7 +38,7 @@ class AuctionPageHelper {
     }
 
     id() {
-        const buttonElement = this.$('.BigButtonText')[1];
+        const buttonElement = this.$('a.BigButtonText')[0];
         const splittedString = buttonElement.attribs.onclick.split('auctionid=')[1];
         const id = splittedString.slice(0, splittedString.indexOf('&'));
         return Number(id);
@@ -223,6 +223,26 @@ class AuctionPageHelper {
                 if (/Revenant/.test(outfitText)) return true;
             }
             return false;
+        }
+    }
+
+    charObject() {
+        return {
+            id: this.id(),
+            nickname: this.nickname(),
+            auctionEnd: this.auctionEnd(),
+            currentBid: this.currentBid(),
+            hasBeenBidded: this.hasBeenBidded(),
+            outfitId: this.outfitId(),
+            serverId: this.serverId(),
+            vocationId: this.vocationId(),
+            level: this.level(),
+            skills: this.skills(),
+            items: this.items(),
+            charms: this.charms(),
+            transfer: this.transfer(),
+            imbuements: this.imbuements(),
+            hasSoulwar: this.hasSoulwar()
         }
     }
 }
