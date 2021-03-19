@@ -89,7 +89,6 @@ class AuctionPageHelper {
         const serverString = serverElement[0].children[0].data;
         const serverId = this.serverData[serverString];
 
-        /* UTILS DE PARSERS? */
         if (serverId) {
             return serverId.serverId;
         } else {
@@ -102,7 +101,6 @@ class AuctionPageHelper {
         const headerData = headerElement.children[2].data.split('|');
         const vocationString = headerData[1];
 
-        /* UTILS DE PARSERS? */
         if (/knight/gi.test(vocationString)) return 1;
         if (/paladin/gi.test(vocationString)) return 2;
         if (/sorcerer/gi.test(vocationString)) return 3;
@@ -135,7 +133,6 @@ class AuctionPageHelper {
             shielding: skillsData[6]
         }
 
-        /* UTIL DE PARSERS? */
         function scrapSkill(element) {
             let level = Number(cheerio('.LevelColumn', element).text());
             let percentage = cheerio('.PercentageColumn', element).text();
@@ -152,7 +149,6 @@ class AuctionPageHelper {
 
         return popNull(featuredItemsArray);
 
-        /* UTIL DE PARSERS? */
         function scrapItems(element) {
             const itemTitle = element.attribs.title.split('"');
             if (!itemTitle) return;
@@ -171,7 +167,6 @@ class AuctionPageHelper {
         const charmsData = charmsElement.children.map(scrapCharms);
         return popNull(charmsData);
 
-        /* UTIL DE PARSERS? */
         function scrapCharms(element) {
             return cheerio('tr:not(.IndicateMoreEntries) td:last-child', element).text();
         }
@@ -200,7 +195,6 @@ class AuctionPageHelper {
 
         return imbuementsData.sort();
 
-        /* UTIL DE PARSERS? */
         function scrapImbuements(element) {
             const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
             return powerfulToReadable[imbuementText];
@@ -216,7 +210,6 @@ class AuctionPageHelper {
             return searchSoulwar(outfitsElement.children[0].children[0].children[0].children[1].children);
         }
 
-        /* UTIL DE PARSERS? */
         function searchSoulwar(elementArray) {
             for (let i = elementArray.length - 1; i >= 0; i--) {
                 const outfitText = elementArray[i].attribs.title;
