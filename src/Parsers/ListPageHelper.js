@@ -44,13 +44,13 @@ class ListPageHelper {
         return auctionEnd;
     }
 
-    /* currentBid() {
-        const currentBidText = this.$('.ShortAuctionDataValue b').text();
-        const currentBid = Number(currentBidText.replace(/,/g, ''));
+    currentBid() {
+        const currentBidText = this.$('.ShortAuctionDataValue b')[0];
+        const currentBid = Number(currentBidText.children[0].data.replace(/,/g, ''));
         return currentBid;
     }
 
-    hasBeenBidded() {
+    /* hasBeenBidded() {
         const hasBeenBiddedElement = this.$('.ShortAuctionDataLabel');
         const hasBeenBiddedText = hasBeenBiddedElement[2].children[0].data;
 
