@@ -155,7 +155,7 @@ const onEachUnfinishedAuctionsBatch = async (batchArray) => {
     const recentAddedFinished = batchArray.map(item => item.id);
 
     const filteredUnfinishedAuctions = unfinishedAuctions.filter(id => !recentAddedFinished.includes(id));
-    await fs.writeFile('scrapHistoryData.json', JSON.stringify({
+    await fs.writeFile('./Output/scrapHistoryData.json', JSON.stringify({
         lastScrapedId: lastScrapedId,
         unfinishedAuctions: filteredUnfinishedAuctions
     }));
