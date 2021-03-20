@@ -50,16 +50,16 @@ class ListPageHelper {
         return currentBid;
     }
 
-    /* hasBeenBidded() {
-        const hasBeenBiddedElement = this.$('.ShortAuctionDataLabel');
-        const hasBeenBiddedText = hasBeenBiddedElement[2].children[0].data;
+    hasBeenBidded() {
+        const hasBeenBiddedElement = this.$('.ShortAuctionDataBidRow .ShortAuctionDataLabel')[0];
+        const hasBeenBiddedText = hasBeenBiddedElement.children[0].data;
 
         if (hasBeenBiddedText === 'Winning Bid:' || hasBeenBiddedText === 'Current Bid:') {
             return true;
         } else {
             return false;
         }
-    } */
+    }
 }
 
 module.exports = ListPageHelper;
