@@ -31,7 +31,7 @@ class ListPageHelper {
         return nickname;
     }
 
-    /* auctionEnd() {
+    auctionEnd() {
         const timestampElement = this.$('.AuctionTimer')[0];
 
         if (timestampElement) {
@@ -44,7 +44,7 @@ class ListPageHelper {
         return auctionEnd;
     }
 
-    currentBid() {
+    /* currentBid() {
         const currentBidText = this.$('.ShortAuctionDataValue b').text();
         const currentBid = Number(currentBidText.replace(/,/g, ''));
         return currentBid;
