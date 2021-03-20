@@ -2,17 +2,4 @@ node_modules/
 
 test.js
 
-MinifiedBazaarHistory.json
-readableBazaarHistory.json
-scrapHistoryData.json
-
-MinifiedCharacterData.json
-LatestCharacterData.json
-AllCharacterData.json
-allSingleData.json
-ServerData.json
-serverNames.json
-bazaarPages.json
-ItemsData.json
-
 backlog.txt
