@@ -25,11 +25,13 @@ class ListPageHelper {
         return Number(urlObj.searchParams.get('auctionid'));
     }
 
-    /* nickname() {
-        return this.$('.Auction .AuctionCharacterName').text();
+    nickname() {
+        const charNameLink = this.$('.AuctionCharacterName a')[0];
+        const nickname = charNameLink.children[0].data;
+        return nickname;
     }
 
-    auctionEnd() {
+    /* auctionEnd() {
         const timestampElement = this.$('.AuctionTimer')[0];
 
         if (timestampElement) {
