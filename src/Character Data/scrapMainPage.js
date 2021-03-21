@@ -57,21 +57,18 @@ const scrapBazaarPage = async (url) => {
 
     const auctions = $('.Auction');
 
-    let charactersData = [];
-
+    const charactersData = [];
     auctions.each((index, element) => {
 
         helper.setHtml(cheerio.load(element));
 
-        const charObject = {
+        charactersData.push({
             id: helper.id(),
             nickname: helper.nickname(),
             auctionEnd: helper.auctionEnd(),
             currentBid: helper.currentBid(),
             hasBeenBidded: helper.hasBeenBidded()
-        }
-
-        charactersData.push(charObject);
+        });
     });
 
     return charactersData;

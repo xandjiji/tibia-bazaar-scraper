@@ -1,3 +1,4 @@
+const ListPageHelper = require('../Parsers/ListPageHelper');
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
 const { objectToMinified } = require('../dataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
@@ -8,6 +9,8 @@ const bazaarUrl = 'https://www.tibia.com/charactertrade/?subtopic=currentcharact
 
 var globalDataSize;
 var globalIndex = 0;
+
+const helper = new ListPageHelper();
 
 const main = async () => {
     console.log(`${timeStamp('system')} Loading first page...`);
@@ -74,23 +77,16 @@ const scrapBazaarPage = async (url) => {
 
     const auctions = $('.Auction');
 
-    let charactersData = [];
-
+    const charactersData = [];
     auctions.each((index, element) => {
-        const $ = cheerio.load(element);
-        const charNameLink = $('.AuctionCharacterName a');
-        const charBidAmount = $('.ShortAuctionDataValue b');
-        const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
-        const urlObj = new URL(charNameLink[0].attribs.href);
+        helper.setHtml(cheerio.load(element));
 
-        const charObject = {
-            id: Number(urlObj.searchParams.get('auctionid')),
-            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
-            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
-        }
-
-        charactersData.push(charObject);
+        charactersData.push({
+            id: helper.id(),
+            currentBid: helper.currentBid(),
+            hasBeenBidded: helper.hasBeenBidded()
+        });
     });
 
     return charactersData;
