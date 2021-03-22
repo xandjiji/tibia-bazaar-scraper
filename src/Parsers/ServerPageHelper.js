@@ -10,11 +10,14 @@ class ServerPageHelper {
     }
 
     serverArray() {
-        const tableElement = this.$('.TableContent tbody')[2];
-        tableElement.children.shift();
-        tableElement.children.pop();
+        const tableElement = this.$('.Table3 .InnerTableContainer > table > tbody > tr:nth-child(3) .TableContent tr:not(.LabelH)');
+        return tableElement;
+    }
 
-        return tableElement.children;
+    serverName() {
+        const linkElement = this.$('a')[0];
+        const serverName = linkElement.children[0].data;
+        return serverName;
     }
 
 
