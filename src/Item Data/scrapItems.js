@@ -1,3 +1,4 @@
+const ListPageHelper = require('../Parsers/ListPageHelper');
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
 const { itemList } = require('./itemList');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
@@ -13,6 +14,8 @@ var itemListObject = {}
 for (const item of itemList) {
     itemListObject[item] = [];
 }
+
+const helper = new ListPageHelper();
 
 const main = async () => {
     console.log(`${timeStamp('highlight')} Creating a list with all item urls...`);
@@ -44,12 +47,10 @@ const scrapItemUrls = async (itemName) => {
 
     const encodedURI = encodeURI(`${bazaarUrl}&searchstring=${itemName}&searchtype=2&currentpage=`)
     const $ = await fetchAndLoad(`${encodedURI}`);
+    helper.setHtml($);
 
-    const lastPageElement = $('.PageNavigation .PageLink:last-child a');
-    if (!lastPageElement[0]) return;
-
-    const href = new URL(lastPageElement[0].attribs.href);
-    const lastPageIndex = Number(href.searchParams.get('currentpage'));
+    const lastPageIndex = helper.lastPageIndex();
+    if (!lastPageIndex) return;
 
     const itemPagesUrl = [];
     for (let i = 1; i <= lastPageIndex; i++) {
@@ -76,11 +77,9 @@ const scrapItemIds = async (itemObj) => {
     const auctions = $('.Auction');
 
     auctions.each((index, element) => {
-        const $ = cheerio.load(element);
-        const charNameLink = $('.AuctionCharacterName a');
-        const urlObj = new URL(charNameLink[0].attribs.href);
 
-        itemListObject[itemObj.itemName].push(Number(urlObj.searchParams.get('auctionid')));
+        helper.setHtml(cheerio.load(element));
+        itemListObject[itemObj.itemName].push(helper.id());
     });
 }
 
