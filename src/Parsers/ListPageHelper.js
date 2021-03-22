@@ -60,6 +60,15 @@ class ListPageHelper {
             return false;
         }
     }
+
+    lastPageIndex() {
+        const lastPageElement = this.$('.PageNavigation .PageLink:last-child a')[0];
+        if(!lastPageElement) return null;
+
+        const href = new URL(lastPageElement.attribs.href);
+        const lastPageIndex = Number(href.searchParams.get('currentpage'));
+        return lastPageIndex;
+    }
 }
 
 module.exports = ListPageHelper;
