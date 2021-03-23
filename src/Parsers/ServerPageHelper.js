@@ -121,6 +121,16 @@ class ServerPageHelper {
         const serverName = this.serverName();
         return (serverName === 'Zuna' || serverName === 'Zunera');
     }
+
+    serverObject() {
+        return {
+            serverName: this.serverName(),
+            serverLocation: this.serverLocationObject(),
+            pvpType: this.pvpTypeObject(),
+            battleye: this.battleye(),
+            experimental: this.experimental()
+        }
+    }
 }
 
 module.exports = ServerPageHelper;
