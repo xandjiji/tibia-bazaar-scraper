@@ -55,6 +55,12 @@ class ServerPageHelper {
                 };
         }
     }
+
+    pvpType() {
+        const pvpElement = this.$('td')[3];
+        const pvpType = pvpElement.children[0].data;
+        return pvpType;
+    }
 }
 
 module.exports = ServerPageHelper;
