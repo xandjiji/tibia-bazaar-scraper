@@ -1,10 +1,5 @@
 node_modules/
 
-MinifiedCharacterData.json
-LatestCharacterData.json
-AllCharacterData.json
-allSingleData.json
-ServerData.json
-serverNames.json
-bazaarPages.json
-ItemsData.json
+test.js
+
+backlog.txt

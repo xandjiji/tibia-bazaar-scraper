@@ -1,5 +1,6 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
+const ListPageHelper = require('../Parsers/ListPageHelper');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
+const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -7,6 +8,8 @@ const bazaarUrl = 'https://www.tibia.com/charactertrade/?subtopic=currentcharact
 
 var globalDataSize;
 var globalIndex = 0;
+
+const helper = new ListPageHelper();
 
 const main = async () => {
     console.log(`${timeStamp('system')} Loading first page...`);
@@ -37,7 +40,7 @@ const main = async () => {
     console.groupEnd();
     console.groupEnd();
 
-    await fs.writeFile('bazaarPages.json', JSON.stringify(allBazaarCharacters));
+    await fs.writeFile('./Output/bazaarPages.json', JSON.stringify(allBazaarCharacters));
     console.log(`${timeStamp('success')} All character data saved to 'bazaarPages.json'`);
 }
 
@@ -54,26 +57,18 @@ const scrapBazaarPage = async (url) => {
 
     const auctions = $('.Auction');
 
-    let charactersData = [];
-
+    const charactersData = [];
     auctions.each((index, element) => {
-        const $ = cheerio.load(element);
-        const charNameLink = $('.AuctionCharacterName a');
-        const charAuctionEnd = $('.AuctionTimer');
-        const charBidAmount = $('.ShortAuctionDataValue b');
-        const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
-        const urlObj = new URL(charNameLink[0].attribs.href);
+        helper.setHtml(cheerio.load(element));
 
-        const charObject = {
-            id: Number(urlObj.searchParams.get('auctionid')),
-            nickname: charNameLink[0].children[0].data,
-            auctionEnd: Number(charAuctionEnd[0].attribs['data-timestamp']),
-            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
-            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
-        }
-
-        charactersData.push(charObject);
+        charactersData.push({
+            id: helper.id(),
+            nickname: helper.nickname(),
+            auctionEnd: helper.auctionEnd(),
+            currentBid: helper.currentBid(),
+            hasBeenBidded: helper.hasBeenBidded()
+        });
     });
 
     return charactersData;

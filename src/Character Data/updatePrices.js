@@ -1,6 +1,7 @@
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('./utils');
-const { objectToMinified } = require('./dataDictionary');
-const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('./config');
+const ListPageHelper = require('../Parsers/ListPageHelper');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
+const { objectToMinified } = require('../dataDictionary');
+const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -8,6 +9,8 @@ const bazaarUrl = 'https://www.tibia.com/charactertrade/?subtopic=currentcharact
 
 var globalDataSize;
 var globalIndex = 0;
+
+const helper = new ListPageHelper();
 
 const main = async () => {
     console.log(`${timeStamp('system')} Loading first page...`);
@@ -39,7 +42,7 @@ const main = async () => {
     console.groupEnd();
 
     console.log(`${timeStamp('system')} loading AllCharacterData.json ...`);
-    var data = await fs.readFile('./AllCharacterData.json', 'utf-8');
+    var data = await fs.readFile('./Output/AllCharacterData.json', 'utf-8');
     data = JSON.parse(data);
     const dictionaryData = makeIdDictionary(data);
 
@@ -52,12 +55,12 @@ const main = async () => {
         updatedData.push(dictionaryData[updatedItem.id]);
     }
 
-    await fs.writeFile('LatestCharacterData.json', JSON.stringify(updatedData));
+    await fs.writeFile('./Output/LatestCharacterData.json', JSON.stringify(updatedData));
     console.log(`${timeStamp('success')} All character data saved to 'LatestCharacterData.json'`);
 
     console.log(`${timeStamp('highlight')} Minifying data...`);
     const minifiedData = updatedData.map(objectToMinified);
-    await fs.writeFile('MinifiedCharacterData.json', JSON.stringify(minifiedData));
+    await fs.writeFile('./Output/MinifiedCharacterData.json', JSON.stringify(minifiedData));
     console.log(`${timeStamp('success')} All minified data saved to 'MinifiedCharacterData.json'`);
 }
 
@@ -74,23 +77,16 @@ const scrapBazaarPage = async (url) => {
 
     const auctions = $('.Auction');
 
-    let charactersData = [];
-
+    const charactersData = [];
     auctions.each((index, element) => {
-        const $ = cheerio.load(element);
-        const charNameLink = $('.AuctionCharacterName a');
-        const charBidAmount = $('.ShortAuctionDataValue b');
-        const charBidStatus = $('.ShortAuctionDataBidRow .ShortAuctionDataLabel');
 
-        const urlObj = new URL(charNameLink[0].attribs.href);
+        helper.setHtml(cheerio.load(element));
 
-        const charObject = {
-            id: Number(urlObj.searchParams.get('auctionid')),
-            currentBid: Number(charBidAmount[0].children[0].data.replace(/,/g, '')),
-            hasBeenBidded: (charBidStatus[0].children[0].data === 'Current Bid:' ? true : false)
-        }
-
-        charactersData.push(charObject);
+        charactersData.push({
+            id: helper.id(),
+            currentBid: helper.currentBid(),
+            hasBeenBidded: helper.hasBeenBidded()
+        });
     });
 
     return charactersData;

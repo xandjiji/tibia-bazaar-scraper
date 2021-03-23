@@ -4,14 +4,16 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-      "scrap": "node scrapServers.js && node scrapMainPage.js && node scrapSingle.js && node scrapItems.js",
-      "update": "node updatePrices.js",
-      "full": "node scrapServers.js && node scrapMainPage.js && node scrapSingle.js && node scrapItems.js && node updatePrices.js"
+        "scrap": "node src/Server\\ Data/scrapServers.js && node src/Character\\ Data/scrapMainPage.js && node src/Character\\ Data/scrapSingle.js && node src/Item\\ Data/scrapItems.js",
+        "update": "node src/Character\\ Data/updatePrices.js",
+        "full": "npm run scrap && npm run update",
+        "history": "node src/Bazaar\\ History/scrapHistory.js"
     },
     "author": "xandjiji",
     "license": "ISC",
     "dependencies": {
-      "cheerio": "^1.0.0-rc.3",
-      "node-fetch": "^2.6.1"
+        "cheerio": "^1.0.0-rc.3",
+        "node-fetch": "^2.6.1",
+        "user-agents": "^1.0.588"
     }
-  }
+}
