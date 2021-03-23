@@ -113,11 +113,13 @@ class ServerPageHelper {
 
         const battleyeUrl = 'https://static.tibia.com/images/global/content/icon_battleyeinitial.gif';
         const battleyeElementUrl = battleyeElement.children[1].children[0].children[0].children[0].attribs.src;
-        if(battleyeUrl === battleyeElementUrl) {
-            return true;
-        } else {
-            return false;
-        }
+        
+        return (battleyeUrl === battleyeElementUrl);
+    }
+
+    experimental() {
+        const serverName = this.serverName();
+        return (serverName === 'Zuna' || serverName === 'Zunera');
     }
 }
 
