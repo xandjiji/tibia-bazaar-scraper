@@ -103,6 +103,22 @@ class ServerPageHelper {
                 };
         }
     }
+
+    battleye() {
+        const battleyeElement = this.$('td')[4];
+
+        if(!battleyeElement.children[0]) {
+            return false;
+        }
+
+        const battleyeUrl = 'https://static.tibia.com/images/global/content/icon_battleyeinitial.gif';
+        const battleyeElementUrl = battleyeElement.children[1].children[0].children[0].children[0].attribs.src;
+        if(battleyeUrl === battleyeElementUrl) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 module.exports = ServerPageHelper;
