@@ -61,6 +61,48 @@ class ServerPageHelper {
         const pvpType = pvpElement.children[0].data;
         return pvpType;
     }
+
+    pvpTypeObject() {
+        const pvpTypeText = this.pvpType();
+
+        switch (pvpTypeText) {
+            case 'Optional PvP':
+                return {
+                    string: 'Optional',
+                    type: 0
+                };
+    
+            case 'Open PvP':
+                return {
+                    string: 'Open',
+                    type: 1
+                };
+    
+            case 'Retro Open PvP':
+                return {
+                    string: 'Retro Open',
+                    type: 2
+                };
+    
+            case 'Hardcore PvP':
+                return {
+                    string: 'Hardcore',
+                    type: 3
+                };
+    
+            case 'Retro Hardcore PvP':
+                return {
+                    string: 'Retro Hardcore',
+                    type: 4
+                };
+    
+            default:
+                return {
+                    string: 'Optional',
+                    type: 0
+                };
+        }
+    }
 }
 
 module.exports = ServerPageHelper;
