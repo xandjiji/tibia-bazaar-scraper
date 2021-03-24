@@ -31,6 +31,12 @@ const fetchAndLoad = async (url) => {
             'User-Agent': userAgent.toString()
         }
     });
+
+    const { status } = response;
+    if (status !== 200) {
+        throw new Error(`status code [${status}]`)
+    }
+
     const html = await response.text();
     return cheerio.load(html);
 }
@@ -44,7 +50,7 @@ const promiseAllInBatches = async (task, items, batchSize, onEachBatch) => {
         results = [...results, ...currentResults];
         position += batchSize;
         if (onEachBatch) await onEachBatch(currentResults);
-        if(DELAY > 0) await sleep(DELAY);
+        if (DELAY > 0) await sleep(DELAY);
     }
     return results;
 }

@@ -5,10 +5,6 @@ class ListPageHelper {
         this.$ = $;
     }
 
-    fetchError() {
-        /* IMPLEMENT */
-    }
-
     errorCheck() {
         const errorElement = this.$('.Text');
         const errorText = errorElement[0].children[0].data;
