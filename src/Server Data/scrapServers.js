@@ -1,5 +1,6 @@
 const ServerPageHelper = require('../Parsers/ServerPageHelper');
-const { timeStamp, fetchAndLoad } = require('../utils');
+const { timeStamp, fetchAndLoad, maxRetry } = require('../utils');
+const { MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
 
@@ -13,7 +14,7 @@ const main = async () => {
     serverData = JSON.parse(serverListData);
 
     console.log(`${timeStamp('highlight')} Scraping server list`);
-    const $ = await fetchAndLoad('https://www.tibia.com/community/?subtopic=worlds');
+    const $ = await fetchServerListPage('https://www.tibia.com/community/?subtopic=worlds');
     helper.setHtml($);
 
     const serverArray = helper.serverArray();
@@ -33,6 +34,12 @@ const main = async () => {
 
     await fs.writeFile('./Output/ServerData.json', JSON.stringify(serverData));
     console.log(`${timeStamp('success')} All server data saved to 'ServerData.json'`);
+}
+
+const fetchServerListPage = async (url) => {
+    return await maxRetry(async () => {
+        return await fetchAndLoad(url);;
+    }, MAX_RETRIES);
 }
 
 main();
