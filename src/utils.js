@@ -13,6 +13,10 @@ const colors = {
     control: '\x1b[90m'  // gray
 }
 
+const colorText = (text, color) => {
+    return `${colors[color]}${text}${colors['reset']}`;
+}
+
 const timeStamp = (color) => {
     let time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: 'numeric', minute: 'numeric', second: 'numeric' });
 
@@ -112,6 +116,7 @@ const dateParsing = (dateString) => {
 }
 
 module.exports = {
+    colorText,
     sleep,
     dateParsing,
     makeRangeArray,
