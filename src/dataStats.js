@@ -1,17 +1,28 @@
 const fs = require('fs').promises;
+const { colorText } = require('./utils');
 
 const files = [
-    'ServerData.json',
-    'bazaarPages.json',
-    'AllCharacterData.json',
-    'AllCharacterData.json',
-    'LatestCharacterData.json',
-    'ItemsData.json',
-    'readableBazaarHistory.json'
+    {
+        fileName: 'bazaarPages.json',
+        color: 'highlight'
+    },
+    {
+        fileName: 'AllCharacterData.json',
+        color: 'highlight'
+    },
+    {
+        fileName: 'LatestCharacterData.json',
+        color: 'highlight'
+    },
+    {
+        fileName: 'readableBazaarHistory.json',
+        color: 'system'
+    }
 ]
 
 const main = async () => {
-    await Promise.all(files.map(outputLogCount));
+    const strings = await Promise.all(files.map(makeLogString));
+    strings.forEach(item => console.log(item));
 }
 
 const readAndParse = async (file) => {
@@ -30,10 +41,11 @@ const getFileCount = async (file) => {
 
 }
 
-const outputLogCount = async (file) => {
-    const count = await getFileCount(file);
+const makeLogString = async (file) => {
+    const { fileName, color } = file;
+    const count = await getFileCount(fileName);
 
-    console.log(`${file}${identSpace(file, 30)}${count} items`);
+    return `${colorText(fileName, color)}${identSpace(fileName, 30)}${colorText(`${count} items`, 'success')}`;
 }
 
 const identSpace = (string, size) => {
