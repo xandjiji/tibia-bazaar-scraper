@@ -22,7 +22,7 @@ var unfinishedFileBuffer;
 var counter = 0;
 var scrapingOldFlag = false;
 
-const readableFileName = 'readableBazaarHiistory4.json';
+const readableFileName = 'readableBazaarHistory4.json';
 
 const main = async () => {
     await loadGlobalVariables();
