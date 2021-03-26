@@ -14,7 +14,7 @@ const helper = new ListPageHelper();
 const main = async () => {
     console.log(`${timeStamp('system')} Loading first page...`);
     console.group();
-    const $ = await fetchAndLoad(bazaarUrl);
+    const $ = await fetchFirstPage(bazaarUrl);
 
     const lastPageElement = $('.PageNavigation .PageLink:last-child a');
     const href = new URL(lastPageElement[0].attribs.href);
@@ -42,6 +42,12 @@ const main = async () => {
 
     await fs.writeFile('./Output/bazaarPages.json', JSON.stringify(allBazaarCharacters));
     console.log(`${timeStamp('success')} All character data saved to 'bazaarPages.json'`);
+}
+
+const fetchFirstPage = async (url) => {
+    return await maxRetry(async () => {
+        return await fetchAndLoad(url);;
+    }, MAX_RETRIES);
 }
 
 const retryWrapper = async (url) => {

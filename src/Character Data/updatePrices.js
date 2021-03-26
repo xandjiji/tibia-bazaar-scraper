@@ -15,7 +15,7 @@ const helper = new ListPageHelper();
 const main = async () => {
     console.log(`${timeStamp('system')} Loading first page...`);
     console.group();
-    const $ = await fetchAndLoad(bazaarUrl);
+    const $ = await fetchFirstPage(bazaarUrl);
 
     const lastPageElement = $('.PageNavigation .PageLink:last-child a');
     const href = new URL(lastPageElement[0].attribs.href);
@@ -62,6 +62,12 @@ const main = async () => {
     const minifiedData = updatedData.map(objectToMinified);
     await fs.writeFile('./Output/MinifiedCharacterData.json', JSON.stringify(minifiedData));
     console.log(`${timeStamp('success')} All minified data saved to 'MinifiedCharacterData.json'`);
+}
+
+const fetchFirstPage = async (url) => {
+    return await maxRetry(async () => {
+        return await fetchAndLoad(url);;
+    }, MAX_RETRIES);
 }
 
 const retryWrapper = async (url) => {
