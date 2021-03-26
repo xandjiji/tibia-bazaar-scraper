@@ -2,22 +2,12 @@ const fs = require('fs').promises;
 const { colorText } = require('./utils');
 
 const files = [
-    {
-        fileName: 'bazaarPages.json',
-        color: 'highlight'
-    },
-    {
-        fileName: 'AllCharacterData.json',
-        color: 'highlight'
-    },
-    {
-        fileName: 'LatestCharacterData.json',
-        color: 'highlight'
-    },
-    {
-        fileName: 'readableBazaarHistory.json',
-        color: 'system'
-    }
+    'bazaarPages.json',
+    'AllCharacterData.json',
+    'LatestCharacterData.json',
+    'MinifiedCharacterData.json',
+    'readableBazaarHistory.json',
+    'MinifiedBazaarHistory.json'
 ]
 
 const main = async () => {
@@ -25,27 +15,29 @@ const main = async () => {
     strings.forEach(item => console.log(item));
 }
 
-const readAndParse = async (file) => {
+const getFile = async (file) => {
     const data = await fs.readFile(`./Output/${file}`, 'utf-8');
-    return JSON.parse(data);
+    const fileObject = JSON.parse(data);
+
+    const fileStats = await fs.stat(`./Output/${file}`);
+
+    const fileSizeMb = fileStats.size / (1024*1024);
+
+    return {
+        count: fileObject.length,
+        fileSize: fileSizeMb.toFixed(2),
+        fileLastModified: fileStats.mtime
+    };
 }
 
-const getFileCount = async (file) => {
-    const data = await readAndParse(file);
+const makeLogString = async (fileName) => {
+    const { count, fileSize, fileLastModified } = await getFile(fileName);
 
-    if (Array.isArray(data)) {
-        return data.length;
-    } else {
-        return Object.keys(data).length;
-    }
-
-}
-
-const makeLogString = async (file) => {
-    const { fileName, color } = file;
-    const count = await getFileCount(fileName);
-
-    return `${colorText(fileName, color)}${identSpace(fileName, 30)}${colorText(`${count} items`, 'success')}`;
+    return`${colorText(fileName, 'success')}
+        ${colorText(`${count} items`, 'highlight')}
+        ${colorText(`${fileSize} MB`, 'system')}
+        ${colorText(`Last edited: ${fileLastModified}`, 'neutral')}
+    `;
 }
 
 const identSpace = (string, size) => {
