@@ -39,6 +39,8 @@ const main = async () => {
     await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
     console.groupEnd();
 
+    await saveCurrentBuffer();
+
     scrapingOldFlag = true;
     console.log(`${timeStamp('highlight')} Scraping every single old unfinished auction:`);
     console.group();
