@@ -168,11 +168,9 @@ const accumulateOnBuffer = (batchArray) => {
 const saveCurrentBuffer = async () => {
     await fs.writeFile(`./Output/${readableFileName}`, JSON.stringify(historyFileBuffer));
 
-    let scrapHistoryData = await fs.readFile('./Output/scrapHistoryData.json', 'utf-8');
-    scrapHistoryData = JSON.parse(scrapHistoryData);
-    const { unfinishedAuctions } = scrapHistoryData;
-    const recentAdded = scrapHistoryData.map(item => item.id);
-    const filteredUnfinishedAuctions = unfinishedAuctions.filter(id => !recentAdded.includes(id));
+    const unfinishedIds = unfinishedFileBuffer.map(item => item.id);
+    const scrapedIds = historyFileBuffer.map(item => item.id);
+    const filteredUnfinishedAuctions = unfinishedIds.filter(id => !scrapedIds.includes(id));
     await fs.writeFile('./Output/scrapHistoryData.json', JSON.stringify({
         lastScrapedId: currentAuctionId,
         unfinishedAuctions: filteredUnfinishedAuctions
