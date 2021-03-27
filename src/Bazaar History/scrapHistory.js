@@ -2,6 +2,7 @@ const AuctionPageHelper = require('../Parsers/AuctionPageHelper');
 const {
     timeStamp,
     makeRangeArray,
+    removeDuplicatesFromArrayByKey,
     fetchAndLoad,
     promiseAllInBatches,
     maxRetry,
@@ -45,39 +46,6 @@ const main = async () => {
     console.groupEnd();
 
     await saveCurrentBuffer();
-}
-
-const setupFinalData = async () => {
-    console.log(`${timeStamp('highlight')} Sorting, filtering and minifying data...`);
-    console.groupEnd();
-    const filteredData = removeDuplicatesFromArrayByKey('id', historyFileBuffer);
-
-    filteredData.sort((a, b) => {
-        return b.auctionEnd - a.auctionEnd;
-    });
-
-    await fs.writeFile(`./Output/${readableFileName}`, JSON.stringify(filteredData));
-    console.log(`${timeStamp('success')} sorted and filtered data was saved to ${readableFileName}`);
-
-    const minifiedFinalData = filteredData.map(objectToMinified);
-    await fs.writeFile('./Output/MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
-    console.log(`${timeStamp('success')} minified data was saved to MinifiedBazaarHistory.json`);
-}
-
-const removeDuplicatesFromArrayByKey = (key, array) => {
-    const addedSet = new Set([]);
-    const newUniqueArray = [];
-    for (let i = 0; i < array.length; i++) {
-
-        const currentKey = array[i][key];
-
-        if (!addedSet.has(currentKey)) {
-            addedSet.add(currentKey);
-            newUniqueArray.push(array[i]);
-        }
-    }
-
-    return newUniqueArray;
 }
 
 const retryGetLatestAuctionId = async () => {
@@ -173,6 +141,23 @@ const saveCurrentBuffer = async () => {
     }));
     console.log(`${timeStamp('system')} ${historyFileBuffer.length} new items saved to ${readableFileName}`);
     await setupFinalData();
+}
+
+const setupFinalData = async () => {
+    console.log(`${timeStamp('highlight')} Sorting, filtering and minifying data...`);
+    console.groupEnd();
+    const filteredData = removeDuplicatesFromArrayByKey('id', historyFileBuffer);
+
+    filteredData.sort((a, b) => {
+        return b.auctionEnd - a.auctionEnd;
+    });
+
+    await fs.writeFile(`./Output/${readableFileName}`, JSON.stringify(filteredData));
+    console.log(`${timeStamp('success')} sorted and filtered data was saved to ${readableFileName}`);
+
+    const minifiedFinalData = filteredData.map(objectToMinified);
+    await fs.writeFile('./Output/MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
+    console.log(`${timeStamp('success')} minified data was saved to MinifiedBazaarHistory.json`);
 }
 
 main();

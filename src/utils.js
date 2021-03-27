@@ -95,6 +95,22 @@ const popNull = (array) => {
     return array;
 }
 
+const removeDuplicatesFromArrayByKey = (key, array) => {
+    const addedSet = new Set([]);
+    const newUniqueArray = [];
+    for (let i = 0; i < array.length; i++) {
+
+        const currentKey = array[i][key];
+
+        if (!addedSet.has(currentKey)) {
+            addedSet.add(currentKey);
+            newUniqueArray.push(array[i]);
+        }
+    }
+
+    return newUniqueArray;
+}
+
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -121,6 +137,7 @@ module.exports = {
     dateParsing,
     makeRangeArray,
     popNull,
+    removeDuplicatesFromArrayByKey,
     fetchAndLoad,
     timeStamp,
     promiseAllInBatches,
