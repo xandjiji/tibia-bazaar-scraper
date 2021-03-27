@@ -1,3 +1,5 @@
+#!/bin/bash
+
 cp /home/pi/tibia-bazaar-scraper/automations/dailyScrap.sh /home/pi/
 cp /home/pi/tibia-bazaar-scraper/automations/deploy.sh /home/pi/
 cp /home/pi/tibia-bazaar-scraper/automations/pcToPi.sh /home/pi/
