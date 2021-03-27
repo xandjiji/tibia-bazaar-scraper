@@ -20,46 +20,37 @@ var historyFileBuffer;
 var unfinishedFileBuffer;
 
 var counter = 0;
-var scrapingOldFlag = false;
+var oldCounter = 0;
 
-const readableFileName = 'readableBazaarHistory4.json';
+const readableFileName = 'readableBazaarHistory.json';
 
 const main = async () => {
     await loadGlobalVariables();
 
-    if (currentAuctionId > latestAuctionId) {
-        console.log(`${timeStamp('fail')} [Latest Auction ID] is less than [Current Auction ID]`);
-        return;
+    if (currentAuctionId <= latestAuctionId) {
+        const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
+
+        console.log(`${timeStamp('highlight')} Scraping every single page:`);
+        console.group();
+        await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
+        console.groupEnd();
+
+        currentAuctionId -= MAX_CONCURRENT_REQUESTS;
+        await saveCurrentBuffer();
     }
 
-    const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
-
-    console.log(`${timeStamp('highlight')} Scraping every single page:`);
-    console.group();
-    await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
-    console.groupEnd();
-
-    await saveCurrentBuffer();
-
-    scrapingOldFlag = true;
     console.log(`${timeStamp('highlight')} Scraping every single old unfinished auction:`);
     console.group();
-    await promiseAllInBatches(retryWrapper, unfinishedFileBuffer, MAX_CONCURRENT_REQUESTS, onEachBatch);
+    await promiseAllInBatches(retryWrapper, unfinishedFileBuffer, MAX_CONCURRENT_REQUESTS, onEachOldBatch);
     console.groupEnd();
 
     await saveCurrentBuffer();
-
-    await setupFinalData();
 }
 
 const setupFinalData = async () => {
-    console.log(`${timeStamp('system')} loading ${readableFileName} ...`);
-    let data = await fs.readFile(`./Output/${readableFileName}`, 'utf-8');
-    data = JSON.parse(data);
-
     console.log(`${timeStamp('highlight')} Sorting, filtering and minifying data...`);
     console.groupEnd();
-    const filteredData = removeDuplicatesFromArrayByKey('id', data);
+    const filteredData = removeDuplicatesFromArrayByKey('id', historyFileBuffer);
 
     filteredData.sort((a, b) => {
         return b.auctionEnd - a.auctionEnd;
@@ -151,8 +142,16 @@ const scrapSinglePage = async (id) => {
 
 const onEachBatch = async (batchArray) => {
     accumulateOnBuffer(batchArray);
+    console.log(`${timeStamp('neutral')} accumulating ${counter} items [${currentAuctionId}/${latestAuctionId}]`);
+    currentAuctionId += MAX_CONCURRENT_REQUESTS;
 
-    if (!scrapingOldFlag) currentAuctionId += MAX_CONCURRENT_REQUESTS;
+    if (DELAY > 0) await sleep(DELAY);
+}
+
+const onEachOldBatch = async (batchArray) => {
+    accumulateOnBuffer(batchArray);
+    oldCounter += MAX_CONCURRENT_REQUESTS;
+    console.log(`${timeStamp('neutral')} accumulating ${counter} items from old history [${oldCounter}/${unfinishedFileBuffer.length}]`);
 
     if (DELAY > 0) await sleep(DELAY);
 }
@@ -160,9 +159,7 @@ const onEachBatch = async (batchArray) => {
 const accumulateOnBuffer = (batchArray) => {
     batchArray = batchArray.filter(item => item);
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
-
     counter += batchArray.length;
-    console.log(`${timeStamp('neutral')} accumulating ${counter} items [${currentAuctionId}/${latestAuctionId}]`);
 }
 
 const saveCurrentBuffer = async () => {
@@ -174,7 +171,8 @@ const saveCurrentBuffer = async () => {
         lastScrapedId: currentAuctionId,
         unfinishedAuctions: filteredUnfinishedAuctions
     }));
-    console.log(`${timeStamp('system')} ${historyFileBuffer.length} new items appended to ${readableFileName}`);
+    console.log(`${timeStamp('system')} ${historyFileBuffer.length} new items saved to ${readableFileName}`);
+    await setupFinalData();
 }
 
 main();
