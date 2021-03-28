@@ -134,6 +134,8 @@ const scrapOldSinglePage = async (item) => {
 const onEachBatch = async (batchArray) => {
     accumulateOnBuffer(batchArray);
     console.log(`${timeStamp('neutral')} accumulating ${counter} items [${currentAuctionId}/${latestAuctionId}]`);
+
+    if (counter % 100 === 0) await saveCurrentBuffer();
     currentAuctionId += MAX_CONCURRENT_REQUESTS;
 
     if (DELAY > 0) await sleep(DELAY);
@@ -151,6 +153,7 @@ const accumulateOnBuffer = (batchArray) => {
     batchArray = batchArray.filter(item => item);
     historyFileBuffer = [...batchArray, ...historyFileBuffer];
     counter += batchArray.length;
+
 }
 
 const saveCurrentBuffer = async () => {
@@ -162,7 +165,7 @@ const saveCurrentBuffer = async () => {
         lastScrapedId: currentAuctionId,
         unfinishedAuctions: filteredUnfinishedAuctions
     }));
-    console.log(`${timeStamp('system')} ${historyFileBuffer.length} new items saved to ${readableFileName}`);
+    console.log(`${timeStamp('system')} ${historyFileBuffer.length} items saved to ${readableFileName}`);
     await setupFinalData();
 }
 
