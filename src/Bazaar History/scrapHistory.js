@@ -42,7 +42,7 @@ const main = async () => {
 
     console.log(`${timeStamp('highlight')} Scraping every single old unfinished auction:`);
     console.group();
-    await promiseAllInBatches(retryWrapper, unfinishedFileBuffer, MAX_CONCURRENT_REQUESTS, onEachOldBatch);
+    await promiseAllInBatches(retryOldWrapper, unfinishedFileBuffer, MAX_CONCURRENT_REQUESTS, onEachOldBatch);
     console.groupEnd();
 
     await saveCurrentBuffer();
@@ -101,11 +101,34 @@ const scrapSinglePage = async (id) => {
     if (helper.errorCheck()) return;
 
     if (!helper.isFinished()) {
-        if (!unfinishedFileBuffer.includes(id)) unfinishedFileBuffer.push(id);
+        unfinishedFileBuffer.push({ id, auctionEnd: helper.auctionEnd() });
         return;
     }
 
     return helper.charObject();
+}
+
+const retryOldWrapper = async (id) => {
+    return await maxRetry(async () => {
+        return await scrapOldSinglePage(id);
+    }, MAX_RETRIES);
+}
+
+const scrapOldSinglePage = async (item) => {
+    const { id, auctionEnd } = item;
+
+    const now = Math.floor(Date.now() / 1000);
+
+    if (now > auctionEnd) {
+        const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
+        helper.setHtml($);
+
+        if (helper.errorCheck()) return;
+
+        return helper.charObject();
+    } else {
+        return;
+    }
 }
 
 const onEachBatch = async (batchArray) => {

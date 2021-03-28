@@ -3,7 +3,6 @@
 cp ~/tibia-bazaar-scraper/Output/MinifiedCharacterData.json ~/exevo-pan-data/
 cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/exevo-pan-data/
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/exevo-pan-data/
-cp ~/tibia-bazaar-scraper/Output/MinifiedBazaarHistory.json ~/exevo-pan-data/
 
 cd ~/exevo-pan-data/
 git push origin --delete deploy
