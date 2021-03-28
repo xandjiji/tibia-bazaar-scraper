@@ -2,4 +2,3 @@
 *.json
 # Except this file
 !.gitignore
-!ServerData.json
