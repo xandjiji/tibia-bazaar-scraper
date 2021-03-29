@@ -1,3 +1,5 @@
+#!/bin/bash
+
 scp pi:/home/pi/tibia-bazaar-scraper/Output/AllCharacterData.json /home/xand/tibia-bazaar-scraper/Output
 scp pi:/home/pi/tibia-bazaar-scraper/Output/bazaarPages.json /home/xand/tibia-bazaar-scraper/Output
 scp pi:/home/pi/tibia-bazaar-scraper/Output/ItemsData.json /home/xand/tibia-bazaar-scraper/Output

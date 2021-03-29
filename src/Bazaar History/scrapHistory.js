@@ -2,6 +2,7 @@ const AuctionPageHelper = require('../Parsers/AuctionPageHelper');
 const {
     timeStamp,
     makeRangeArray,
+    removeDuplicatesFromArrayByKey,
     fetchAndLoad,
     promiseAllInBatches,
     maxRetry,
@@ -20,59 +21,31 @@ var historyFileBuffer;
 var unfinishedFileBuffer;
 
 var counter = 0;
+var oldCounter = 0;
+
+const readableFileName = 'readableBazaarHistory.json';
 
 const main = async () => {
     await loadGlobalVariables();
 
-    if (currentAuctionId > latestAuctionId) {
-        console.log(`${timeStamp('fail')} [Latest Auction ID] is less than [Current Auction ID]`);
-        return;
+    if (currentAuctionId <= latestAuctionId) {
+        const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
+
+        console.log(`${timeStamp('highlight')} Scraping every single page:`);
+        console.group();
+        await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
+        console.groupEnd();
+
+        currentAuctionId -= MAX_CONCURRENT_REQUESTS;
+        await saveCurrentBuffer();
     }
-
-    const auctionIdArray = makeRangeArray(currentAuctionId, latestAuctionId);
-
-    console.log(`${timeStamp('highlight')} Scraping every single page:`);
-    console.group();
-    await promiseAllInBatches(retryWrapper, auctionIdArray, MAX_CONCURRENT_REQUESTS, onEachBatch);
-    console.groupEnd();
 
     console.log(`${timeStamp('highlight')} Scraping every single old unfinished auction:`);
     console.group();
-    await promiseAllInBatches(retryWrapper, unfinishedFileBuffer, MAX_CONCURRENT_REQUESTS, onEachUnfinishedAuctionsBatch);
+    await promiseAllInBatches(retryOldWrapper, unfinishedFileBuffer, MAX_CONCURRENT_REQUESTS, onEachOldBatch);
     console.groupEnd();
 
-    await setupFinalData();
-}
-
-const setupFinalData = async () => {
-    console.log(`${timeStamp('highlight')} Sorting, filtering and minifying data...`);
-    console.groupEnd();
-    const uniqueCharacterArray = removeDuplicatesFromArrayByKey('id', historyFileBuffer);
-
-    uniqueCharacterArray.sort((a, b) => {
-        return b.auctionEnd - a.auctionEnd;
-    });
-
-    const minifiedFinalData = uniqueCharacterArray.map(objectToMinified);
-
-    await fs.writeFile('./Output/MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
-    console.log(`${timeStamp('success')} minified data was saved to MinifiedBazaarHistory.json`);
-}
-
-const removeDuplicatesFromArrayByKey = (key, array) => {
-    const addedSet = new Set([]);
-    const newUniqueArray = [];
-    for (let i = 0; i < array.length; i++) {
-
-        const currentKey = array[i][key];
-
-        if (!addedSet.has(currentKey)) {
-            addedSet.add(currentKey);
-            newUniqueArray.push(array[i]);
-        }
-    }
-
-    return newUniqueArray;
+    await saveCurrentBuffer();
 }
 
 const retryGetLatestAuctionId = async () => {
@@ -98,8 +71,8 @@ const getLatestAuctionId = async () => {
 }
 
 const loadGlobalVariables = async () => {
-    console.log(`${timeStamp('system')} loading readableBazaarHistory.json ...`);
-    historyFileBuffer = await fs.readFile('./Output/readableBazaarHistory4.json', 'utf-8');
+    console.log(`${timeStamp('system')} loading ${readableFileName} ...`);
+    historyFileBuffer = await fs.readFile(`./Output/${readableFileName}`, 'utf-8');
     historyFileBuffer = JSON.parse(historyFileBuffer);
 
     console.log(`${timeStamp('system')} loading scrapHistoryData.json ...`);
@@ -121,62 +94,97 @@ const retryWrapper = async (id) => {
     }, MAX_RETRIES);
 }
 
-const onEachBatch = async (batchArray) => {
-    batchArray = batchArray.filter(item => item);
-    historyFileBuffer = [...batchArray, ...historyFileBuffer];
+const scrapSinglePage = async (id) => {
+    const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
+    helper.setHtml($);
 
-    counter += batchArray.length;
-    if (counter >= 100) {
-        await fs.writeFile('./Output/readableBazaarHistory4.json', JSON.stringify(historyFileBuffer));
-        await fs.writeFile('./Output/scrapHistoryData.json', JSON.stringify({
-            lastScrapedId: currentAuctionId,
-            unfinishedAuctions: unfinishedFileBuffer
-        }));
-        console.log(`${timeStamp('system')} ${counter} new items appended to readableBazaarHistory.json [${currentAuctionId}/${latestAuctionId}]`);
+    if (helper.errorCheck()) return;
 
-        counter = 0;
-    } else {
-        console.log(`${timeStamp('neutral')} accumulating ${counter} items [${currentAuctionId}/${latestAuctionId}]`);
+    if (!helper.isFinished()) {
+        unfinishedFileBuffer.push({ id, auctionEnd: helper.auctionEnd() });
+        return;
     }
 
+    return helper.charObject();
+}
+
+const retryOldWrapper = async (id) => {
+    return await maxRetry(async () => {
+        return await scrapOldSinglePage(id);
+    }, MAX_RETRIES);
+}
+
+const scrapOldSinglePage = async (item) => {
+    const { id, auctionEnd } = item;
+
+    const now = Math.floor(Date.now() / 1000);
+
+    if (now > auctionEnd) {
+        const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
+        helper.setHtml($);
+
+        if (helper.errorCheck()) return;
+
+        return helper.charObject();
+    } else {
+        return;
+    }
+}
+
+const onEachBatch = async (batchArray) => {
+    const newItems = accumulateOnBuffer(batchArray);
+    console.log(`${timeStamp('neutral')} accumulating ${counter} items [${currentAuctionId}/${latestAuctionId}]`);
+
+    if (newItems > 0 && counter % 100 === 0) await saveCurrentBuffer();
     currentAuctionId += MAX_CONCURRENT_REQUESTS;
 
     if (DELAY > 0) await sleep(DELAY);
 }
 
-const onEachUnfinishedAuctionsBatch = async (batchArray) => {
-    batchArray = batchArray.filter(item => item);
-    historyFileBuffer = [...batchArray, ...historyFileBuffer];
-    await fs.writeFile('./Output/readableBazaarHistory4.json', JSON.stringify(historyFileBuffer));
+const onEachOldBatch = async (batchArray) => {
+    const newItems = accumulateOnBuffer(batchArray);
+    oldCounter += MAX_CONCURRENT_REQUESTS;
 
-    let scrapHistoryData = await fs.readFile('./Output/scrapHistoryData.json', 'utf-8');
-    scrapHistoryData = JSON.parse(scrapHistoryData);
-    const { lastScrapedId, unfinishedAuctions } = scrapHistoryData;
-    const recentAddedFinished = batchArray.map(item => item.id);
-
-    const filteredUnfinishedAuctions = unfinishedAuctions.filter(id => !recentAddedFinished.includes(id));
-    await fs.writeFile('./Output/scrapHistoryData.json', JSON.stringify({
-        lastScrapedId: lastScrapedId,
-        unfinishedAuctions: filteredUnfinishedAuctions
-    }));
-
-    console.log(`${timeStamp('system')} ${batchArray.length} old unfinished items appended to readableBazaarHistory.json`);
-
+    if (newItems > 0) console.log(`${timeStamp('neutral')} accumulating ${counter} items from old history [${oldCounter}/${unfinishedFileBuffer.length}]`);
     if (DELAY > 0) await sleep(DELAY);
 }
 
-const scrapSinglePage = async (id) => {
-    const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
-    helper.setHtml($);
+const accumulateOnBuffer = (batchArray) => {
+    batchArray = batchArray.filter(item => item);
+    historyFileBuffer = [...batchArray, ...historyFileBuffer];
+    counter += batchArray.length;
 
-    if(helper.errorCheck()) return;
+    return batchArray.length;
+}
 
-    if (!helper.isFinished()) {
-        if (!unfinishedFileBuffer.includes(id)) unfinishedFileBuffer.push(id);
-        return;
-    }
+const saveCurrentBuffer = async () => {
+    await fs.writeFile(`./Output/${readableFileName}`, JSON.stringify(historyFileBuffer));
 
-    return helper.charObject();
+    const scrapedIds = historyFileBuffer.map(item => item.id);
+    const filteredUnfinishedAuctions = unfinishedFileBuffer.filter(item => !scrapedIds.includes(item.id));
+    await fs.writeFile('./Output/scrapHistoryData.json', JSON.stringify({
+        lastScrapedId: currentAuctionId,
+        unfinishedAuctions: filteredUnfinishedAuctions
+    }));
+    console.log(`${timeStamp('system')} ${historyFileBuffer.length} items saved to ${readableFileName}`);
+    await setupFinalData();
+}
+
+const setupFinalData = async () => {
+    console.log(`${timeStamp('highlight')} Sorting, filtering and minifying data...`);
+    console.groupEnd();
+    const filteredData = removeDuplicatesFromArrayByKey('id', historyFileBuffer);
+
+    filteredData.sort((a, b) => {
+        return b.auctionEnd - a.auctionEnd;
+    });
+
+    await fs.writeFile(`./Output/${readableFileName}`, JSON.stringify(filteredData));
+    console.log(`${timeStamp('success')} sorted and filtered data was saved to ${readableFileName}`);
+
+    const minifiedFinalData = filteredData.map(objectToMinified);
+    await fs.writeFile('./Output/MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
+    console.log(`${timeStamp('success')} minified data was saved to MinifiedBazaarHistory.json`);
 }
 
 main();

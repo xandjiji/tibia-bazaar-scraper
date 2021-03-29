@@ -95,6 +95,22 @@ const popNull = (array) => {
     return array;
 }
 
+const removeDuplicatesFromArrayByKey = (key, array) => {
+    const addedSet = new Set([]);
+    const newUniqueArray = [];
+    for (let i = 0; i < array.length; i++) {
+
+        const currentKey = array[i][key];
+
+        if (!addedSet.has(currentKey)) {
+            addedSet.add(currentKey);
+            newUniqueArray.push(array[i]);
+        }
+    }
+
+    return newUniqueArray;
+}
+
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -112,15 +128,27 @@ const dateParsing = (dateString) => {
 
     const UTCDate = new Date(`${month} ${day}, ${year} ${time}:00`);
 
-    return UTCDate / 1000;
+    return (UTCDate / 1000) /* - 18000 */;
 }
+
+const hash = (string) => {
+    var hash = 0, i, chr;
+    for (i = 0; i < string.length; i++) {
+        chr = string.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0;
+    }
+    return hash;
+};
 
 module.exports = {
     colorText,
     sleep,
     dateParsing,
+    hash,
     makeRangeArray,
     popNull,
+    removeDuplicatesFromArrayByKey,
     fetchAndLoad,
     timeStamp,
     promiseAllInBatches,

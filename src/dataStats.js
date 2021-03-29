@@ -13,6 +13,8 @@ const files = [
 const main = async () => {
     const strings = await Promise.all(files.map(makeLogString));
     strings.forEach(item => console.log(item));
+
+    await logUnfinishedItems();
 }
 
 const getFile = async (file) => {
@@ -21,7 +23,7 @@ const getFile = async (file) => {
 
     const fileStats = await fs.stat(`./Output/${file}`);
 
-    const fileSizeMb = fileStats.size / (1024*1024);
+    const fileSizeMb = fileStats.size / (1024 * 1024);
 
     return {
         count: fileObject.length,
@@ -33,7 +35,7 @@ const getFile = async (file) => {
 const makeLogString = async (fileName) => {
     const { count, fileSize, fileLastModified } = await getFile(fileName);
 
-    return`${colorText(fileName, 'success')}
+    return `${colorText(fileName, 'success')}
         ${colorText(`${count} items`, 'highlight')}
         ${colorText(`${fileSize} MB`, 'system')}
         ${colorText(`Last edited: ${fileLastModified}`, 'neutral')}
@@ -47,6 +49,25 @@ const identSpace = (string, size) => {
     }
 
     return acc;
+}
+
+const logUnfinishedItems = async () => {
+    const fileName = 'scrapHistoryData.json';
+    const data = await fs.readFile(`./Output/${fileName}`, 'utf-8');
+    const fileObject = JSON.parse(data);
+
+    const { unfinishedAuctions } = fileObject;
+
+    const fileStats = await fs.stat(`./Output/${fileName}`);
+    const fileSizeMb = fileStats.size / (1024 * 1024);
+
+    const logString = `${colorText(fileName, 'success')}
+        ${colorText(`${unfinishedAuctions.length} items`, 'highlight')}
+        ${colorText(`${fileSizeMb.toFixed(2)} MB`, 'system')}
+        ${colorText(`Last edited: ${fileStats.mtime}`, 'neutral')}
+    `
+
+    console.log(logString);
 }
 
 main();
