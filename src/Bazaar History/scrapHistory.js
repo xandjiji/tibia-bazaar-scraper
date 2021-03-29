@@ -160,7 +160,7 @@ const saveCurrentBuffer = async () => {
     await fs.writeFile(`./Output/${readableFileName}`, JSON.stringify(historyFileBuffer));
 
     const scrapedIds = historyFileBuffer.map(item => item.id);
-    const filteredUnfinishedAuctions = unfinishedFileBuffer.filter(id => !scrapedIds.includes(id));
+    const filteredUnfinishedAuctions = unfinishedFileBuffer.filter(item => !scrapedIds.includes(item.id));
     await fs.writeFile('./Output/scrapHistoryData.json', JSON.stringify({
         lastScrapedId: currentAuctionId,
         unfinishedAuctions: filteredUnfinishedAuctions
