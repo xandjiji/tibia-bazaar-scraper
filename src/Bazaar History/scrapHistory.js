@@ -23,6 +23,8 @@ var unfinishedFileBuffer;
 var counter = 0;
 var oldCounter = 0;
 
+var availableUfinishedCounter = 0;
+
 const readableFileName = 'readableBazaarHistory.json';
 
 const main = async () => {
@@ -43,6 +45,7 @@ const main = async () => {
     console.log(`${timeStamp('highlight')} Scraping every single old unfinished auction:`);
     console.group();
     const availableUnfinishedFileBuffer = unfinishedFileBuffer.filter(item => Math.floor(Date.now() / 1000) > item.auctionEnd);
+    availableUfinishedCounter = availableUnfinishedFileBuffer.length;
     await promiseAllInBatches(retryOldWrapper, availableUnfinishedFileBuffer, MAX_CONCURRENT_REQUESTS, onEachOldBatch);
     console.groupEnd();
 
@@ -140,7 +143,7 @@ const onEachOldBatch = async (batchArray) => {
     const newItems = accumulateOnBuffer(batchArray);
     oldCounter += MAX_CONCURRENT_REQUESTS;
 
-    if (newItems > 0) console.log(`${timeStamp('neutral')} accumulating ${counter} items from old history [${oldCounter}/${unfinishedFileBuffer.length}]`);
+    if (newItems > 0) console.log(`${timeStamp('neutral')} accumulating ${counter} items from old history [${oldCounter}/${availableUfinishedCounter}] [${unfinishedFileBuffer.length} total]`);
     if (DELAY > 0) await sleep(DELAY);
 }
 
