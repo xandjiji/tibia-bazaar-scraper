@@ -61,7 +61,7 @@ const retryGetLatestAuctionId = async () => {
 const getLatestAuctionId = async () => {
     console.log(`${timeStamp('neutral')} getting latest auction ID ...`);
 
-    const $ = await fetchAndLoad('https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades');
+    const $ = await fetchAndLoad('https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&order_column=103&order_direction=0');
     const latestAuctionLink = $('.AuctionCharacterName a');
 
     const latestIdArray = [];
