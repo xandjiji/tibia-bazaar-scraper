@@ -128,7 +128,7 @@ const dateParsing = (dateString) => {
 
     const UTCDate = new Date(`${month} ${day}, ${year} ${time}:00`);
 
-    return (UTCDate / 1000) /* - 18000 */;
+    return (UTCDate / 1000) - 18000;
 }
 
 const hash = (string) => {
