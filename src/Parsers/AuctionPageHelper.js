@@ -64,6 +64,11 @@ class AuctionPageHelper {
     }
 
     hasBeenBidded() {
+        const cancelledText = this.$('.AuctionInfo').text();
+        if (cancelledText === 'cancelled') {
+            return false;
+        }
+
         const hasBeenBiddedElement = this.$('.ShortAuctionDataLabel');
         const hasBeenBiddedText = hasBeenBiddedElement[2].children[0].data;
 
