@@ -140,7 +140,7 @@ class AuctionPageHelper {
             percentage = parseFloat(percentage.slice(0, -2));
             percentage = Math.round(percentage);
 
-            return Number(`${level}.${percentage}`);
+            return Number(`${level}.${percentage < 10 ? `0${percentage}` : percentage}`);
         }
     }
 
