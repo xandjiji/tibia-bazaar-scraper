@@ -64,6 +64,11 @@ class AuctionPageHelper {
     }
 
     hasBeenBidded() {
+        const cancelledText = this.$('.AuctionInfo').text();
+        if (cancelledText === 'cancelled') {
+            return false;
+        }
+
         const hasBeenBiddedElement = this.$('.ShortAuctionDataLabel');
         const hasBeenBiddedText = hasBeenBiddedElement[2].children[0].data;
 
@@ -135,7 +140,7 @@ class AuctionPageHelper {
             percentage = parseFloat(percentage.slice(0, -2));
             percentage = Math.round(percentage);
 
-            return Number(`${level}.${percentage}`);
+            return Number(`${level}.${percentage < 10 ? `0${percentage}` : percentage}`);
         }
     }
 
