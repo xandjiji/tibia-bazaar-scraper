@@ -166,8 +166,8 @@ const saveCurrentBuffer = async () => {
     }));
     console.group();
     console.log(`${timeStamp('system')} ${historyFileBuffer.length} items saved to ${readableFileName}`);
-    console.groupEnd();
     await setupFinalData();
+    console.groupEnd();
 }
 
 const setupFinalData = async () => {
