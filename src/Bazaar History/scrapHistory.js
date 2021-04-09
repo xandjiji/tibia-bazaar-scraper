@@ -164,7 +164,9 @@ const saveCurrentBuffer = async () => {
         lastScrapedId: currentAuctionId,
         unfinishedAuctions: filteredUnfinishedAuctions
     }));
+    console.group();
     console.log(`${timeStamp('system')} ${historyFileBuffer.length} items saved to ${readableFileName}`);
+    console.groupEnd();
     await setupFinalData();
 }
 
