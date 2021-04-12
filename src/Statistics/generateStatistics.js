@@ -38,15 +38,15 @@ const main = async () => {
         }
     });
 
-    /* top 10 by ml */
-    const top10Magic = getTop10BySkillKey('magic', successAuctions).map(char => {
-        return {
-            id: char.id,
-            nickname: char.nickname,
-            currentBid: char.currentBid,
-            magic: char.skills.magic
-        }
-    });
+    /* top 10 by skills */
+    const top10Magic = top10BySkillFactory('magic', successAuctions);
+    const top10Club = top10BySkillFactory('club', successAuctions);
+    const top10Fist = top10BySkillFactory('fist', successAuctions);
+    const top10Sword = top10BySkillFactory('sword', successAuctions);
+    const top10Fishing = top10BySkillFactory('fishing', successAuctions);
+    const top10Axe = top10BySkillFactory('axe', successAuctions);
+    const top10Distance = top10BySkillFactory('distance', successAuctions);
+    const top10Shielding = top10BySkillFactory('shielding', successAuctions);
 }
 
 const getTop10ByKey = (key, data) => {
@@ -63,6 +63,17 @@ const getTop10BySkillKey = (key, data) => {
     });
 
     return data.slice(0, 10);
+}
+
+const top10BySkillFactory = (key, data) => {
+    return getTop10BySkillKey(key, data).map(char => {
+        return {
+            id: char.id,
+            nickname: char.nickname,
+            currentBid: char.currentBid,
+            [key]: char.skills[key]
+        }
+    });
 }
 
 main();
