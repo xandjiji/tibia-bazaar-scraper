@@ -30,14 +30,44 @@ const main = async () => {
             nickname: char.nickname,
             currentBid: char.currentBid
         }
-    })
+    });
 
-    console.log(top10BidFinal);
+    /* top 10 by level */
+    const top10Level = getTop10ByKey('level', successAuctions);
+    const top10LevelFinal = top10Level.map(char => {
+        return {
+            id: char.id,
+            nickname: char.nickname,
+            currentBid: char.currentBid,
+            level: char.level
+        }
+    });
+
+    /* top 10 by ml */
+    const top10Magic = getTop10BySkillKey('magic', successAuctions);
+    const top10MagicFinal = top10Magic.map(char => {
+        return {
+            id: char.id,
+            nickname: char.nickname,
+            currentBid: char.currentBid,
+            magic: char.skills.magic
+        }
+    });
+
+    console.log(top10MagicFinal);
 }
 
 const getTop10ByKey = (key, data) => {
     data.sort((a, b) => {
         return b[key] - a[key];
+    });
+
+    return data.slice(0, 10);
+}
+
+const getTop10BySkillKey = (key, data) => {
+    data.sort((a, b) => {
+        return b.skills[key] - a.skills[key];
     });
 
     return data.slice(0, 10);
