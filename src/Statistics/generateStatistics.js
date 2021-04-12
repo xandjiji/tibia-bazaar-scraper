@@ -21,6 +21,26 @@ const main = async () => {
     /* total negociated */
     const totalTibiaCoins = successAuctions.reduce((total, auction) => total + auction.currentBid, 0);
     console.log(totalTibiaCoins);
+
+    /* top 10 by bid */
+    const top10Bid = getTop10ByKey('currentBid', successAuctions);
+    const top10BidFinal = top10Bid.map(char => {
+        return {
+            id: char.id,
+            nickname: char.nickname,
+            currentBid: char.currentBid
+        }
+    })
+
+    console.log(top10BidFinal);
+}
+
+const getTop10ByKey = (key, data) => {
+    data.sort((a, b) => {
+        return b[key] - a[key];
+    });
+
+    return data.slice(0, 10);
 }
 
 main();
