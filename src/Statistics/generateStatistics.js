@@ -10,21 +10,17 @@ const main = async () => {
     /* success % */
     const successCount = successAuctions.length;
     const successRate = (successCount / totalItems * 100).toFixed(2);
-    console.log(successRate);
 
     /* total revenue */
     const totalInitialFeeCoins = data.length * 50;
     const totalSuccessFee = successAuctions.reduce((total, auction) => total + Math.floor(auction.currentBid * 0.12), 0);
     const totalRevenue = totalSuccessFee + totalInitialFeeCoins;
-    console.log(totalRevenue);
 
     /* total negociated */
     const totalTibiaCoins = successAuctions.reduce((total, auction) => total + auction.currentBid, 0);
-    console.log(totalTibiaCoins);
 
     /* top 10 by bid */
-    const top10Bid = getTop10ByKey('currentBid', successAuctions);
-    const top10BidFinal = top10Bid.map(char => {
+    const top10Bid = getTop10ByKey('currentBid', successAuctions).map(char => {
         return {
             id: char.id,
             nickname: char.nickname,
@@ -33,8 +29,7 @@ const main = async () => {
     });
 
     /* top 10 by level */
-    const top10Level = getTop10ByKey('level', successAuctions);
-    const top10LevelFinal = top10Level.map(char => {
+    const top10Level = getTop10ByKey('level', successAuctions).map(char => {
         return {
             id: char.id,
             nickname: char.nickname,
@@ -44,8 +39,7 @@ const main = async () => {
     });
 
     /* top 10 by ml */
-    const top10Magic = getTop10BySkillKey('magic', successAuctions);
-    const top10MagicFinal = top10Magic.map(char => {
+    const top10Magic = getTop10BySkillKey('magic', successAuctions).map(char => {
         return {
             id: char.id,
             nickname: char.nickname,
@@ -53,8 +47,6 @@ const main = async () => {
             magic: char.skills.magic
         }
     });
-
-    console.log(top10MagicFinal);
 }
 
 const getTop10ByKey = (key, data) => {
