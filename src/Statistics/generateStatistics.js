@@ -6,7 +6,7 @@ const main = async () => {
     const totalItems = data.length;
 
     const successAuctions = data.filter(auction => auction.hasBeenBidded);
-    
+
     /* success % */
     const successCount = successAuctions.length;
     const successRate = (successCount / totalItems * 100).toFixed(2);
@@ -56,7 +56,7 @@ const main = async () => {
         druid: 0
     }
     const keyArray = Object.keys(vocationCount);
-    for(const char of data) {
+    for (const char of data) {
         const vocation = keyArray[char.vocationId];
         vocationCount[vocation]++
     }
@@ -68,6 +68,40 @@ const main = async () => {
         sorcerer: (vocationCount.sorcerer / data.length * 100).toFixed(2),
         druid: (vocationCount.druid / data.length * 100).toFixed(2)
     }
+
+
+    /* updating overallStatistics.json */
+    let statsData = await fs.readFile(`./Output/overallStatistics.json`, 'utf-8');
+    statsData = JSON.parse(statsData);
+
+    await fs.writeFile('./Output/overallStatistics.json', JSON.stringify({
+        totalRevenue: {
+            current: totalRevenue,
+            lastMonth: pushAndShift(
+                totalRevenue - statsData.totalRevenue.current,
+                statsData.totalRevenue.lastMonth
+            )
+        },
+        totalTibiaCoins: {
+            current: totalTibiaCoins,
+            lastMonth: pushAndShift(
+                totalTibiaCoins - statsData.totalTibiaCoins.current + 2000,
+                statsData.totalTibiaCoins.lastMonth
+            )
+        },
+        successRate,
+        top10Bid,
+        top10Level,
+        top10Magic,
+        top10Club,
+        top10Fist,
+        top10Sword,
+        top10Fishing,
+        top10Axe,
+        top10Distance,
+        top10Shielding,
+        vocationPercentage
+    }));
 }
 
 const getTop10ByKey = (key, data) => {
@@ -95,6 +129,13 @@ const top10BySkillFactory = (key, data) => {
             [key]: char.skills[key]
         }
     });
+}
+
+const pushAndShift = (item, array) => {
+    const newArray = [...array];
+    newArray.push(item);
+    if (newArray.length > 28) newArray.shift();
+    return newArray;
 }
 
 main();
