@@ -8,7 +8,9 @@
         "update": "node src/Character\\ Data/updatePrices.js",
         "full": "npm run scrap && npm run update",
         "history": "node src/Bazaar\\ History/scrapHistory.js && node src/Bazaar\\ History/paginateHistory.js",
+        "updateHistory": "npm run history && npm run statistics && ./automations/deployHistory.sh",
         "stats": "node src/dataStats.js",
+        "statistics": "node src/Statistics/generateStatistics.js",
         "extractAutomations": "automations/extractAutomations.sh"
     },
     "author": "xandjiji",
