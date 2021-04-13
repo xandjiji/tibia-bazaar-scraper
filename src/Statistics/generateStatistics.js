@@ -85,7 +85,7 @@ const main = async () => {
         totalTibiaCoins: {
             current: totalTibiaCoins,
             lastMonth: pushAndShift(
-                totalTibiaCoins - statsData.totalTibiaCoins.current + 2000,
+                totalTibiaCoins - statsData.totalTibiaCoins.current,
                 statsData.totalTibiaCoins.lastMonth
             )
         },
