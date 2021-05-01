@@ -1,4 +1,4 @@
-const MAX_CONCURRENT_REQUESTS = 2;
+const MAX_CONCURRENT_REQUESTS = 1;
 const DELAY = 100;
 const MAX_RETRIES = 5;
 
