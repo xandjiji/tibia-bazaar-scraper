@@ -16,12 +16,14 @@ const main = async () => {
     console.log(`${timeStamp('highlight')} Scraping server list`);
     const $ = await fetchServerListPage('https://www.tibia.com/community/?subtopic=worlds');
     helper.setHtml($);
+    if (helper.maintenanceCheck()) process.exit();
 
     const serverArray = helper.serverArray();
 
     serverArray.each((index, element) => {
 
         helper.setHtml(cheerio.load(element));
+        if (helper.maintenanceCheck()) process.exit();
 
         const serverName = helper.serverName();
         if (!serverData[serverName]) {

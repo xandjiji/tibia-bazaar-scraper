@@ -67,6 +67,7 @@ const scrapBazaarPage = async (url) => {
     auctions.each((index, element) => {
 
         helper.setHtml(cheerio.load(element));
+        if (helper.maintenanceCheck()) process.exit();
 
         charactersData.push({
             id: helper.id(),
