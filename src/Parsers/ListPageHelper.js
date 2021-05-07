@@ -5,6 +5,15 @@ class ListPageHelper {
         this.$ = $;
     }
 
+    maintenanceCheck() {
+        const headingElement = this.$('h1');
+        if (headingElement?.text() === 'Downtime') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     errorCheck() {
         const errorElement = this.$('.Text');
         const errorText = errorElement[0].children[0].data;
