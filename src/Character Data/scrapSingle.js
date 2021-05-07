@@ -14,6 +14,7 @@ const main = async () => {
     data = JSON.parse(data);
 
     await helper.init();
+    if (helper.maintenanceCheck()) process.exit();
 
     /* data = data.slice(0, 20); */
 
@@ -47,6 +48,7 @@ const scrapSinglePage = async (charObject) => {
     console.log(`${timeStamp('neutral')} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
 
     helper.setHtml($);
+    if (helper.maintenanceCheck()) process.exit();
 
     return {
         ...charObject,

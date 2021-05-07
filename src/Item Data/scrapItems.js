@@ -48,6 +48,7 @@ const scrapItemUrls = async (itemName) => {
     const encodedURI = encodeURI(`${bazaarUrl}&searchstring=${itemName}&searchtype=2&currentpage=`)
     const $ = await fetchAndLoad(`${encodedURI}`);
     helper.setHtml($);
+    if (helper.maintenanceCheck()) process.exit();
 
     const lastPageIndex = helper.lastPageIndex();
     if (!lastPageIndex) return;
@@ -79,6 +80,7 @@ const scrapItemIds = async (itemObj) => {
     auctions.each((index, element) => {
 
         helper.setHtml(cheerio.load(element));
+        if (helper.maintenanceCheck()) process.exit();
         itemListObject[itemObj.itemName].push(helper.id());
     });
 }

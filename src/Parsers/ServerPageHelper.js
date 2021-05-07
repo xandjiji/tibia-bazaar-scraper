@@ -3,6 +3,15 @@ class ServerPageHelper {
         this.$ = $;
     }
 
+    maintenanceCheck() {
+        const headingElement = this.$('h1');
+        if (headingElement?.text() === 'Downtime') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     serverArray() {
         const tableElement = this.$('.Table3 .InnerTableContainer > table > tbody > tr:nth-child(3) .TableContent tr:not(.LabelH)');
         return tableElement;

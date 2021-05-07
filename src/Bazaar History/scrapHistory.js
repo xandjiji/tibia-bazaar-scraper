@@ -102,6 +102,7 @@ const scrapSinglePage = async (id) => {
     const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
     helper.setHtml($);
 
+    if (helper.maintenanceCheck()) process.exit();
     if (helper.errorCheck()) return;
 
     if (!helper.isFinished()) {
@@ -124,6 +125,7 @@ const scrapOldSinglePage = async (item) => {
     const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
     helper.setHtml($);
 
+    if (helper.maintenanceCheck()) process.exit();
     if (helper.errorCheck()) return;
 
     return helper.charObject();
@@ -164,8 +166,10 @@ const saveCurrentBuffer = async () => {
         lastScrapedId: currentAuctionId,
         unfinishedAuctions: filteredUnfinishedAuctions
     }));
+    console.group();
     console.log(`${timeStamp('system')} ${historyFileBuffer.length} items saved to ${readableFileName}`);
     await setupFinalData();
+    console.groupEnd();
 }
 
 const setupFinalData = async () => {
