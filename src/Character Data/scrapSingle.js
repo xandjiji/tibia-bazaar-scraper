@@ -14,7 +14,6 @@ const main = async () => {
     data = JSON.parse(data);
 
     await helper.init();
-    if (helper.maintenanceCheck()) process.exit();
 
     /* data = data.slice(0, 20); */
 
