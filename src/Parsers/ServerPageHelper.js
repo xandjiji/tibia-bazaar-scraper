@@ -5,7 +5,7 @@ class ServerPageHelper {
 
     maintenanceCheck() {
         const headingElement = this.$('h1');
-        if (headingElement?.text() === 'Downtime') {
+        if (headingElement.text() === 'Downtime') {
             return true;
         } else {
             return false;
