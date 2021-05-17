@@ -23,7 +23,8 @@ const main = async () => {
     let allUrls = await promiseAllInBatches(retryScrapItemUrls, itemList, MAX_CONCURRENT_REQUESTS);
     console.groupEnd();
 
-    allUrls = allUrls.flat();
+    allUrls = allUrls.concat.apply([], allUrls);
+
     allUrls = allUrls.filter(item => item);
     globalDataSize = allUrls.length;
 
