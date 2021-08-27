@@ -1,5 +1,3 @@
-const cheerio = require('cheerio');
-
 class GuildPageHelper {
     setHtml($) {
         this.$ = $;
