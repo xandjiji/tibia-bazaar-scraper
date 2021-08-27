@@ -30,7 +30,6 @@ class CharacterPageHelper {
         const deathList = []
         deathRows.each((index, element) => {
             const dateElement = element.children[0]
-            const fragElement = element.children[1]
 
             const dateString = dateElement.children[0].data
 
