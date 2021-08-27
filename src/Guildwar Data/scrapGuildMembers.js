@@ -22,8 +22,8 @@ const main = async () => {
     const finalGuildStatsA = guildStatsA.map(updateMemberWithFrag)
     const finalGuildStatsB = guildStatsB.map(updateMemberWithFrag)
 
-    const formattedGuildNameA = 'Libertabra Pune'.replace(' ', '')
-    const formattedGuildNameB = 'Bones Alliance'.replace(' ', '')
+    const formattedGuildNameA = 'Libertabra Pune'.replaceAll(' ', '')
+    const formattedGuildNameB = 'Bones Alliance'.replaceAll(' ', '')
 
     await fs.writeFile(`./Output/war/${formattedGuildNameA}Data.json`, JSON.stringify(finalGuildStatsA));
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameA}Data.json'`);
