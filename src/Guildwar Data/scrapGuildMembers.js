@@ -66,7 +66,6 @@ const scrapGuild = async (guildName) => {
     if (guildHelper.maintenanceCheck()) process.exit();
 
     let guildMembers = guildHelper.guildMembers()
-    guildMembers = guildMembers.slice(0, 4)
     globalIndex = 0;
     globalDataSize = guildMembers.length
 
