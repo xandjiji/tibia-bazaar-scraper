@@ -23,11 +23,13 @@ class GuildPageHelper {
             const nickname = tdArray[1].children[0].children[0].data
             const vocation = tdArray[2].children[0].data
             const level = tdArray[3].children[0].data
+            const online = tdArray[5].children[0].attribs.class === 'green'
 
             memberCharacters.push({
                 nickname,
                 vocation,
                 level,
+                online
             })
         })
 
