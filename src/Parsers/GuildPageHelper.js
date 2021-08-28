@@ -26,7 +26,7 @@ class GuildPageHelper {
             memberCharacters.push({
                 nickname: nickname.replaceAll(' ', ' '),
                 vocation,
-                level,
+                level: Number(level),
                 online
             })
         })
