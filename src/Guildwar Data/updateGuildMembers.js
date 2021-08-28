@@ -49,14 +49,15 @@ const main = async () => {
 const updateGuild = (guildArray) => {
     const updatedGuild = [...guildArray]
     guildArray.forEach((member, index) => {
-        const { nickname } = member
+        const { nickname, level: oldLevel } = member
 
         const newStats = newFrags[nickname]
         if (newStats) {
             updatedGuild[index] = {
                 ...member,
                 deathCount: member.deathCount + newStats.deathCount,
-                kills: member.kills + newStats.kills
+                kills: member.kills + newStats.kills,
+                level: newStats.level ?? oldLevel
             }
         }
     })
@@ -65,7 +66,7 @@ const updateGuild = (guildArray) => {
 }
 
 const countabilizeDeath = (member) => {
-    const { nickname, deathList } = member
+    const { nickname, level, deathList } = member
 
     deathList.forEach((death) => {
         const { date, fraggers } = death
@@ -76,12 +77,14 @@ const countabilizeDeath = (member) => {
             if (currentNewFrag) {
                 newFrags[nickname] = {
                     ...currentNewFrag,
-                    deathCount: currentNewFrag.deathCount + 1
+                    deathCount: currentNewFrag.deathCount + 1,
+                    level
                 }
             } else {
                 newFrags[nickname] = {
                     deathCount: 1,
-                    kills: 0
+                    kills: 0,
+                    level
                 }
             }
 
