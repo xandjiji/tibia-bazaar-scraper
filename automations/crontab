@@ -1,4 +1,10 @@
-*/10 0-2,10-23 * * * /usr/bin/sh /home/pi/updateScrap.sh
+#bazaar data:
 
-10 2 * * * /usr/bin/sh /home/pi/scrapHistory.sh
+*/10 0-4,9-23 * * * /usr/bin/sh /home/pi/updateScrap.sh
+
+#10 3 * * * /usr/bin/sh /home/pi/scrapHistory.sh
 20 5 * * * /usr/bin/sh /home/pi/dailyScrap.sh
+
+
+#war data:
+*/10 0-4,9-23 * * * /usr/bin/sh /home/pi/warStats.sh
