@@ -1,23 +1,26 @@
 {
-    "name": "bazaar-scrapper",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "scrap": "node src/Server\\ Data/scrapServers.js && node src/Character\\ Data/scrapMainPage.js && node src/Character\\ Data/scrapSingle.js && node src/Item\\ Data/scrapItems.js",
-        "update": "node src/Character\\ Data/updatePrices.js",
-        "full": "npm run scrap && npm run update",
-        "history": "node src/Server\\ Data/scrapServers.js && node src/Bazaar\\ History/scrapHistory.js && node src/Bazaar\\ History/paginateHistory.js",
-        "updateHistory": "npm run history && npm run statistics && ./automations/deployHistory.sh",
-        "stats": "node src/dataStats.js",
-        "statistics": "node src/Statistics/generateStatistics.js",
-        "extractAutomations": "automations/extractAutomations.sh"
-    },
-    "author": "xandjiji",
-    "license": "ISC",
-    "dependencies": {
-        "cheerio": "1.0.0-rc.3",
-        "node-fetch": "^2.6.1",
-        "user-agents": "^1.0.588"
-    }
+  "name": "bazaar-scrapper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "scrap": "node src/Server\\ Data/scrapServers.js && node src/Character\\ Data/scrapMainPage.js && node src/Character\\ Data/scrapSingle.js && node src/Item\\ Data/scrapItems.js",
+    "update": "node src/Character\\ Data/updatePrices.js",
+    "full": "npm run scrap && npm run update",
+    "history": "node src/Server\\ Data/scrapServers.js && node src/Bazaar\\ History/scrapHistory.js && node src/Bazaar\\ History/paginateHistory.js",
+    "updateHistory": "npm run history && npm run statistics && ./automations/deployHistory.sh",
+    "stats": "node src/dataStats.js",
+    "statistics": "node src/Statistics/generateStatistics.js",
+    "extractAutomations": "automations/extractAutomations.sh",
+    "war": "node src/Guildwar\\ Data/scrapGuildMembers.js",
+    "updateWar": "node src/Guildwar\\ Data/updateGuildMembers.js",
+    "warStats": "node src/Guildwar\\ Data/generateStatistics.js"
+  },
+  "author": "xandjiji",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "1.0.0-rc.3",
+    "node-fetch": "^2.6.1",
+    "user-agents": "^1.0.588"
+  }
 }
