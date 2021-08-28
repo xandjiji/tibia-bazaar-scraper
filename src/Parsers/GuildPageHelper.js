@@ -24,7 +24,7 @@ class GuildPageHelper {
             const online = tdArray[5].children[0].attribs.class === 'green'
 
             memberCharacters.push({
-                nickname: nickname.replaceAll(' ', ' '),
+                nickname: nickname.replace(/ /g, ' '),
                 vocation,
                 level: Number(level),
                 online

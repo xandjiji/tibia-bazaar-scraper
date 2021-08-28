@@ -14,8 +14,8 @@ var globalIndex = 0;
 const fraggers = {}
 var deathSet = new Set([]);
 
-const formattedGuildNameA = 'Libertabra Pune'.replaceAll(' ', '')
-const formattedGuildNameB = 'Bones Alliance'.replaceAll(' ', '')
+const formattedGuildNameA = 'Libertabra Pune'.replace(/ /g, '')
+const formattedGuildNameB = 'Bones Alliance'.replace(/ /g, '')
 
 const main = async () => {
     const guildA = await scrapGuild('Libertabra Pune')

@@ -16,8 +16,8 @@ var deathSet;
 var persistedGuildA
 var persistedGuildB
 
-const formattedGuildNameA = 'Libertabra Pune'.replaceAll(' ', '')
-const formattedGuildNameB = 'Bones Alliance'.replaceAll(' ', '')
+const formattedGuildNameA = 'Libertabra Pune'.replace(/ /g, '')
+const formattedGuildNameB = 'Bones Alliance'.replace(/ /g, '')
 
 const main = async () => {
     deathSet = await getDeathsHashset()
