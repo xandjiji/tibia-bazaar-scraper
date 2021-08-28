@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cd ~/tibia-bazaar-scraper/
+npm run warStats
+
 cp ~/tibia-bazaar-scraper/Output/war/statistics.json ~/exevo-pan-war-data/
 
 cd ~/exevo-pan-war-data/
