@@ -1,5 +1,5 @@
 const GuildPageHelper = require('../Parsers/GuildPageHelper');
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
+const { timeStamp, fetchAndLoad, maxRetry } = require('../utils');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
 
