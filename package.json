@@ -12,7 +12,8 @@
     "stats": "node src/dataStats.js",
     "statistics": "node src/Statistics/generateStatistics.js",
     "extractAutomations": "automations/extractAutomations.sh",
-    "war": "node src/Guildwar\\ Data/scrapGuildMembers.js"
+    "war": "node src/Guildwar\\ Data/scrapGuildMembers.js",
+    "updateWar": "node src/Guildwar\\ Data/updateGuildMembers.js"
   },
   "author": "xandjiji",
   "license": "ISC",
