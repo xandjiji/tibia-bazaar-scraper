@@ -14,6 +14,9 @@ var globalIndex = 0;
 const fraggers = {}
 var deathSet = new Set([]);
 
+const formattedGuildNameA = 'Libertabra Pune'.replaceAll(' ', '')
+const formattedGuildNameB = 'Bones Alliance'.replaceAll(' ', '')
+
 const main = async () => {
     const guildA = await scrapGuild('Libertabra Pune')
     const guildB = await scrapGuild('Bones Alliance')
@@ -23,9 +26,6 @@ const main = async () => {
 
     const finalGuildStatsA = guildStatsA.map(updateMemberWithFrag)
     const finalGuildStatsB = guildStatsB.map(updateMemberWithFrag)
-
-    const formattedGuildNameA = 'Libertabra Pune'.replaceAll(' ', '')
-    const formattedGuildNameB = 'Bones Alliance'.replaceAll(' ', '')
 
     await fs.writeFile(`./Output/war/${formattedGuildNameA}Data.json`, JSON.stringify(finalGuildStatsA));
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameA}Data.json'`);
@@ -72,7 +72,7 @@ const scrapGuild = async (guildName) => {
     if (guildHelper.maintenanceCheck()) process.exit();
 
     let guildMembers = guildHelper.guildMembers()
-    guildMembers = guildMembers.slice(0, 4)
+    /* guildMembers = guildMembers.slice(0, 4) */
     globalIndex = 0;
     globalDataSize = guildMembers.length
 

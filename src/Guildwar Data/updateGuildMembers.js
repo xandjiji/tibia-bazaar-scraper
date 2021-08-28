@@ -115,7 +115,7 @@ const scrapGuild = async (guildName) => {
 
     let guildMembers = guildHelper.guildMembers()
     guildMembers = guildMembers.filter((member) => member.online)
-    guildMembers = guildMembers.slice(0, 4)
+    /* guildMembers = guildMembers.slice(0, 4) */
     globalIndex = 0;
     globalDataSize = guildMembers.length
 
