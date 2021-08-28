@@ -1,6 +1,7 @@
 const GuildPageHelper = require('../Parsers/GuildPageHelper');
 const CharacterPageHelper = require('../Parsers/CharacterPageHelper');
-const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
+const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry, hash } = require('../utils');
+const { saveDeathsHashset } = require('./utils')
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
 
@@ -11,6 +12,7 @@ var globalDataSize = 0;
 var globalIndex = 0;
 
 const fraggers = {}
+var deathSet = new Set([]);
 
 const main = async () => {
     const guildA = await scrapGuild('Libertabra Pune')
@@ -30,6 +32,8 @@ const main = async () => {
 
     await fs.writeFile(`./Output/war/${formattedGuildNameB}Data.json`, JSON.stringify(finalGuildStatsB));
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameB}Data.json'`);
+
+    await saveDeathsHashset(deathSet)
 }
 
 const updateMemberWithFrag = (member) => ({
@@ -39,6 +43,8 @@ const updateMemberWithFrag = (member) => ({
 
 const buildMemberStats = (member) => {
     member.deathList.forEach((death) => {
+        const deathHash = hash(`${member.nickname}${death.date}`)
+        deathSet.add(deathHash)
         death.fraggers.forEach(addFrag)
     })
 
@@ -66,6 +72,7 @@ const scrapGuild = async (guildName) => {
     if (guildHelper.maintenanceCheck()) process.exit();
 
     let guildMembers = guildHelper.guildMembers()
+    guildMembers = guildMembers.slice(0, 4)
     globalIndex = 0;
     globalDataSize = guildMembers.length
 
