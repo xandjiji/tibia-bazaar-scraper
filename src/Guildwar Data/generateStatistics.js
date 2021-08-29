@@ -1,6 +1,6 @@
 const GuildPageHelper = require('../Parsers/GuildPageHelper');
 const { timeStamp, fetchAndLoad, maxRetry } = require('../utils');
-const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
+const { MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
 
 const guildHelper = new GuildPageHelper()
@@ -12,7 +12,7 @@ const statisticsFileName = 'statistics'
 const main = async () => {
     let previousStats = await fs.readFile(`./Output/war/${statisticsFileName}.json`, 'utf-8');
     previousStats = JSON.parse(previousStats)
-    const { onlineCount } = previousStats
+    const { onlineCount, score: prevScore } = previousStats
 
     const onlineGuildA = await scrapOnlineGuildCount('Libertabra Pune')
     const onlineGuildB = await scrapOnlineGuildCount('Bones Alliance')
@@ -26,6 +26,8 @@ const main = async () => {
 
     const puneScore = countDeaths(dataGuildB)
     const bonesScore = countDeaths(dataGuildA)
+    const diffScoreA = puneScore - prevScore.guildA
+    const diffScoreB = bonesScore - prevScore.guildB
 
     const puneMostFraggers = getTop10Kills(dataGuildA)
     const bonesMostFraggers = getTop10Kills(dataGuildB)
@@ -42,7 +44,9 @@ const main = async () => {
         },
         score: {
             guildA: puneScore,
-            guildB: bonesScore
+            diffGuildA: diffScoreA,
+            guildB: bonesScore,
+            diffGuildB: diffScoreB,
         },
         top10Kills: {
             guildA: puneMostFraggers,
