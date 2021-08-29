@@ -18,8 +18,11 @@ const formattedGuildNameA = 'Libertabra Pune'.replace(/ /g, '')
 const formattedGuildNameB = 'Bones Alliance'.replace(/ /g, '')
 
 const main = async () => {
-    const guildA = await scrapGuild('Libertabra Pune')
-    const guildB = await scrapGuild('Bones Alliance')
+    let guildA = await scrapGuild('Libertabra Pune')
+    let guildB = await scrapGuild('Bones Alliance')
+
+    guildA = filterFriendlyFire(guildA)
+    guildB = filterFriendlyFire(guildB)
 
     const guildStatsA = guildA.map(buildMemberStats)
     const guildStatsB = guildB.map(buildMemberStats)
@@ -34,6 +37,23 @@ const main = async () => {
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameB}Data.json'`);
 
     await saveDeathsHashset(deathSet)
+}
+
+const filterFriendlyFire = (guildArray) => {
+    const alliedNicks = {}
+    guildArray.forEach((member) => alliedNicks[member.nickname] = true)
+
+    return guildArray.map((member) => {
+        const filteredDeathList = member.deathList.map((death) => ({
+            ...death,
+            fraggers: death.fraggers.filter((killer) => !alliedNicks[killer] === true)
+        }))
+
+        return {
+            ...member,
+            deathList: filteredDeathList
+        }
+    })
 }
 
 const updateMemberWithFrag = (member) => ({
@@ -72,7 +92,7 @@ const scrapGuild = async (guildName) => {
     if (guildHelper.maintenanceCheck()) process.exit();
 
     let guildMembers = guildHelper.guildMembers()
-    /* guildMembers = guildMembers.slice(0, 4) */
+    /* guildMembers = guildMembers.slice(0, 20) */
     globalIndex = 0;
     globalDataSize = guildMembers.length
 
