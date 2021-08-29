@@ -57,7 +57,7 @@ const updateGuild = (guildArray) => {
                 ...member,
                 deathCount: member.deathCount + newStats.deathCount,
                 kills: member.kills + newStats.kills,
-                level: newStats.level ?? oldLevel
+                level: newStats.level || oldLevel
             }
         }
     })

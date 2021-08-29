@@ -38,7 +38,7 @@ const main = async () => {
 
 const updateMemberWithFrag = (member) => ({
     ...member,
-    kills: fraggers[member.nickname] ?? 0
+    kills: fraggers[member.nickname] || 0
 })
 
 const buildMemberStats = (member) => {
