@@ -46,7 +46,7 @@ const main = async () => {
             guildA: puneScore,
             diffGuildA: diffScoreA === 0 ? prevScore.diffGuildA : diffScoreA,
             guildB: bonesScore,
-            diffGuildA: diffScoreB === 0 ? prevScore.diffGuildB : diffScoreB,
+            diffGuildB: diffScoreB === 0 ? prevScore.diffGuildB : diffScoreB,
         },
         top10Kills: {
             guildA: puneMostFraggers,
