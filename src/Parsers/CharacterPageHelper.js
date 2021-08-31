@@ -42,7 +42,7 @@ class CharacterPageHelper {
                 killerList.push(element.children[0].data)
             })
 
-            deathList.push({ date: deathTimestamp, fraggers: killerList })
+            deathList.push({ date: deathTimestamp, fullDate, fraggers: killerList })
         })
 
         return deathList
