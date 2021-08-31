@@ -31,7 +31,10 @@ class CharacterPageHelper {
         deathRows.each((index, element) => {
             const dateElement = element.children[0]
 
-            const dateString = dateElement.children[0].data
+            let fullDate = dateElement.children[0].data
+            fullDate = fullDate.replace(/ /g, ' ');
+            const [dateString] = fullDate.split(',')
+            const deathTimestamp = +new Date(dateString)
 
             const killers = this.$('a', element)
             const killerList = []
@@ -39,7 +42,7 @@ class CharacterPageHelper {
                 killerList.push(element.children[0].data)
             })
 
-            deathList.push({ date: dateString, fraggers: killerList })
+            deathList.push({ date: deathTimestamp, fraggers: killerList })
         })
 
         return deathList
