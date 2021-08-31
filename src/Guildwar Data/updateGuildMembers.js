@@ -11,13 +11,16 @@ const characterHelper = new CharacterPageHelper()
 var globalDataSize = 0;
 var globalIndex = 0;
 
-const newFrags = {}
 var deathSet;
 var persistedGuildA
 var persistedGuildB
 
+var currentGuildA = {}
+var currentGuildB = {}
+
 const formattedGuildNameA = 'Libertabra Pune'.replace(/ /g, '')
 const formattedGuildNameB = 'Bones Alliance'.replace(/ /g, '')
+const warStartDate = 1629946800000 // 26 Aug 2021
 
 const main = async () => {
     deathSet = await getDeathsHashset()
@@ -26,37 +29,73 @@ const main = async () => {
     persistedGuildB = await fs.readFile(`./Output/war/${formattedGuildNameB}Data.json`, 'utf-8');
     persistedGuildB = JSON.parse(persistedGuildB)
 
+    let onlineGuildA = await scrapGuild('Libertabra Pune', currentGuildA)
+    let onlineGuildB = await scrapGuild('Bones Alliance', currentGuildB)
 
-    let onlineGuildA = await scrapGuild('Libertabra Pune')
-    let onlineGuildB = await scrapGuild('Bones Alliance')
+    onlineGuildA = filterFriendlyFire(onlineGuildA, currentGuildA)
+    onlineGuildB = filterFriendlyFire(onlineGuildB, currentGuildB)
 
-    onlineGuildA = filterFriendlyFire(onlineGuildA, persistedGuildA)
-    onlineGuildB = filterFriendlyFire(onlineGuildB, persistedGuildB)
+    contabilizeDeath(onlineGuildA, currentGuildA, currentGuildB)
+    contabilizeDeath(onlineGuildB, currentGuildB, currentGuildA)
 
-    onlineGuildA.forEach(countabilizeDeath)
-    onlineGuildB.forEach(countabilizeDeath)
+    mergeOldData(persistedGuildA, currentGuildA)
+    mergeOldData(persistedGuildB, currentGuildB)
 
-    const updatedGuildA = updateGuild(persistedGuildA)
-    const updatedGuildB = updateGuild(persistedGuildB)
+    const newGuildArrayA = buildGuildArray(currentGuildA)
+    const newGuildArrayB = buildGuildArray(currentGuildB)
 
-
-    await fs.writeFile(`./Output/war/${formattedGuildNameA}Data.json`, JSON.stringify(updatedGuildA));
+    await fs.writeFile(`./Output/war/${formattedGuildNameA}Data.json`, JSON.stringify(newGuildArrayA));
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameA}Data.json'`);
 
-    await fs.writeFile(`./Output/war/${formattedGuildNameB}Data.json`, JSON.stringify(updatedGuildB));
+    await fs.writeFile(`./Output/war/${formattedGuildNameB}Data.json`, JSON.stringify(newGuildArrayB));
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameB}Data.json'`);
 
     await saveDeathsHashset(deathSet)
 }
 
-const filterFriendlyFire = (guildArray, fullGuildArray) => {
-    const alliedNicks = {}
-    fullGuildArray.forEach((member) => alliedNicks[member.nickname] = true)
+const buildGuildArray = (currentGuild) => Object.keys(currentGuild).map((nickname) => ({
+    nickname,
+    level: currentGuild[nickname].level,
+    vocation: currentGuild[nickname].vocation,
+    kills: currentGuild[nickname].kills,
+    deathCount: currentGuild[nickname].deathCount
+}))
 
-    return guildArray.map((member) => {
+const mergeOldData = (oldGuildData, currentGuildData) => {
+    oldGuildData.forEach((oldMember) => {
+        const { nickname, kills, deathCount } = oldMember
+        currentGuildData[nickname].kills = currentGuildData[nickname].kills + kills
+        currentGuildData[nickname].deathCount = currentGuildData[nickname].deathCount + deathCount
+    })
+}
+
+const contabilizeDeath = (onlineGuild, currentAlliedGuild, currentEnemyFullGuild) => {
+    onlineGuild.forEach((member) => {
+        const { nickname, deathList } = member
+
+        deathList.forEach((death) => {
+            const { fullDate, fraggers } = death
+
+            deathSet.add(hash(`${nickname}${fullDate}`))
+
+            fraggers.forEach((killer) => {
+                if (currentEnemyFullGuild[killer] !== undefined) {
+                    currentEnemyFullGuild[killer].kills = currentEnemyFullGuild[killer].kills + 1
+                }
+            })
+
+            if (currentAlliedGuild[nickname]) {
+                currentAlliedGuild[nickname].deathCount = currentAlliedGuild[nickname].deathCount + 1
+            }
+        })
+    })
+}
+
+const filterFriendlyFire = (guildArray, alliedGuildDict) =>
+    guildArray.map((member) => {
         const filteredDeathList = member.deathList.map((death) => ({
             ...death,
-            fraggers: death.fraggers.filter((killer) => !alliedNicks[killer] === true)
+            fraggers: death.fraggers.filter((killer) => alliedGuildDict[killer] === undefined)
         }))
 
         return {
@@ -64,81 +103,24 @@ const filterFriendlyFire = (guildArray, fullGuildArray) => {
             deathList: filteredDeathList
         }
     })
-}
 
-const updateGuild = (guildArray) => {
-    const updatedGuild = [...guildArray]
-    guildArray.forEach((member, index) => {
-        const { nickname, level: oldLevel } = member
-
-        const newStats = newFrags[nickname]
-        if (newStats) {
-            updatedGuild[index] = {
-                ...member,
-                deathCount: member.deathCount + newStats.deathCount,
-                kills: member.kills + newStats.kills,
-                level: newStats.level || oldLevel
-            }
-        }
-    })
-
-    return updatedGuild
-}
-
-const countabilizeDeath = (member) => {
-    const { nickname, level, deathList } = member
-
-    deathList.forEach((death) => {
-        const { date, fraggers } = death
-        const deathHash = hash(`${nickname}${date}`)
-
-        if (!deathSet.has(deathHash)) {
-            const currentNewFrag = newFrags[nickname]
-            if (currentNewFrag) {
-                newFrags[nickname] = {
-                    ...currentNewFrag,
-                    deathCount: currentNewFrag.deathCount + 1,
-                    level
-                }
-            } else {
-                newFrags[nickname] = {
-                    deathCount: 1,
-                    kills: 0,
-                    level
-                }
-            }
-
-            fraggers.forEach(contabilizeKillers)
-
-            deathSet.add(deathHash)
-        }
-    })
-}
-
-const contabilizeKillers = (nickname) => {
-    const currentNewFrag = newFrags[nickname]
-    if (currentNewFrag) {
-        newFrags[nickname] = {
-            ...currentNewFrag,
-            kills: currentNewFrag.kills + 1
-        }
-    } else {
-        newFrags[nickname] = {
-            deathCount: 0,
-            kills: 1
-        }
-    }
-}
-
-const scrapGuild = async (guildName) => {
+const scrapGuild = async (guildName, currentGuildDictionary) => {
     console.log(`${timeStamp('highlight')} Fetching [${guildName}] online members`);
     const $ = await fetchGuildPage(guildPageUrl(guildName));
     guildHelper.setHtml($)
     if (guildHelper.maintenanceCheck()) process.exit();
 
     let guildMembers = guildHelper.guildMembers()
-    guildMembers = guildMembers.filter((member) => member.online)
+    guildMembers.forEach((member) => {
+        currentGuildDictionary[member.nickname] = {
+            vocation: member.vocation,
+            level: member.level,
+            deathCount: 0,
+            kills: 0
+        }
+    })
     /* guildMembers = guildMembers.slice(0, 20) */
+    guildMembers = guildMembers.filter((member) => member.online)
     globalIndex = 0;
     globalDataSize = guildMembers.length
 
@@ -172,9 +154,17 @@ const scrapCharacterData = async (charObject) => {
     characterHelper.setHtml($)
     if (characterHelper.maintenanceCheck()) process.exit();
 
+    let characterDeaths = characterHelper.getCharacterDeaths()
+
+    characterDeaths = characterDeaths.filter((death) =>
+        death.date >= warStartDate &&
+        death.fraggers.length > 0 &&
+        !deathSet.has(hash(`${charObject.nickname}${death.fullDate}`))
+    )
+
     return {
         ...charObject,
-        deathList: characterHelper.getCharacterDeaths()
+        deathList: characterDeaths
     }
 }
 
