@@ -64,8 +64,11 @@ const buildGuildArray = (currentGuild) => Object.keys(currentGuild).map((nicknam
 const mergeOldData = (oldGuildData, currentGuildData) => {
     oldGuildData.forEach((oldMember) => {
         const { nickname, kills, deathCount } = oldMember
-        currentGuildData[nickname].kills = currentGuildData[nickname].kills + kills
-        currentGuildData[nickname].deathCount = currentGuildData[nickname].deathCount + deathCount
+
+        if (currentGuildData[nickname]) {
+            currentGuildData[nickname].kills = currentGuildData[nickname].kills + kills
+            currentGuildData[nickname].deathCount = currentGuildData[nickname].deathCount + deathCount
+        }
     })
 }
 
