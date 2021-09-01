@@ -45,6 +45,9 @@ const main = async () => {
     const { xp: todayGuildAXP } = dailyXP.guildA[dailyXP.guildA.length - 1]
     const { xp: todayGuildBXP } = dailyXP.guildB[dailyXP.guildB.length - 1]
 
+    const lastDiffA = previousStats.xpStats ? currentXPA - previousStats.xpStats.currentXP.guildA : 0
+    const lastDiffB = previousStats.xpStats ? currentXPB - previousStats.xpStats.currentXP.guildB : 0
+
     const stats = {
         onlineCount: {
             guildA: pushAndShift({ count: onlineGuildA, timeStamp }, onlineCount.guildA),
@@ -59,7 +62,8 @@ const main = async () => {
         xpStats: {
             ...persistentXPStats,
             currentXP: { guildA: currentXPA, guildB: currentXPB },
-            currentDiff: { guildA: currentXPA - todayGuildAXP, guildB: currentXPB - todayGuildBXP },
+            todayDiff: { guildA: currentXPA - todayGuildAXP, guildB: currentXPB - todayGuildBXP },
+            lastDiff: { guildA: lastDiffA, guildB: lastDiffB }
         },
         top10Kills: {
             guildA: puneMostFraggers,
