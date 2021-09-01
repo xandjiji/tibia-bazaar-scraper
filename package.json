@@ -15,7 +15,8 @@
     "war": "node src/Guildwar\\ Data/scrapGuildMembers.js",
     "updateWar": "node src/Guildwar\\ Data/updateGuildMembers.js",
     "warStats": "node src/Guildwar\\ Data/generateStatistics.js",
-    "warMinify": "node src/Guildwar\\ Data/minifyData.js"
+    "warMinify": "node src/Guildwar\\ Data/minifyData.js",
+    "trackXP": "node src/Guildwar\\ Data/trackXP.js"
   },
   "author": "xandjiji",
   "license": "ISC",
