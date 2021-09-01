@@ -8,14 +8,15 @@ const guildHelper = new GuildPageHelper()
 const fileNameA = 'LibertabraPuneData'
 const fileNameB = 'BonesAllianceData'
 const statisticsFileName = 'statistics'
+const xpFileName = 'guildXP'
 
 const main = async () => {
     let previousStats = await fs.readFile(`./Output/war/${statisticsFileName}.json`, 'utf-8');
     previousStats = JSON.parse(previousStats)
     const { onlineCount, score: prevScore } = previousStats
 
-    const onlineGuildA = await scrapOnlineGuildCount('Libertabra Pune')
-    const onlineGuildB = await scrapOnlineGuildCount('Bones Alliance')
+    const { onlineCount: onlineGuildA, totalCurrentXP: currentXPA } = await scrapOnlineGuildCount('Libertabra Pune')
+    const { onlineCount: onlineGuildB, totalCurrentXP: currentXPB } = await scrapOnlineGuildCount('Bones Alliance')
 
 
     let dataGuildA = await fs.readFile(`./Output/war/${fileNameA}.json`, 'utf-8');
@@ -37,6 +38,13 @@ const main = async () => {
 
     const timeStamp = +new Date()
 
+    let persistentXPStats = await fs.readFile(`./Output/war/${xpFileName}.json`, 'utf-8');
+    persistentXPStats = JSON.parse(persistentXPStats)
+    const { dailyXP } = persistentXPStats
+
+    const { xp: todayGuildAXP } = dailyXP.guildA[dailyXP.guildA.length - 1]
+    const { xp: todayGuildBXP } = dailyXP.guildB[dailyXP.guildB.length - 1]
+
     const stats = {
         onlineCount: {
             guildA: pushAndShift({ count: onlineGuildA, timeStamp }, onlineCount.guildA),
@@ -47,6 +55,11 @@ const main = async () => {
             diffGuildA: diffScoreA === 0 ? prevScore.diffGuildA : diffScoreA,
             guildB: bonesScore,
             diffGuildB: diffScoreB === 0 ? prevScore.diffGuildB : diffScoreB,
+        },
+        xpStats: {
+            ...persistentXPStats,
+            currentXP: { guildA: currentXPA, guildB: currentXPB },
+            currentDiff: { guildA: currentXPA - todayGuildAXP, guildB: currentXPB - todayGuildBXP },
         },
         top10Kills: {
             guildA: puneMostFraggers,
@@ -88,8 +101,12 @@ const scrapOnlineGuildCount = async (guildName) => {
     if (guildHelper.maintenanceCheck()) process.exit();
 
     const guildMembers = guildHelper.guildMembers()
+    const totalCurrentXP = guildHelper.guildXP()
 
-    return guildMembers.filter(member => member.online).length
+    return {
+        onlineCount: guildMembers.filter(member => member.online).length,
+        totalCurrentXP
+    }
 }
 
 const fetchGuildPage = async (url) => {

@@ -37,8 +37,6 @@ const guildPageUrl = (name, online = false) => {
     return url
 }
 
-main()
-
 module.exports = {
     getGuildXPs: main
 }
