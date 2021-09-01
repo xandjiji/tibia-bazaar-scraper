@@ -1,3 +1,5 @@
+const { levelToXP } = require('../Guildwar Data/utils');
+
 class GuildPageHelper {
     setHtml($) {
         this.$ = $;
@@ -32,6 +34,13 @@ class GuildPageHelper {
         })
 
         return memberCharacters.filter((character) => character.level >= 45)
+    }
+
+    guildXP() {
+        const allMembers = this.guildMembers()
+
+        const totalCurrentXP = allMembers.reduce((acc, member) => acc + levelToXP(member.level), 0)
+        return totalCurrentXP
     }
 }
 

@@ -16,7 +16,15 @@ const saveDeathsHashset = async (deathSet) => {
     console.log(`${timeStamp('success')} Death hashset data was saved to 'deathHash.json'`);
 }
 
+const levelToXP = (level) => {
+    const levelSquared = level * level
+    const levelCubic = levelSquared * level
+
+    return Math.trunc((levelCubic - (6 * levelSquared) + (17 * level) - 12) * (50 / 3))
+}
+
 module.exports = {
     getDeathsHashset,
-    saveDeathsHashset
+    saveDeathsHashset,
+    levelToXP
 };
