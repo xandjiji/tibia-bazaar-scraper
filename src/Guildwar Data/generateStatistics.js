@@ -61,6 +61,10 @@ const main = async () => {
         },
         xpStats: {
             ...persistentXPStats,
+            dailyXPDiff: {
+                guildA: calcDailyXPDiff(persistentXPStats.dailyXP.guildA),
+                guildB: calcDailyXPDiff(persistentXPStats.dailyXP.guildB)
+            },
             currentXP: { guildA: currentXPA, guildB: currentXPB },
             todayDiff: { guildA: currentXPA - todayGuildAXP, guildB: currentXPB - todayGuildBXP },
             lastDiff: { guildA: lastDiffA, guildB: lastDiffB }
@@ -79,6 +83,15 @@ const main = async () => {
 }
 
 main()
+
+const calcDailyXPDiff = (dailyXPArray) => {
+    const dailyXPDiff = []
+    for (let i = 1; i < dailyXPArray.length; i++) {
+        const currentDailyXP = dailyXPArray[i]
+        dailyXPDiff.push({ xp: currentDailyXP.xp - dailyXPArray[i - 1].xp, timeStamp: currentDailyXP.timeStamp })
+    }
+    return dailyXPDiff
+}
 
 const countDeaths = (guildArray) => guildArray.reduce((acc, member) => acc + member.deathCount, 0)
 
