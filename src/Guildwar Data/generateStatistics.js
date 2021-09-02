@@ -88,7 +88,7 @@ const calcDailyXPDiff = (dailyXPArray) => {
     const dailyXPDiff = []
     for (let i = 1; i < dailyXPArray.length; i++) {
         const currentDailyXP = dailyXPArray[i]
-        dailyXPDiff.push({ xp: currentDailyXP.xp - dailyXPArray[i - 1].xp, timeStamp: currentDailyXP.timeStamp })
+        dailyXPDiff.push({ xp: dailyXPArray[i - 1].xp - currentDailyXP.xp, timeStamp: currentDailyXP.timeStamp })
     }
     return dailyXPDiff
 }
