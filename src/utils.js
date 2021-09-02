@@ -45,6 +45,17 @@ const fetchAndLoad = async (url) => {
     return cheerio.load(html);
 }
 
+const fetchJson = async (url) => {
+    const response = await fetch(url);
+
+    const { status } = response;
+    if (status !== 200) {
+        throw new Error(`status code [${status}]`)
+    }
+
+    return await response.json();
+}
+
 const promiseAllInBatches = async (task, items, batchSize, onEachBatch) => {
     let position = 0;
     let results = [];
@@ -150,6 +161,7 @@ module.exports = {
     popNull,
     removeDuplicatesFromArrayByKey,
     fetchAndLoad,
+    fetchJson,
     timeStamp,
     promiseAllInBatches,
     maxRetry
