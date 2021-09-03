@@ -18,6 +18,9 @@ var persistedGuildB
 var currentGuildA = {}
 var currentGuildB = {}
 
+var lastDeathsGuildA = []
+var lastDeathsGuildB = []
+
 const formattedGuildNameA = 'Libertabra Pune'.replace(/ /g, '')
 const formattedGuildNameB = 'Bones Alliance'.replace(/ /g, '')
 const warStartDate = 1629946800000 // 26 Aug 2021
@@ -35,8 +38,8 @@ const main = async () => {
     onlineGuildA = filterFriendlyFire(onlineGuildA, currentGuildA)
     onlineGuildB = filterFriendlyFire(onlineGuildB, currentGuildB)
 
-    contabilizeDeath(onlineGuildA, currentGuildA, currentGuildB)
-    contabilizeDeath(onlineGuildB, currentGuildB, currentGuildA)
+    contabilizeDeath(onlineGuildA, currentGuildA, currentGuildB, lastDeathsGuildA)
+    contabilizeDeath(onlineGuildB, currentGuildB, currentGuildA, lastDeathsGuildB)
 
     mergeOldData(persistedGuildA, currentGuildA)
     mergeOldData(persistedGuildB, currentGuildB)
@@ -49,6 +52,12 @@ const main = async () => {
 
     await fs.writeFile(`./Output/war/${formattedGuildNameB}Data.json`, JSON.stringify(newGuildArrayB));
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameB}Data.json'`);
+
+    await fs.writeFile(`./Output/war/lastDeaths.json`, JSON.stringify({
+        guildA: lastDeathsGuildA,
+        guildB: lastDeathsGuildB,
+    }));
+    console.log(`${timeStamp('success')} Last deaths was saved to 'lastDeaths.json'`);
 
     await saveDeathsHashset(deathSet)
 }
@@ -72,12 +81,12 @@ const mergeOldData = (oldGuildData, currentGuildData) => {
     })
 }
 
-const contabilizeDeath = (onlineGuild, currentAlliedGuild, currentEnemyFullGuild) => {
+const contabilizeDeath = (onlineGuild, currentAlliedGuild, currentEnemyFullGuild, lastGuildDeaths) => {
     onlineGuild.forEach((member) => {
-        const { nickname, deathList } = member
+        const { nickname, level, vocation, deathList } = member
 
         deathList.forEach((death) => {
-            const { fullDate, fraggers } = death
+            const { fullDate, date, fraggers } = death
 
             deathSet.add(hash(`${nickname}${fullDate}`))
 
@@ -90,6 +99,8 @@ const contabilizeDeath = (onlineGuild, currentAlliedGuild, currentEnemyFullGuild
             if (currentAlliedGuild[nickname]) {
                 currentAlliedGuild[nickname].deathCount = currentAlliedGuild[nickname].deathCount + 1
             }
+
+            lastGuildDeaths.push({ nickname, level, vocation, timeStamp: date })
         })
     })
 }
@@ -122,7 +133,7 @@ const scrapGuild = async (guildName, currentGuildDictionary) => {
             kills: 0
         }
     })
-    /* guildMembers = guildMembers.slice(0, 20) */
+    /* guildMembers = guildMembers.slice(0, 4) */
     guildMembers = guildMembers.filter((member) => member.online)
     globalIndex = 0;
     globalDataSize = guildMembers.length

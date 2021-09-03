@@ -48,6 +48,9 @@ const main = async () => {
     const lastDiffA = previousStats.xpStats ? currentXPA - previousStats.xpStats.currentXP.guildA : 0
     const lastDiffB = previousStats.xpStats ? currentXPB - previousStats.xpStats.currentXP.guildB : 0
 
+    let lastDeaths = await fs.readFile(`./Output/war/lastDeaths.json`, 'utf-8');
+    lastDeaths = JSON.parse(lastDeaths)
+
     const stats = {
         onlineCount: {
             guildA: pushAndShift({ count: onlineGuildA, timeStamp }, onlineCount.guildA),
@@ -76,7 +79,8 @@ const main = async () => {
         top10Deaths: {
             guildA: puneMostFeeders,
             guildB: bonesMostFeeders
-        }
+        },
+        lastDeaths
     }
 
     await fs.writeFile(`./Output/war/${statisticsFileName}.json`, JSON.stringify(stats))
