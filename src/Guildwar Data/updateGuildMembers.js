@@ -24,6 +24,7 @@ var lastDeathsGuildB = []
 const formattedGuildNameA = 'Libertabra Pune'.replace(/ /g, '')
 const formattedGuildNameB = 'Bones Alliance'.replace(/ /g, '')
 const warStartDate = 1629946800000 // 26 Aug 2021
+const MILLISECONDS_IN_AN_HOUR = 3600000
 
 const main = async () => {
     deathSet = await getDeathsHashset()
@@ -84,6 +85,8 @@ const mergeOldData = (oldGuildData, currentGuildData) => {
 }
 
 const contabilizeDeath = (onlineGuild, currentAlliedGuild, currentEnemyFullGuild, lastGuildDeaths) => {
+    const currentTimestamp = +new Date()
+
     onlineGuild.forEach((member) => {
         const { nickname, level, vocation, deathList } = member
 
@@ -102,7 +105,7 @@ const contabilizeDeath = (onlineGuild, currentAlliedGuild, currentEnemyFullGuild
                 currentAlliedGuild[nickname].deathCount = currentAlliedGuild[nickname].deathCount + 1
             }
 
-            lastGuildDeaths.push({ nickname, level, vocation, timeStamp: date })
+            if (currentTimestamp - date <= MILLISECONDS_IN_AN_HOUR) lastGuildDeaths.push({ nickname, level, vocation, timeStamp: date })
         })
     })
 }
