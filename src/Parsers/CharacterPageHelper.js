@@ -33,8 +33,7 @@ class CharacterPageHelper {
 
             let fullDate = dateElement.children[0].data
             fullDate = fullDate.replace(/ /g, ' ');
-            const [dateString] = fullDate.split(',')
-            const deathTimestamp = +new Date(dateString)
+            const deathTimestamp = parseDateStringToTimestamp(fullDate)
 
             const killers = this.$('a', element)
             const killerList = []
@@ -47,6 +46,13 @@ class CharacterPageHelper {
 
         return deathList
     }
+}
+
+const parseDateStringToTimestamp = (dateString) => {
+    const [date, time] = dateString.split(',')
+    const [, timeString, timezone] = time.split(' ')
+
+    return +new Date(`${date}, ${timeString} GMT+2`)
 }
 
 module.exports = CharacterPageHelper;
