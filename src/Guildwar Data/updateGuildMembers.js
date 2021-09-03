@@ -54,13 +54,15 @@ const main = async () => {
     console.log(`${timeStamp('success')} All guild data was saved to '${formattedGuildNameB}Data.json'`);
 
     await fs.writeFile(`./Output/war/lastDeaths.json`, JSON.stringify({
-        guildA: lastDeathsGuildA,
-        guildB: lastDeathsGuildB,
+        guildA: lastDeathsGuildA.sort(sortBylevel),
+        guildB: lastDeathsGuildB.sort(sortBylevel),
     }));
     console.log(`${timeStamp('success')} Last deaths was saved to 'lastDeaths.json'`);
 
     await saveDeathsHashset(deathSet)
 }
+
+const sortBylevel = (a, b) => b.level - a.level
 
 const buildGuildArray = (currentGuild) => Object.keys(currentGuild).map((nickname) => ({
     nickname,
