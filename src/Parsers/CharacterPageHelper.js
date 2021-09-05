@@ -32,16 +32,18 @@ class CharacterPageHelper {
             const dateElement = element.children[0]
 
             let fullDate = dateElement.children[0].data
-            fullDate = fullDate.replace(/ /g, ' ');
-            const deathTimestamp = parseDateStringToTimestamp(fullDate)
+            if (fullDate) {
+                fullDate = fullDate.replace(/ /g, ' ');
+                const deathTimestamp = parseDateStringToTimestamp(fullDate)
 
-            const killers = this.$('a', element)
-            const killerList = []
-            killers.each((index, element) => {
-                killerList.push(element.children[0].data)
-            })
+                const killers = this.$('a', element)
+                const killerList = []
+                killers.each((index, element) => {
+                    killerList.push(element.children[0].data)
+                })
 
-            deathList.push({ date: deathTimestamp, fullDate, fraggers: killerList })
+                deathList.push({ date: deathTimestamp, fullDate, fraggers: killerList })
+            }
         })
 
         return deathList
