@@ -1,7 +1,7 @@
 #bazaar data
-*/10 0-4,7-23 * * * /usr/bin/sh /home/pi/updateScrap.sh
+*/10 0-5,8-23 * * * /usr/bin/sh /home/pi/updateScrap.sh
 
-45 5 * * * /usr/bin/sh /home/pi/dailyScrap.sh
+45 6 * * * /usr/bin/sh /home/pi/dailyScrap.sh
 
 
 #war data
@@ -13,4 +13,4 @@
 #0 0-21/3 * * * /usr/bin/sh /home/pi/updateWar.sh
 #30 1-22/3 * * * /usr/bin/sh /home/pi/updateWar.sh
 
-25 5 * * * /usr/bin/sh /home/pi/dailyXP.sh
+#25 6 * * * /usr/bin/sh /home/pi/dailyXP.sh
