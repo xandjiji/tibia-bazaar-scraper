@@ -214,7 +214,7 @@ class AuctionPageHelper {
     hasSoulwar() {
         const outfitsElement = this.$('.TableContent tbody')[15];
 
-        if (this.level() < 400) {
+        if (this.level() < 250) {
             return false;
         } else {
             return searchSoulwar(outfitsElement.children[0].children[0].children[0].children[1].children);
