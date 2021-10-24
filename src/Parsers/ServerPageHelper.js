@@ -13,7 +13,7 @@ class ServerPageHelper {
     }
 
     serverArray() {
-        const tableElement = this.$('.Table3 .InnerTableContainer > table > tbody > tr:nth-child(3) .TableContent tr:not(.LabelH)');
+        const tableElement = this.$('.Odd, .Even');
         return tableElement;
     }
 
