@@ -19,4 +19,4 @@ cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/worker-exevopan/src/Data
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/worker-exevopan/src/Data
 
 cd ~/worker-exevopan/
-wrangler publish
+/home/pi/.cargo/bin/wrangler publish
