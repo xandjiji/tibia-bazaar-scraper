@@ -13,3 +13,10 @@ git add .
 git commit -m "`date`"
 git push --set-upstream origin deploy
 git checkout main
+
+cp ~/tibia-bazaar-scraper/Output/MinifiedCharacterData.json ~/worker-exevopan/src/Data
+cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/worker-exevopan/src/Data
+cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/worker-exevopan/src/Data
+
+cd ~/worker-exevopan/src/Data
+wrangler publish
