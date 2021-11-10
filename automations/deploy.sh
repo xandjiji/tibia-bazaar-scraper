@@ -18,5 +18,5 @@ cp ~/tibia-bazaar-scraper/Output/MinifiedCharacterData.json ~/worker-exevopan/sr
 cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/worker-exevopan/src/Data
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/worker-exevopan/src/Data
 
-cd ~/worker-exevopan/src/Data
+cd ~/worker-exevopan/
 wrangler publish
