@@ -1,13 +1,20 @@
 const fetch = require("node-fetch");
 const fs = require("fs").promises;
+const { timeStamp } = require('./utils');
 
 const main = async () => {
+    console.log(`${timeStamp('system')} loading LatestCharacterData.json ...`);
     let currentAuctions = await fs.readFile(
         "./Output/LatestCharacterData.json",
         "utf-8"
     );
     currentAuctions = JSON.parse(currentAuctions);
 
+    console.log(`${timeStamp('system')} loading ServerData.json ...`);
+    let serverData = await fs.readFile('./Output/ServerData.json', 'utf-8');
+    serverData = Object.values(JSON.parse(serverData));
+
+    console.log(`${timeStamp('system')} fetching highlighted data from endpoint ...`);
     let highlightedAuctions = await fetch(
         "https://exevo-pan-highlighted.netlify.app/highlighted.json"
     );
@@ -22,8 +29,12 @@ const main = async () => {
 
     const highlightedIds = highlightedAuctions.map((auction) => auction.id)
 
-    const highlightedAuctionsObject = currentAuctions.filter((auction) =>
-        highlightedIds.includes(auction.id))
+    const highlightedAuctionsObject = currentAuctions
+        .filter((auction) => highlightedIds.includes(auction.id))
+        .map((auction) => ({
+            ...auction,
+            serverData: serverData.find(({ serverId }) => serverId === auction.serverId)
+        }))
 
     await fs.writeFile('./Output/HighlightedAuctions.json', JSON.stringify(highlightedAuctionsObject));
 };
