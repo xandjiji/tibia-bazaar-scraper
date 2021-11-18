@@ -14,9 +14,11 @@ const main = async () => {
     highlightedAuctions = await highlightedAuctions.json();
 
     const currentDate = currentStringDate();
-    highlightedAuctions = highlightedAuctions.filter((auction) =>
-        auction.days.includes(currentDate)
-    );
+    highlightedAuctions = highlightedAuctions
+        .map(normalizeAuctionDates)
+        .filter((auction) =>
+            auction.days.includes(currentDate)
+        );
 
     const highlightedIds = highlightedAuctions.map((auction) => auction.id)
 
@@ -26,12 +28,23 @@ const main = async () => {
     await fs.writeFile('./Output/HighlightedAuctions.json', JSON.stringify(highlightedAuctionsObject));
 };
 
+const padDate = (value) => value.toString().padStart(2, '0')
+
+const normalizeAuctionDates = (auction) =>
+({
+    ...auction,
+    days: auction.days.map((dateString) => dateString
+        .split('/')
+        .map(padDate)
+        .join('/'))
+})
+
 const currentStringDate = () => {
     const date = new Date();
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`
+    return `${padDate(day)}/${padDate(month)}/${year}`
 };
 
 main();
