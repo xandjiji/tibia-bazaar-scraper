@@ -235,12 +235,12 @@ class AuctionPageHelper {
         achievementsElement.children.shift();
         achievementsElement.children.pop();
 
-        const list = []
+        const questSet = new Set([])
         achievementsElement.children.forEach((element) => {
             const achievement = element.children[0].children[0].data
             const quest = questList[achievement]
             if (quest) {
-                list.push(quest)
+                questSet.add(quest)
             }
         })
 
@@ -251,11 +251,11 @@ class AuctionPageHelper {
             const questText = element.children[0].children[0].data
             const quest = questList[questText]
             if (quest) {
-                list.push(quest)
+                questSet.add(quest)
             }
         })
 
-        return list
+        return [...questSet]
     }
 
     outfits() {
