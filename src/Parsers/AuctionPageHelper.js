@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const { timeStamp, dateParsing, popNull } = require('../utils');
 const { powerfulToReadable } = require('../dataDictionary');
+const { quests: questList } = require('./achievements')
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -227,6 +228,46 @@ class AuctionPageHelper {
             }
             return false;
         }
+    }
+
+    quests() {
+        const achievementsElement = this.$('.TableContent tbody')[25];
+        achievementsElement.children.shift();
+        achievementsElement.children.pop();
+
+        const list = []
+        achievementsElement.children.forEach((element) => {
+            const achievement = element.children[0].children[0].data
+            const quest = questList[achievement]
+            if (quest) {
+                list.push(quest)
+            }
+        })
+
+        const questsElement = this.$('.TableContent tbody')[22];
+        questsElement.children.shift();
+        questsElement.children.pop();
+        questsElement.children.forEach((element) => {
+            const questText = element.children[0].children[0].data
+            const quest = questList[questText]
+            if (quest) {
+                list.push(quest)
+            }
+        })
+
+        const titlesElement = this.$('.TableContent tbody')[24];
+        titlesElement.children.shift();
+        titlesElement.children.pop();
+        titlesElement.children.forEach((element) => {
+            const titleText = element.children[0].children[0].data
+            const quest = questList[titleText]
+            if (quest) {
+                list.push(quest)
+            }
+        })
+
+
+        return list
     }
 
     charObject() {

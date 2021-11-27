@@ -1,10 +1,9 @@
-const quests = [
-  {
+const quests = {
     "Honorary Barbarian": "Barbarian Test",
     "Lion's Den Explorer": "Lion's Rock",
     Matchmaker: "The Shattered Isles",
     "Snake Charmer": "Twenty Miles Beneath the Sea",
-    /* "Blood Brothers": "Blood Brothers", */
+    "Blood Brothers": "Blood Brothers",
     "Champion of Chazorai": "The New Frontier",
     Godslayer: "Wrath of the Emperor",
     "Friend of the Apes": "The Ape City",
@@ -36,12 +35,10 @@ const quests = [
     "Marid Ally": "The Djinn War (blue)",
     "Recognised Trader": "The Travelling Trader (Rashid)",
     "Golem in the Gears": "Shadows of Yalahar",
-    /* Planegazer: "Opticording Sphere", */
-  },
-];
+    Planegazer: "Opticording Sphere",
+}
 
-const outfits = [
-  {
+const outfits = {
     Alumni: "Mage",
     "Mystic Fabric Magic": "Elementalist",
     "Inquisition's Arm": "Hand of the Inquisition",
@@ -88,11 +85,10 @@ const outfits = [
     "Way of the Shaman": "Shaman",
     "Widely Travelled": "Discoverer",
     "Wild Warrior": "Warrior",
-  },
-];
+}
 
-const mounts = [
-  {
+
+const mounts = {
     Bearbaiting: "War Bear",
     "Beneath the Sea": "Manta Ray",
     Bibliomaniac: "Fleeting Knowledge",
@@ -147,16 +143,15 @@ const mounts = [
     "Way to Hell": "Magma Crawler",
     "Well Roared, Lion!": "White Liton",
     "You Got Horse Power": "Phantasmal Jade",
-  },
-];
+}
 
 const misc = [
-  "His True Face",
-  "Razing!",
-  "The More the Merrier",
-  "Torn Treasures",
-  "Transmutator",
-  "Vortex Tamer",
+    "His True Face",
+    "Razing!",
+    "The More the Merrier",
+    "Torn Treasures",
+    "Transmutator",
+    "Vortex Tamer",
 ];
 
-module.exports = { quests, outifts, mounts, misc };
+module.exports = { quests, outfits, mounts, misc };
