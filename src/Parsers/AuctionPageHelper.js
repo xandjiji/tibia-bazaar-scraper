@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const { timeStamp, dateParsing, popNull } = require('../utils');
 const { powerfulToReadable } = require('../dataDictionary');
-const { quests: questList } = require('./achievements')
+const { quests: questList, outfits: outfitList } = require('./achievements')
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -256,6 +256,32 @@ class AuctionPageHelper {
         })
 
         return list
+    }
+
+    outfits() {
+        const achievementsElement = this.$('.TableContent tbody')[25];
+        achievementsElement.children.shift();
+        achievementsElement.children.pop();
+
+        const outfitSet = new Set([])
+        achievementsElement.children.forEach((element) => {
+            const achievement = element.children[0].children[0].data
+            const outfit = outfitList[achievement]
+            if (outfit) {
+                outfitSet.add(outfit)
+            }
+        })
+
+        const outfitElement = this.$('.TableContent tbody')[15];
+
+        cheerio('.CVIcon', outfitElement).each((_, element) => {
+            const title = element.attribs.title
+            if (title !== 'Mage (base & addon 1 & addon 2)') return
+            if (title !== 'Mage (base & addon 2)') return
+            outfitSet.add('Mage')
+        })
+
+        return [...outfitSet]
     }
 
     charObject() {
