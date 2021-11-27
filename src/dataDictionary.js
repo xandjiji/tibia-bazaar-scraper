@@ -1,3 +1,5 @@
+const { quests, outfits, mounts, misc: rareAchievements } = require('./Parsers/achievements');
+
 const dictionaryFactory = (keyArray) => {
     const dictionaryObject = {
         ...keyArray
@@ -35,6 +37,30 @@ const objectToMinified = (charObject) => {
     }
     minifiedData[charObjectDictionary['imbuements']] = imbuementsArray;
 
+    const questsArray = [];
+    for (const quest of charObject.quests) {
+        questsArray.push(questDictionary[quest]);
+    }
+    minifiedData[charObjectDictionary['quests']] = questsArray;
+
+    const outfitsArray = [];
+    for (const outfit of charObject.outfits) {
+        outfitsArray.push(outfitDictionary[outfit]);
+    }
+    minifiedData[charObjectDictionary['outfits']] = outfitsArray;
+
+    const mountsArray = [];
+    for (const mount of charObject.mounts) {
+        mountsArray.push(mountDictionary[mount]);
+    }
+    minifiedData[charObjectDictionary['mounts']] = mountsArray;
+
+    const rareAchievementsArray = [];
+    for (const achievement of charObject.rareAchievements) {
+        rareAchievementsArray.push(achievementDictionary[achievement]);
+    }
+    minifiedData[charObjectDictionary['rareAchievements']] = rareAchievementsArray;
+
     return [...minifiedData];
 }
 
@@ -63,6 +89,30 @@ const minifiedToObject = (minifiedArray) => {
     }
     charObject.imbuements = imbuementsArray;
 
+    const questsArray = [];
+    for (const quest of charObject.quests) {
+        questsArray.push(questDictionary[quest]);
+    }
+    charObject.quests = questsArray;
+
+    const outfitsArray = [];
+    for (const outfit of charObject.outfits) {
+        outfitsArray.push(outfitDictionary[outfit]);
+    }
+    charObject.outfits = outfitsArray;
+
+    const mountsArray = [];
+    for (const mount of charObject.mounts) {
+        mountsArray.push(mountDictionary[mount]);
+    }
+    charObject.mounts = mountsArray;
+
+    const rareAchievementsArray = [];
+    for (const achievement of charObject.rareAchievements) {
+        rareAchievementsArray.push(achievementDictionary[achievement]);
+    }
+    charObject.rareAchievements = rareAchievementsArray;
+
     return { ...charObject };
 }
 
@@ -81,7 +131,10 @@ const charObjectDictionary = dictionaryFactory([
     'charms',
     'transfer',
     'imbuements',
-    'hasSoulwar'
+    'quests',
+    'outfits',
+    'mounts',
+    'rareAchievements'
 ]);
 
 const skillsDictionary = dictionaryFactory([
@@ -168,6 +221,11 @@ const powerfulToReadable = {
     'Powerful Quara Scale': 'Ice Protection',
     'Powerful Snake Skin': 'Earth Protection'
 }
+
+const questDictionary = dictionaryFactory(Object.values(quests));
+const outfitDictionary = dictionaryFactory(Object.values(outfits));
+const mountDictionary = dictionaryFactory(Object.values(mounts));
+const achievementDictionary = dictionaryFactory(Object.values(rareAchievements));
 
 module.exports = {
     objectToMinified,

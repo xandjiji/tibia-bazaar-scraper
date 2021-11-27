@@ -212,24 +212,6 @@ class AuctionPageHelper {
         }
     }
 
-    hasSoulwar() {
-        const outfitsElement = this.$('.TableContent tbody')[15];
-
-        if (this.level() < 250) {
-            return false;
-        } else {
-            return searchSoulwar(outfitsElement.children[0].children[0].children[0].children[1].children);
-        }
-
-        function searchSoulwar(elementArray) {
-            for (let i = elementArray.length - 1; i >= 0; i--) {
-                const outfitText = elementArray[i].attribs.title;
-                if (/Revenant/.test(outfitText)) return true;
-            }
-            return false;
-        }
-    }
-
     quests() {
         const achievementsElement = this.$('.TableContent tbody')[25];
         achievementsElement.children.shift();
@@ -340,7 +322,10 @@ class AuctionPageHelper {
             charms: this.charms(),
             transfer: this.transfer(),
             imbuements: this.imbuements(),
-            hasSoulwar: this.hasSoulwar()
+            quests: this.quests(),
+            outfits: this.outfits(),
+            mounts: this.mounts(),
+            rareAchievements: this.rareAchievements()
         }
     }
 }

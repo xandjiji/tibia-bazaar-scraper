@@ -1,4 +1,11 @@
 const quests = {
+    "The Postman Missions": "The Postman Missions",
+    "The Djinn War - Marid Faction": "The Djinn War (green)",
+    "The Djinn War - Efreet Faction": "The Djinn War (blue)",
+    "Recognised Trader": "The Travelling Trader (Rashid)",
+    "The Thieves Guild": "The Thieves Guild",
+    "The Explorer Society": "The Explorer Society",
+    "Shadows of Yalahar": "Shadows of Yalahar",
     "Honorary Barbarian": "Barbarian Test",
     "Lion's Den Explorer": "Lion's Rock",
     "The Shattered Isles": "The Shattered Isles",
@@ -32,18 +39,9 @@ const quests = {
     "His Days are Counted": "Dangerous Depths (Warzone 5)",
     "Duked it Out": "Dangerous Depths (Warzone 6)",
     "Soul War": "Soul War",
-    "The Postman Missions": "The Postman Missions",
-    "The Djinn War - Marid Faction": "The Djinn War (green)",
-    "The Djinn War - Efreet Faction": "The Djinn War (blue)",
-    "Recognised Trader": "The Travelling Trader (Rashid)",
-    "The Thieves Guild": "The Thieves Guild",
-    "The Explorer Society": "The Explorer Society",
-    "Shadows of Yalahar": "Shadows of Yalahar"
 }
 
 const outfits = {
-    Alumni: "Mage",
-    "Mystic Fabric Magic": "Elementalist",
     "Inquisition's Arm": "Hand of the Inquisition",
     "Exemplary Citizen": "Citzen",
     "Hunting with Style": "Hunter",
@@ -88,6 +86,8 @@ const outfits = {
     "Way of the Shaman": "Shaman",
     "Widely Travelled": "Discoverer",
     "Wild Warrior": "Warrior",
+    Alumni: "Mage",
+    "Mystic Fabric Magic": "Elementalist",
 }
 
 const mounts = {
@@ -143,6 +143,8 @@ const mounts = {
     "Well Roared, Lion!": "White Liton",
     "You Got Horse Power": "Phantasmal Jade",
     "Vortex Tamer": "Vortexion",
+    "Neon Sparkid": "Neon Sparkid",
+    "Sparkion": "Sparkion"
 }
 
 const misc = {
