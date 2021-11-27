@@ -255,18 +255,6 @@ class AuctionPageHelper {
             }
         })
 
-        const titlesElement = this.$('.TableContent tbody')[24];
-        titlesElement.children.shift();
-        titlesElement.children.pop();
-        titlesElement.children.forEach((element) => {
-            const titleText = element.children[0].children[0].data
-            const quest = questList[titleText]
-            if (quest) {
-                list.push(quest)
-            }
-        })
-
-
         return list
     }
 
