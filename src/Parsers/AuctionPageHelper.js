@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const { timeStamp, dateParsing, popNull } = require('../utils');
 const { powerfulToReadable } = require('../dataDictionary');
-const { quests: questList, outfits: outfitList } = require('./achievements')
+const { quests: questList, outfits: outfitList, mounts: mountList } = require('./achievements')
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -273,7 +273,6 @@ class AuctionPageHelper {
         })
 
         const outfitElement = this.$('.TableContent tbody')[15];
-
         cheerio('.CVIcon', outfitElement).each((_, element) => {
             const title = element.attribs.title
             if (title !== 'Mage (base & addon 1 & addon 2)') return
@@ -282,6 +281,30 @@ class AuctionPageHelper {
         })
 
         return [...outfitSet]
+    }
+
+    mounts() {
+        const achievementsElement = this.$('.TableContent tbody')[25];
+        achievementsElement.children.shift();
+        achievementsElement.children.pop();
+
+        const mountSet = new Set([])
+        achievementsElement.children.forEach((element) => {
+            const achievement = element.children[0].children[0].data
+            const mount = mountList[achievement]
+            if (mount) {
+                mountSet.add(mount)
+            }
+        })
+
+        const mountElement = this.$('.TableContent tbody')[13];
+        cheerio('.CVIcon', mountElement).each((_, element) => {
+            const title = element.attribs.title
+            if (title === 'Neon Sparkid') mountSet.add('Neon Sparkid')
+            if (title === 'Sparkion') mountSet.add('Sparkion')
+        })
+
+        return [...mountSet]
     }
 
     charObject() {
