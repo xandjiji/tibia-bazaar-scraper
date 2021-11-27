@@ -60,7 +60,10 @@ const scrapSinglePage = async (charObject) => {
         charms: helper.charms(),
         transfer: helper.transfer(),
         imbuements: helper.imbuements(),
-        hasSoulwar: helper.hasSoulwar()
+        quests: helper.quests(),
+        outfits: helper.outfits(),
+        mounts: helper.mounts(),
+        rareAchievements: helper.rareAchievements()
     };
 }
 
