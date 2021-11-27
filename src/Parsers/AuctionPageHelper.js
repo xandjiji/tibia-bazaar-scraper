@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const { timeStamp, dateParsing, popNull } = require('../utils');
 const { powerfulToReadable } = require('../dataDictionary');
-const { quests: questList, outfits: outfitList, mounts: mountList } = require('./achievements')
+const { quests: questList, outfits: outfitList, mounts: mountList, misc: miscList } = require('./achievements')
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -305,6 +305,23 @@ class AuctionPageHelper {
         })
 
         return [...mountSet]
+    }
+
+    rareAchievements() {
+        const achievementsElement = this.$('.TableContent tbody')[25];
+        achievementsElement.children.shift();
+        achievementsElement.children.pop();
+
+        const achievementSet = new Set([])
+        achievementsElement.children.forEach((element) => {
+            const achievement = element.children[0].children[0].data
+            const rareAchiev = miscList[achievement]
+            if (rareAchiev) {
+                achievementSet.add(rareAchiev)
+            }
+        })
+
+        return [...achievementSet]
     }
 
     charObject() {

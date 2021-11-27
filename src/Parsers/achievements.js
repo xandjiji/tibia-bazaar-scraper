@@ -90,7 +90,6 @@ const outfits = {
     "Wild Warrior": "Warrior",
 }
 
-
 const mounts = {
     Bearbaiting: "War Bear",
     "Beneath the Sea": "Manta Ray",
@@ -146,13 +145,10 @@ const mounts = {
     "Vortex Tamer": "Vortexion",
 }
 
-const misc = [
-    "His True Face",
-    "Razing!",
-    "The More the Merrier",
-    "Torn Treasures",
-    "Transmutator",
-    "Vortex Tamer",
-];
+const misc = {
+    "His True Face": "His True Face",
+    "Razing!": "Razing!",
+    "The More the Merrier": "The More the Merrier",
+}
 
 module.exports = { quests, outfits, mounts, misc };
