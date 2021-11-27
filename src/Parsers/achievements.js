@@ -158,3 +158,5 @@ const misc = [
   "Transmutator",
   "Vortex Tamer",
 ];
+
+module.exports = { quests, outifts, mounts, misc };
