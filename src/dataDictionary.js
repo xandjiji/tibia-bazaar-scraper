@@ -1,5 +1,7 @@
 const { quests, outfits, mounts, misc: rareAchievements } = require('./Parsers/achievements');
 
+const sortDec = (a, b) => a - b
+
 const dictionaryFactory = (keyArray) => {
     const dictionaryObject = {
         ...keyArray
@@ -35,12 +37,14 @@ const objectToMinified = (charObject) => {
     for (const imbuement of charObject.imbuements) {
         imbuementsArray.push(imbuementDictionary[imbuement]);
     }
+    imbuementsArray.sort(sortDec)
     minifiedData[charObjectDictionary['imbuements']] = imbuementsArray;
 
     const questsArray = [];
     for (const quest of charObject.quests) {
         questsArray.push(questDictionary[quest]);
     }
+    questsArray.sort(sortDec)
     minifiedData[charObjectDictionary['quests']] = questsArray;
 
     const outfitsArray = [];
@@ -234,5 +238,9 @@ module.exports = {
     skillsDictionary,
     charmDictionary,
     imbuementDictionary,
-    powerfulToReadable
+    powerfulToReadable,
+    questDictionary,
+    outfitDictionary,
+    mountDictionary,
+    achievementDictionary
 }
