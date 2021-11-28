@@ -219,7 +219,7 @@ class AuctionPageHelper {
 
         const questSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data
+            const achievement = element.children[0].children[0].data.trim()
             const quest = questList[achievement]
             if (quest) {
                 questSet.add(quest)
@@ -247,7 +247,7 @@ class AuctionPageHelper {
 
         const outfitSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data
+            const achievement = element.children[0].children[0].data.trim()
             const outfit = outfitList[achievement]
             if (outfit) {
                 outfitSet.add(outfit)
@@ -272,7 +272,7 @@ class AuctionPageHelper {
 
         const mountSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data
+            const achievement = element.children[0].children[0].data.trim()
             const mount = mountList[achievement]
             if (mount) {
                 mountSet.add(mount)
@@ -296,7 +296,7 @@ class AuctionPageHelper {
 
         const achievementSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data
+            const achievement = element.children[0].children[0].data.trim()
             const rareAchiev = miscList[achievement]
             if (rareAchiev) {
                 achievementSet.add(rareAchiev)
