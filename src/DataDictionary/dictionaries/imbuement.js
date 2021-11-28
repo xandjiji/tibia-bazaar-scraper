@@ -1,6 +1,6 @@
-const { dictionaryFactory } = require('../utils')
+const { lowerCaseKeys, dictionaryFactory } = require('../utils')
 
-const scrapingTokens = {
+const scrapingTokens = lowerCaseKeys({
     'Powerful Strike': 'Critical Hit',
     'Powerful Vampirism': 'Life Leech',
     'Powerful Void': 'Mana Leech',
@@ -24,7 +24,7 @@ const scrapingTokens = {
     'Powerful Lich Shroud': 'Death Protection',
     'Powerful Quara Scale': 'Ice Protection',
     'Powerful Snake Skin': 'Earth Protection'
-}
+})
 
 const tokens = Object.values(scrapingTokens)
 

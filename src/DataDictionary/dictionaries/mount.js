@@ -1,6 +1,6 @@
-const { dictionaryFactory } = require('../utils')
+const { lowerCaseKeys, dictionaryFactory } = require('../utils')
 
-const scrapingTokens = {
+const scrapingTokens = lowerCaseKeys({
     Bearbaiting: "War Bear",
     "Beneath the Sea": "Manta Ray",
     Bibliomaniac: "Fleeting Knowledge",
@@ -39,7 +39,7 @@ const scrapingTokens = {
     "Rhino Rider": "Stone Rhino",
     "Running the Rift": "Rift Runner",
     "Scales and Tail": "Draptor",
-    "Shell we take a Ride": "Shellodon",
+    "Shell We Take a Ride": "Shellodon",
     "Slugging Around": "Tiger Slug",
     "Spin-Off": "Widow Queen",
     "Starless Night": "Midnight Panther",
@@ -55,7 +55,7 @@ const scrapingTokens = {
     "Vortex Tamer": "Vortexion",
     "Neon Sparkid": "Neon Sparkid",
     "Sparkion": "Sparkion"
-}
+})
 
 const tokens = Object.values(scrapingTokens)
 

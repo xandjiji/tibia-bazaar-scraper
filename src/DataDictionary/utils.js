@@ -1,5 +1,12 @@
 const sortDec = (a, b) => a - b
 
+const lowerCaseKeys = (object) => {
+    const newObject = {}
+    Object.keys(object).forEach((key) => newObject[key.toLowerCase()] = object[key])
+
+    return newObject
+}
+
 const dictionaryFactory = (keyArray) => {
     const dictionaryObject = {
         ...keyArray
@@ -12,4 +19,4 @@ const dictionaryFactory = (keyArray) => {
     return dictionaryObject;
 }
 
-module.exports = { sortDec, dictionaryFactory }
+module.exports = { sortDec, lowerCaseKeys, dictionaryFactory }

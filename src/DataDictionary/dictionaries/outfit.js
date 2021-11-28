@@ -1,6 +1,6 @@
-const { dictionaryFactory } = require('../utils')
+const { lowerCaseKeys, dictionaryFactory } = require('../utils')
 
-const scrapingTokens = {
+const scrapingTokens = lowerCaseKeys({
     "Inquisition's Arm": "Hand of the Inquisition",
     "Exemplary Citizen": "Citzen",
     "Hunting with Style": "Hunter",
@@ -47,7 +47,7 @@ const scrapingTokens = {
     "Wild Warrior": "Warrior",
     Alumni: "Mage",
     "Mystic Fabric Magic": "Elementalist",
-}
+})
 
 const tokens = Object.values(scrapingTokens)
 

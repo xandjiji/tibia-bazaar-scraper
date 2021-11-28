@@ -212,7 +212,7 @@ class AuctionPageHelper {
         return imbuementsData.sort();
 
         function scrapImbuements(element) {
-            const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
+            const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()?.toLowerCase()
             return imbuement.scrapingTokens[imbuementText];
         }
     }
@@ -224,7 +224,7 @@ class AuctionPageHelper {
 
         const questSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data?.trim()
+            const achievement = element.children[0].children[0].data?.trim()?.toLowerCase()
             const quest = questList[achievement]
             if (quest) {
                 questSet.add(quest)
@@ -235,7 +235,7 @@ class AuctionPageHelper {
         questsElement.children.shift();
         questsElement.children.pop();
         questsElement.children.forEach((element) => {
-            const questText = element.children[0].children[0].data
+            const questText = element.children[0].children[0].data?.toLowerCase()
             const quest = questList[questText]
             if (quest) {
                 questSet.add(quest)
@@ -252,7 +252,7 @@ class AuctionPageHelper {
 
         const outfitSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data?.trim()
+            const achievement = element.children[0].children[0].data?.trim()?.toLowerCase()
             const outfit = outfitList[achievement]
             if (outfit) {
                 outfitSet.add(outfit)
@@ -277,7 +277,7 @@ class AuctionPageHelper {
 
         const mountSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data?.trim()
+            const achievement = element.children[0].children[0].data?.trim()?.toLowerCase()
             const mount = mountList[achievement]
             if (mount) {
                 mountSet.add(mount)
@@ -301,7 +301,7 @@ class AuctionPageHelper {
 
         const achievementSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data?.trim()
+            const achievement = element.children[0].children[0].data?.trim()?.toLowerCase()
             const rareAchiev = rareAchievementList[achievement]
             if (rareAchiev) {
                 achievementSet.add(rareAchiev)

@@ -1,6 +1,6 @@
-const { dictionaryFactory } = require('../utils')
+const { lowerCaseKeys, dictionaryFactory } = require('../utils')
 
-const scrapingTokens = {
+const scrapingTokens = lowerCaseKeys({
     "The Postman Missions": "The Postman Missions",
     "The Djinn War - Marid Faction": "The Djinn War (green)",
     "The Djinn War - Efreet Faction": "The Djinn War (blue)",
@@ -39,9 +39,9 @@ const scrapingTokens = {
     "Gnomish Art of War": "Bigfoot's Burden (Free boss access)",
     "Buried the Baron": "Dangerous Depths (Warzone 4)",
     "His Days are Counted": "Dangerous Depths (Warzone 5)",
-    "Duked it Out": "Dangerous Depths (Warzone 6)",
+    "Duked It Out": "Dangerous Depths (Warzone 6)",
     "Soul War": "Soul War",
-}
+})
 
 const tokens = Object.values(scrapingTokens)
 
