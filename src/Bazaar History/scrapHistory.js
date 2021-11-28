@@ -8,7 +8,7 @@ const {
     maxRetry,
     sleep
 } = require('../utils');
-const { objectToMinified } = require('../dataDictionary');
+const { objectToMinified } = require('../DataDictionary');
 const { MAX_CONCURRENT_REQUESTS, DELAY, MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
 

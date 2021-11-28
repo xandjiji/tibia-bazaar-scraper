@@ -1,7 +1,12 @@
 const cheerio = require('cheerio');
 const { timeStamp, dateParsing, popNull } = require('../utils');
-const { powerfulToReadable } = require('../dataDictionary');
-const { quests: questList, outfits: outfitList, mounts: mountList, misc: miscList } = require('./achievements')
+const {
+    imbuement,
+    quest: { scrapingTokens: questList },
+    outfit: { scrapingTokens: outfitList },
+    mount: { scrapingTokens: mountList },
+    rareAchievement: { scrapingTokens: rareAchievementList }
+} = require('../DataDictionary/dictionaries');
 const fs = require('fs').promises;
 
 class AuctionPageHelper {
@@ -208,7 +213,7 @@ class AuctionPageHelper {
 
         function scrapImbuements(element) {
             const imbuementText = cheerio('tr:not(.IndicateMoreEntries) td', element).text()
-            return powerfulToReadable[imbuementText];
+            return imbuement.scrapingTokens[imbuementText];
         }
     }
 
@@ -219,7 +224,7 @@ class AuctionPageHelper {
 
         const questSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data.trim()
+            const achievement = element.children[0].children[0].data?.trim()
             const quest = questList[achievement]
             if (quest) {
                 questSet.add(quest)
@@ -247,7 +252,7 @@ class AuctionPageHelper {
 
         const outfitSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data.trim()
+            const achievement = element.children[0].children[0].data?.trim()
             const outfit = outfitList[achievement]
             if (outfit) {
                 outfitSet.add(outfit)
@@ -272,7 +277,7 @@ class AuctionPageHelper {
 
         const mountSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data.trim()
+            const achievement = element.children[0].children[0].data?.trim()
             const mount = mountList[achievement]
             if (mount) {
                 mountSet.add(mount)
@@ -296,8 +301,8 @@ class AuctionPageHelper {
 
         const achievementSet = new Set([])
         achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data.trim()
-            const rareAchiev = miscList[achievement]
+            const achievement = element.children[0].children[0].data?.trim()
+            const rareAchiev = rareAchievementList[achievement]
             if (rareAchiev) {
                 achievementSet.add(rareAchiev)
             }

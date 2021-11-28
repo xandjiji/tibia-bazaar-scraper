@@ -1,6 +1,6 @@
 const ListPageHelper = require('../Parsers/ListPageHelper');
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
-const { objectToMinified } = require('../dataDictionary');
+const { objectToMinified } = require('../DataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
