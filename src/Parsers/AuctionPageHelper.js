@@ -176,7 +176,7 @@ class AuctionPageHelper {
     }
 
     charms() {
-        const charmsElement = this.$('.TableContent tbody')[20];
+        const charmsElement = this.$('.TableContent tbody')[21];
         charmsElement.children.shift();
         charmsElement.children.pop();
 
@@ -200,7 +200,7 @@ class AuctionPageHelper {
     }
 
     imbuements() {
-        const imbuementsElement = this.$('.TableContent tbody')[19];
+        const imbuementsElement = this.$('.TableContent tbody')[20];
         imbuementsElement.children.shift();
         imbuementsElement.children.pop();
 
@@ -218,7 +218,7 @@ class AuctionPageHelper {
     }
 
     quests() {
-        const achievementsElement = this.$('.TableContent tbody')[25];
+        const achievementsElement = this.$('.TableContent tbody')[26];
         achievementsElement.children.shift();
         achievementsElement.children.pop();
 
@@ -231,7 +231,7 @@ class AuctionPageHelper {
             }
         })
 
-        const questsElement = this.$('.TableContent tbody')[22];
+        const questsElement = this.$('.TableContent tbody')[23];
         questsElement.children.shift();
         questsElement.children.pop();
         questsElement.children.forEach((element) => {
@@ -246,7 +246,7 @@ class AuctionPageHelper {
     }
 
     outfits() {
-        const achievementsElement = this.$('.TableContent tbody')[25];
+        const achievementsElement = this.$('.TableContent tbody')[26];
         achievementsElement.children.shift();
         achievementsElement.children.pop();
 
@@ -259,7 +259,7 @@ class AuctionPageHelper {
             }
         })
 
-        const outfitElement = this.$('.TableContent tbody')[15];
+        const outfitElement = this.$('.TableContent tbody')[16];
         cheerio('.CVIcon', outfitElement).each((_, element) => {
             const title = element.attribs.title
             if (title !== 'Mage (base & addon 1 & addon 2)') return
@@ -271,7 +271,7 @@ class AuctionPageHelper {
     }
 
     mounts() {
-        const achievementsElement = this.$('.TableContent tbody')[25];
+        const achievementsElement = this.$('.TableContent tbody')[26];
         achievementsElement.children.shift();
         achievementsElement.children.pop();
 
@@ -284,7 +284,7 @@ class AuctionPageHelper {
             }
         })
 
-        const mountElement = this.$('.TableContent tbody')[13];
+        const mountElement = this.$('.TableContent tbody')[14];
         cheerio('.CVIcon', mountElement).each((_, element) => {
             const title = element.attribs.title
             if (title === 'Neon Sparkid') mountSet.add('Neon Sparkid')
@@ -295,7 +295,7 @@ class AuctionPageHelper {
     }
 
     rareAchievements() {
-        const achievementsElement = this.$('.TableContent tbody')[25];
+        const achievementsElement = this.$('.TableContent tbody')[26];
         achievementsElement.children.shift();
         achievementsElement.children.pop();
 
