@@ -47,7 +47,7 @@ const fetchAndLoad = async (url) => {
     return cheerio.load(html);
 }
 
-const postAndLoad = async (auctionid, type) => {
+const postAndLoad = async (auctionid, type, currentpage) => {
     const baseUrl = 'https://www.tibia.com/websiteservices/handle_charactertrades.php'
 
     const headers = new Headers()
@@ -57,6 +57,7 @@ const postAndLoad = async (auctionid, type) => {
     const body = new FormData()
     body.append('auctionid', auctionid)
     body.append('type', type)
+    body.append('currentpage', currentpage)
 
     const result = await fetch(baseUrl, {
         method: 'POST',
