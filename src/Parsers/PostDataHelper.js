@@ -8,6 +8,15 @@ class PostDataHelper {
         storeOutfits: 5
     }
 
+    readableTypes = {
+        0: 'items',
+        1: 'Store Items',
+        2: 'Mounts',
+        3: 'Store Mounts',
+        4: 'Outfits',
+        5: 'Store Outfits'
+    }
+
     setHtml($) {
         this.$ = $;
     }
