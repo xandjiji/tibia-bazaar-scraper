@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cp ~/tibia-bazaar-scraper/Output/PaginatedHistory/*.json ~/exevo-pan-history-data/
 cp ~/tibia-bazaar-scraper/Output/overallStatistics.json ~/exevo-pan-history-data/
 
 cd ~/exevo-pan-history-data/

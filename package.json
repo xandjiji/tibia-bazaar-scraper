@@ -7,7 +7,7 @@
     "scrap": "node src/Server\\ Data/scrapServers.js && node src/Character\\ Data/scrapMainPage.js && node src/Character\\ Data/scrapSingle.js && node src/Item\\ Data/scrapItems.js",
     "update": "node src/Character\\ Data/updatePrices.js && node src/getHighlighted.js",
     "full": "npm run scrap && npm run update",
-    "history": "node src/Server\\ Data/scrapServers.js && node src/Bazaar\\ History/scrapHistory.js && node src/Bazaar\\ History/paginateHistory.js",
+    "history": "node src/Server\\ Data/scrapServers.js && node src/Bazaar\\ History/scrapHistory.js",
     "updateHistory": "npm run history && npm run statistics && ./automations/deployHistory.sh && ./automations/updateHistory.sh",
     "stats": "node src/dataStats.js",
     "statistics": "node src/Statistics/generateStatistics.js",

@@ -8,7 +8,6 @@ const {
     maxRetry,
     sleep
 } = require('../utils');
-const { objectToMinified } = require('../DataDictionary');
 const { scrapMountsAndOutfits } = require('../PostData')
 const { MAX_CONCURRENT_REQUESTS, DELAY, MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
@@ -189,10 +188,6 @@ const setupFinalData = async () => {
 
     await fs.writeFile(`./Output/${readableFileName}`, JSON.stringify(filteredData));
     console.log(`${timeStamp('success')} sorted and filtered data was saved to ${readableFileName}`);
-
-    const minifiedFinalData = filteredData.map(objectToMinified);
-    await fs.writeFile('./Output/MinifiedBazaarHistory.json', JSON.stringify(minifiedFinalData));
-    console.log(`${timeStamp('success')} minified data was saved to MinifiedBazaarHistory.json`);
 }
 
 main();
