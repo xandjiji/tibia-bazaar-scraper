@@ -50,20 +50,8 @@ const scrapSinglePage = async (charObject) => {
     if (helper.maintenanceCheck()) process.exit();
 
     return {
-        ...charObject,
-        outfitId: helper.outfitId(),
-        serverId: helper.serverId(),
-        vocationId: helper.vocationId(),
-        level: helper.level(),
-        skills: helper.skills(),
-        items: helper.items(),
-        charms: helper.charms(),
-        transfer: helper.transfer(),
-        imbuements: helper.imbuements(),
-        quests: helper.quests(),
-        outfits: helper.outfits(),
-        mounts: helper.mounts(),
-        rareAchievements: helper.rareAchievements()
+        ...helper.charObject(),
+        ...charObject
     };
 }
 
