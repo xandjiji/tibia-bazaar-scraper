@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cp ~/tibia-bazaar-scraper/Output/MinifiedCharacterData.json ~/exevo-pan-data/
 cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/exevo-pan-data/
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/exevo-pan-data/
 cp ~/tibia-bazaar-scraper/Output/HighlightedAuctions.json ~/exevo-pan-data/
@@ -15,7 +14,7 @@ git commit -m "`date`"
 git push --set-upstream origin deploy
 git checkout main
 
-cp ~/tibia-bazaar-scraper/Output/MinifiedCharacterData.json ~/worker-exevopan/src/Data
+cp ~/tibia-bazaar-scraper/Output/LatestCharacterData.json ~/worker-exevopan/src/Data
 cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/worker-exevopan/src/Data
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/worker-exevopan/src/Data
 

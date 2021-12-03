@@ -1,6 +1,5 @@
 const ListPageHelper = require('../Parsers/ListPageHelper');
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
-const { objectToMinified } = require('../DataDictionary');
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const cheerio = require('cheerio');
 const fs = require('fs').promises;
@@ -57,11 +56,6 @@ const main = async () => {
 
     await fs.writeFile('./Output/LatestCharacterData.json', JSON.stringify(updatedData));
     console.log(`${timeStamp('success')} All character data saved to 'LatestCharacterData.json'`);
-
-    console.log(`${timeStamp('highlight')} Minifying data...`);
-    const minifiedData = updatedData.map(objectToMinified);
-    await fs.writeFile('./Output/MinifiedCharacterData.json', JSON.stringify(minifiedData));
-    console.log(`${timeStamp('success')} All minified data saved to 'MinifiedCharacterData.json'`);
 }
 
 const fetchFirstPage = async (url) => {

@@ -178,7 +178,7 @@ const saveCurrentBuffer = async () => {
 }
 
 const setupFinalData = async () => {
-    console.log(`${timeStamp('highlight')} Sorting, filtering and minifying data...`);
+    console.log(`${timeStamp('highlight')} Sorting, filtering...`);
     console.groupEnd();
     const filteredData = removeDuplicatesFromArrayByKey('id', historyFileBuffer);
 
