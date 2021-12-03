@@ -12,8 +12,8 @@ class PostDataHelper {
         this.$ = $;
     }
 
-    outfits() {
-        const icons = this.$('.CVIcon')
+    outfits(baseParser) {
+        const icons = baseParser ?? this.$('.CVIcon')
 
         const outfits = []
         icons.each((_, element) => {
@@ -28,8 +28,8 @@ class PostDataHelper {
         return outfits
     }
 
-    mounts() {
-        const icons = this.$('.CVIcon')
+    mounts(baseParser) {
+        const icons = baseParser ?? this.$('.CVIcon')
 
         const mounts = []
         icons.each((_, element) => {
