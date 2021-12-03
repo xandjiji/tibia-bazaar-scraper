@@ -245,29 +245,17 @@ class AuctionPageHelper {
         return [...questSet]
     }
 
-    outfits() {
-        const achievementsElement = this.$('.TableContent tbody')[26];
-        achievementsElement.children.shift();
-        achievementsElement.children.pop();
+    lastPageIndex(id) {
+        const lastPageLink = this.$(`#${id} .TableContent tbody .PageLink:last-child a`);
 
-        const outfitSet = new Set([])
-        achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data?.trim()?.toLowerCase()
-            const outfit = outfitList[achievement]
-            if (outfit) {
-                outfitSet.add(outfit)
-            }
+        let lastIndex = 1
+        lastPageLink.each((_, element) => {
+            const { href } = element.attribs
+            const [, lastPageIndex] = href.split('&currentpage=')
+            lastIndex = lastPageIndex
         })
 
-        const outfitElement = this.$('.TableContent tbody')[16];
-        cheerio('.CVIcon', outfitElement).each((_, element) => {
-            const title = element.attribs.title
-            if (title !== 'Mage (base & addon 1 & addon 2)') return
-            if (title !== 'Mage (base & addon 2)') return
-            outfitSet.add('Mage')
-        })
-
-        return [...outfitSet]
+        return lastIndex
     }
 
     mounts() {
