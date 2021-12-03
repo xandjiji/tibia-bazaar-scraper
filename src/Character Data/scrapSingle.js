@@ -1,5 +1,6 @@
 const AuctionPageHelper = require('../Parsers/AuctionPageHelper');
 const { timeStamp, fetchAndLoad, promiseAllInBatches, maxRetry } = require('../utils');
+const { scrapMountsAndOutfits } = require('../PostData')
 const { MAX_CONCURRENT_REQUESTS, MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
 
@@ -49,9 +50,12 @@ const scrapSinglePage = async (charObject) => {
     helper.setHtml($);
     if (helper.maintenanceCheck()) process.exit();
 
+    const mountsAndOutfits = await scrapMountsAndOutfits(helper)
+
     return {
         ...helper.charObject(),
-        ...charObject
+        ...charObject,
+        ...mountsAndOutfits
     };
 }
 
