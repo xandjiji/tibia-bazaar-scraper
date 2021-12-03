@@ -3,8 +3,6 @@ const { timeStamp, dateParsing, popNull } = require('../utils');
 const {
     imbuement,
     quest: { scrapingTokens: questList },
-    outfit: { scrapingTokens: outfitList },
-    mount: { scrapingTokens: mountList },
     rareAchievement: { scrapingTokens: rareAchievementList }
 } = require('../DataDictionary/dictionaries');
 const fs = require('fs').promises;
