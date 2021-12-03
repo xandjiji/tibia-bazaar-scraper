@@ -8,8 +8,11 @@ const {
     rareAchievement: { scrapingTokens: rareAchievementList }
 } = require('../DataDictionary/dictionaries');
 const fs = require('fs').promises;
+const PostDataHelper = require('./PostDataHelper')
 
 class AuctionPageHelper {
+    postHelper = new PostDataHelper()
+
     async init() {
         console.log(`${timeStamp('system')} loading ServerData.json ...`);
         const serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
@@ -258,28 +261,24 @@ class AuctionPageHelper {
         return lastIndex
     }
 
+    outfits() {
+        const firstPage = this.$(`#Outfits .TableContent tbody .BlockPage .CVIcon`)
+        return this.postHelper.outfits(firstPage)
+    }
+
+    storeOutfits() {
+        const firstPage = this.$(`#StoreOutfits .TableContent tbody .BlockPage .CVIcon`)
+        return this.postHelper.outfits(firstPage)
+    }
+
     mounts() {
-        const achievementsElement = this.$('.TableContent tbody')[26];
-        achievementsElement.children.shift();
-        achievementsElement.children.pop();
+        const firstPage = this.$(`#Mounts .TableContent tbody .BlockPage .CVIcon`)
+        return this.postHelper.mounts(firstPage)
+    }
 
-        const mountSet = new Set([])
-        achievementsElement.children.forEach((element) => {
-            const achievement = element.children[0].children[0].data?.trim()?.toLowerCase()
-            const mount = mountList[achievement]
-            if (mount) {
-                mountSet.add(mount)
-            }
-        })
-
-        const mountElement = this.$('.TableContent tbody')[14];
-        cheerio('.CVIcon', mountElement).each((_, element) => {
-            const title = element.attribs.title
-            if (title === 'Neon Sparkid') mountSet.add('Neon Sparkid')
-            if (title === 'Sparkion') mountSet.add('Sparkion')
-        })
-
-        return [...mountSet]
+    storeMounts() {
+        const firstPage = this.$(`#StoreMounts .TableContent tbody .BlockPage .CVIcon`)
+        return this.postHelper.mounts(firstPage)
     }
 
     rareAchievements() {
@@ -317,7 +316,9 @@ class AuctionPageHelper {
             imbuements: this.imbuements(),
             quests: this.quests(),
             outfits: this.outfits(),
+            storeOutfits: this.storeOutfits(),
             mounts: this.mounts(),
+            storeMounts: this.storeMounts(),
             rareAchievements: this.rareAchievements()
         }
     }
