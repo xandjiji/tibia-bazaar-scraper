@@ -1,4 +1,6 @@
 const fetch = require('node-fetch');
+const { Headers } = require('node-fetch');
+const FormData = require('form-data')
 const UserAgent = require('user-agents');
 const cheerio = require('cheerio');
 const { DELAY } = require('./config');
@@ -43,6 +45,33 @@ const fetchAndLoad = async (url) => {
 
     const html = await response.text();
     return cheerio.load(html);
+}
+
+const postAndLoad = async (auctionid, type) => {
+    const baseUrl = 'https://www.tibia.com/websiteservices/handle_charactertrades.php'
+
+    const headers = new Headers()
+    headers.set('X-Requested-With', 'XMLHttpRequest')
+    headers.set('User-Agent', new UserAgent().toString())
+
+    const body = new FormData()
+    body.append('auctionid', auctionid)
+    body.append('type', type)
+
+    const result = await fetch(baseUrl, {
+        method: 'POST',
+        headers,
+        body
+    })
+
+
+    const { status } = result;
+    if (status !== 200) {
+        throw new Error(`status code [${status}]`)
+    }
+
+    const data = await result.json()
+    return cheerio.load(data.AjaxObjects[0].Data)
 }
 
 const fetchJson = async (url) => {
@@ -161,6 +190,7 @@ module.exports = {
     popNull,
     removeDuplicatesFromArrayByKey,
     fetchAndLoad,
+    postAndLoad,
     fetchJson,
     timeStamp,
     promiseAllInBatches,
