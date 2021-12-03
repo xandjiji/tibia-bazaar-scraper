@@ -9,6 +9,7 @@ const {
     sleep
 } = require('../utils');
 const { objectToMinified } = require('../DataDictionary');
+const { scrapMountsAndOutfits } = require('../PostData')
 const { MAX_CONCURRENT_REQUESTS, DELAY, MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
 
@@ -110,7 +111,12 @@ const scrapSinglePage = async (id) => {
         return;
     }
 
-    return helper.charObject();
+    const mountsAndOutfits = await scrapMountsAndOutfits(helper)
+
+    return {
+        ...helper.charObject(),
+        ...mountsAndOutfits
+    }
 }
 
 const retryOldWrapper = async (id) => {
