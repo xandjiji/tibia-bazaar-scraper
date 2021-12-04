@@ -1,454 +1,268 @@
-const { dictionaryFactory } = require('../utils')
+const { outfitsToScrapingTokens, lowerCaseKeys, dictionaryFactory } = require('../utils')
 
-export const tokens = [
+const mounts = [
     {
         name: "Widow Queen",
-        id: {
-            male: 368,
-            female: 368
-        }
+        id: 368
     },
     {
         name: "Racing Bird",
-        id: {
-            male: 369,
-            female: 369
-        }
+        id: 369
     },
     {
         name: "War Bear",
-        id: {
-            male: 370,
-            female: 370
-        }
+        id: 370
     },
     {
         name: "Black Sheep",
-        id: {
-            male: 371,
-            female: 371
-        }
+        id: 371
     },
     {
         name: "Midnight Panther",
-        id: {
-            male: 372,
-            female: 372
-        }
+        id: 372
     },
     {
         name: "Draptor",
-        id: {
-            male: 373,
-            female: 373
-        }
+        id: 373
     },
     {
         name: "Titanica",
-        id: {
-            male: 374,
-            female: 374
-        }
+        id: 374
     },
     {
         name: "Tin Lizzard",
-        id: {
-            male: 375,
-            female: 375
-        }
+        id: 375
     },
     {
         name: "Blazebringer",
-        id: {
-            male: 376,
-            female: 376
-        }
+        id: 376
     },
     {
         name: "Rapid Boar",
-        id: {
-            male: 377,
-            female: 377
-        }
+        id: 377
     },
     {
         name: "Stampor",
-        id: {
-            male: 378,
-            female: 378
-        }
+        id: 378
     },
     {
         name: "Undead Cavebear",
-        id: {
-            male: 379,
-            female: 379
-        }
+        id: 379
     },
     {
         name: "Donkey",
-        id: {
-            male: 387,
-            female: 387
-        }
+        id: 387
     },
     {
         name: "Tiger Slug",
-        id: {
-            male: 388,
-            female: 388
-        }
+        id: 388
     },
     {
         name: "Uniwheel",
-        id: {
-            male: 389,
-            female: 389
-        }
+        id: 389
     },
     {
         name: "Crystal Wolf",
-        id: {
-            male: 390,
-            female: 390
-        }
+        id: 390
     },
     {
         name: "War Horse",
-        id: {
-            male: 392,
-            female: 392
-        }
+        id: 392
     },
     {
         name: "Kingly Deer",
-        id: {
-            male: 401,
-            female: 401
-        }
+        id: 401
     },
     {
         name: "Tamed Panda",
-        id: {
-            male: 402,
-            female: 402
-        }
+        id: 402
     },
     {
         name: "Dromedary",
-        id: {
-            male: 405,
-            female: 405
-        }
+        id: 405
     },
     {
         name: "Scorpion King",
-        id: {
-            male: 406,
-            female: 406
-        }
+        id: 406
     },
     {
         name: "Lady Bug",
-        id: {
-            male: 447,
-            female: 447
-        }
+        id: 447
     },
     {
         name: "Manta Ray",
-        id: {
-            male: 450,
-            female: 450
-        }
+        id: 450
     },
     {
         name: "Ironblight",
-        id: {
-            male: 502,
-            female: 502
-        }
+        id: 502
     },
     {
         name: "Magma Crawler",
-        id: {
-            male: 503,
-            female: 503
-        }
+        id: 503
     },
     {
         name: "Dragonling",
-        id: {
-            male: 506,
-            female: 506
-        }
+        id: 506
     },
     {
         name: "Gnarlhound",
-        id: {
-            male: 515,
-            female: 515
-        }
+        id: 515
     },
     {
         name: "Water Buffalo",
-        id: {
-            male: 526,
-            female: 526
-        }
+        id: 526
     },
     {
         name: "Ursagrodon",
-        id: {
-            male: 548,
-            female: 548
-        }
+        id: 548
     },
     {
         name: "The Hellgrip",
-        id: {
-            male: 559,
-            female: 559
-        }
+        id: 559
     },
     {
         name: "Noble Lion",
-        id: {
-            male: 571,
-            female: 571
-        }
+        id: 571
     },
     {
         name: "Shock Head",
-        id: {
-            male: 580,
-            female: 580
-        }
+        id: 580
     },
     {
         name: "Walker",
-        id: {
-            male: 606,
-            female: 606
-        }
+        id: 606
     },
     {
         name: "Glooth Glider",
-        id: {
-            male: 682,
-            female: 682
-        }
+        id: 682
     },
     {
         name: "Rift Runner",
-        id: {
-            male: 848,
-            female: 848
-        }
+        id: 848
     },
     {
         name: "Sparkion",
-        id: {
-            male: 883,
-            female: 883
-        }
+        id: 883
     },
     {
         name: "Neon Sparkid",
-        id: {
-            male: 889,
-            female: 889
-        }
+        id: 889
     },
     {
         name: "Vortexion",
-        id: {
-            male: 890,
-            female: 890
-        }
+        id: 890
     },
     {
         name: "Stone Rhino",
-        id: {
-            male: 937,
-            female: 937
-        }
+        id: 937
     },
     {
         name: "Mole",
-        id: {
-            male: 1049,
-            female: 1049
-        }
+        id: 1049
     },
     {
         name: "Fleeting Knowledge",
-        id: {
-            male: 1101,
-            female: 1101
-        }
+        id: 1101
     },
     {
         name: "Lacewing Moth",
-        id: {
-            male: 1150,
-            female: 1150
-        }
+        id: 1150
     },
     {
         name: "Hibernal Moth",
-        id: {
-            male: 1151,
-            female: 1151
-        }
+        id: 1151
     },
     {
         name: "Cold Percht Sleigh",
-        id: {
-            male: 1163,
-            female: 1163
-        }
+        id: 1163
     },
     {
         name: "Bright Percht Sleigh",
-        id: {
-            male: 1164,
-            female: 1164
-        }
+        id: 1164
     },
     {
         name: "Dark Percht Sleigh",
-        id: {
-            male: 1165,
-            female: 1165
-        }
+        id: 1165
     },
     {
         name: "Gryphon",
-        id: {
-            male: 1191,
-            female: 1191
-        }
+        id: 1191
     },
     {
         name: "Cold Percht Sleigh Variant",
-        id: {
-            male: 1229,
-            female: 1229
-        }
+        id: 1229
     },
     {
         name: "Bright Percht Sleigh Variant",
-        id: {
-            male: 1230,
-            female: 1230
-        }
+        id: 1230
     },
     {
         name: "Dark Percht Sleigh Variant",
-        id: {
-            male: 1231,
-            female: 1231
-        }
+        id: 1231
     },
     {
         name: "Finished Cold Percht Sleigh",
-        id: {
-            male: 1232,
-            female: 1232
-        }
+        id: 1232
     },
     {
         name: "Finished Bright Percht Sleigh",
-        id: {
-            male: 1233,
-            female: 1233
-        }
+        id: 1233
     },
     {
         name: "Finished Dark Percht Sleigh",
-        id: {
-            male: 1234,
-            female: 1234
-        }
+        id: 1234
     },
     {
         name: "Blue Rolling Barrel",
-        id: {
-            male: 1257,
-            female: 1257
-        }
+        id: 1257
     },
     {
         name: "Red Rolling Barrel",
-        id: {
-            male: 1258,
-            female: 1258
-        }
+        id: 1258
     },
     {
         name: "Green Rolling Barrel",
-        id: {
-            male: 1259,
-            female: 1259
-        }
+        id: 1259
     },
     {
         name: "Haze",
-        id: {
-            male: 1269,
-            female: 1269
-        }
+        id: 1269
     },
     {
         name: "Antelope",
-        id: {
-            male: 1281,
-            female: 1281
-        }
+        id: 1281
     },
     {
         name: "Phantasmal Jade",
-        id: {
-            male: 1321,
-            female: 1321
-        }
+        id: 1321
     },
     {
         name: "White Lion",
-        id: {
-            male: 1336,
-            female: 1336
-        }
+        id: 1336
     },
     {
         name: "Krakoloss",
-        id: {
-            male: 1363,
-            female: 1363
-        }
+        id: 1363
     },
     {
         name: "Phant",
-        id: {
-            male: 1417,
-            female: 1417
-        }
+        id: 1417
     },
     {
         name: "Shellodon",
-        id: {
-            male: 1430,
-            female: 1430
-        }
+        id: 1430
     },
     {
         name: "Singeing Steed",
-        id: {
-            male: 1431,
-            female: 1431
-        }
+        id: 1431
     }
 ]
 
-export const dictionary = dictionaryFactory(tokens)
+const scrapingTokens = lowerCaseKeys(outfitsToScrapingTokens(mounts))
+
+const tokens = Object.values(scrapingTokens)
+
+const dictionary = dictionaryFactory(tokens)
+
+module.exports = { scrapingTokens, tokens, dictionary }

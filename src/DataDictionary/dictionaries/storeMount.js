@@ -1,888 +1,516 @@
-const { dictionaryFactory } = require('../utils')
+const { outfitsToScrapingTokens, lowerCaseKeys, dictionaryFactory } = require('../utils')
 
-export const tokens = [
+const mounts = [
     {
         name: "Armoured War Horse",
-        id: {
-            male: 426,
-            female: 426
-        }
+        id: 426
     },
     {
         name: "Shadow Draptor",
-        id: {
-            male: 427,
-            female: 427
-        }
+        id: 427
     },
     {
         name: "Crimson Ray",
-        id: {
-            male: 521,
-            female: 521
-        }
+        id: 521
     },
     {
         name: "Steelbeak",
-        id: {
-            male: 522,
-            female: 522
-        }
+        id: 522
     },
     {
         name: "Tombstinger",
-        id: {
-            male: 546,
-            female: 546
-        }
+        id: 546
     },
     {
         name: "Platesaurian",
-        id: {
-            male: 547,
-            female: 547
-        }
+        id: 547
     },
     {
         name: "Desert King",
-        id: {
-            male: 572,
-            female: 572
-        }
+        id: 572
     },
     {
         name: "Azudocus",
-        id: {
-            male: 621,
-            female: 621
-        }
+        id: 621
     },
     {
         name: "Carpacosaurus",
-        id: {
-            male: 622,
-            female: 622
-        }
+        id: 622
     },
     {
         name: "Death Crawler",
-        id: {
-            male: 624,
-            female: 624
-        }
+        id: 624
     },
     {
         name: "Flamesteed",
-        id: {
-            male: 626,
-            female: 626
-        }
+        id: 626
     },
     {
         name: "Jade Lion",
-        id: {
-            male: 627,
-            female: 627
-        }
+        id: 627
     },
     {
         name: "Jade Pincer",
-        id: {
-            male: 628,
-            female: 628
-        }
+        id: 628
     },
     {
         name: "Nethersteed",
-        id: {
-            male: 629,
-            female: 629
-        }
+        id: 629
     },
     {
         name: "Tempest",
-        id: {
-            male: 630,
-            female: 630
-        }
+        id: 630
     },
     {
         name: "Winter King",
-        id: {
-            male: 631,
-            female: 631
-        }
+        id: 631
     },
     {
         name: "Doombringer",
-        id: {
-            male: 644,
-            female: 644
-        }
+        id: 644
     },
     {
         name: "Woodland Prince",
-        id: {
-            male: 647,
-            female: 647
-        }
+        id: 647
     },
     {
         name: "Hailstorm Fury",
-        id: {
-            male: 648,
-            female: 648
-        }
+        id: 648
     },
     {
         name: "Siegebreaker",
-        id: {
-            male: 649,
-            female: 649
-        }
+        id: 649
     },
     {
         name: "Poisonbane",
-        id: {
-            male: 650,
-            female: 650
-        }
+        id: 650
     },
     {
         name: "Blackpelt",
-        id: {
-            male: 651,
-            female: 651
-        }
+        id: 651
     },
     {
         name: "Golden Dragonfly",
-        id: {
-            male: 669,
-            female: 669
-        }
+        id: 669
     },
     {
         name: "Steel Bee",
-        id: {
-            male: 670,
-            female: 670
-        }
+        id: 670
     },
     {
         name: "Copper Fly",
-        id: {
-            male: 671,
-            female: 671
-        }
+        id: 671
     },
     {
         name: "Tundra Rambler",
-        id: {
-            male: 672,
-            female: 672
-        }
+        id: 672
     },
     {
         name: "Highland Yak",
-        id: {
-            male: 673,
-            female: 673
-        }
+        id: 673
     },
     {
         name: "Glacier Vagabond",
-        id: {
-            male: 674,
-            female: 674
-        }
+        id: 674
     },
     {
         name: "Shadow Hart",
-        id: {
-            male: 685,
-            female: 685
-        }
+        id: 685
     },
     {
         name: "Black Stag",
-        id: {
-            male: 686,
-            female: 686
-        }
+        id: 686
     },
     {
         name: "Emperor Deer",
-        id: {
-            male: 687,
-            female: 687
-        }
+        id: 687
     },
     {
         name: "Flying Divan",
-        id: {
-            male: 688,
-            female: 688
-        }
+        id: 688
     },
     {
         name: "Magic Carpet",
-        id: {
-            male: 689,
-            female: 689
-        }
+        id: 689
     },
     {
         name: "Floating Kashmir",
-        id: {
-            male: 690,
-            female: 690
-        }
+        id: 690
     },
     {
         name: "Ringtail Waccoon",
-        id: {
-            male: 691,
-            female: 691
-        }
+        id: 691
     },
     {
         name: "Night Waccoon",
-        id: {
-            male: 692,
-            female: 692
-        }
+        id: 692
     },
     {
         name: "Emerald Waccoon",
-        id: {
-            male: 693,
-            female: 693
-        }
+        id: 693
     },
     {
         name: "Flitterkatzen",
-        id: {
-            male: 726,
-            female: 726
-        }
+        id: 726
     },
     {
         name: "Venompaw",
-        id: {
-            male: 727,
-            female: 727
-        }
+        id: 727
     },
     {
         name: "Batcat",
-        id: {
-            male: 728,
-            female: 728
-        }
+        id: 728
     },
     {
         name: "Sea Devil",
-        id: {
-            male: 734,
-            female: 734
-        }
+        id: 734
     },
     {
         name: "Coralripper",
-        id: {
-            male: 735,
-            female: 735
-        }
+        id: 735
     },
     {
         name: "Plumfish",
-        id: {
-            male: 736,
-            female: 736
-        }
+        id: 736
     },
     {
         name: "Gorongra",
-        id: {
-            male: 738,
-            female: 738
-        }
+        id: 738
     },
     {
         name: "Noctungra",
-        id: {
-            male: 739,
-            female: 739
-        }
+        id: 739
     },
     {
         name: "Silverneck",
-        id: {
-            male: 740,
-            female: 740
-        }
+        id: 740
     },
     {
         name: "Slagsnare",
-        id: {
-            male: 761,
-            female: 761
-        }
+        id: 761
     },
     {
         name: "Nightstinger",
-        id: {
-            male: 762,
-            female: 762
-        }
+        id: 762
     },
     {
         name: "Razorcreep",
-        id: {
-            male: 763,
-            female: 763
-        }
+        id: 763
     },
     {
         name: "Nightdweller",
-        id: {
-            male: 849,
-            female: 849
-        }
+        id: 849
     },
     {
         name: "Frostflare",
-        id: {
-            male: 850,
-            female: 850
-        }
+        id: 850
     },
     {
         name: "Cinderhoof",
-        id: {
-            male: 851,
-            female: 851
-        }
+        id: 851
     },
     {
         name: "Mouldpincer",
-        id: {
-            male: 868,
-            female: 868
-        }
+        id: 868
     },
     {
         name: "Bloodcurl",
-        id: {
-            male: 869,
-            female: 869
-        }
+        id: 869
     },
     {
         name: "Leafscuttler",
-        id: {
-            male: 870,
-            female: 870
-        }
+        id: 870
     },
     {
         name: "Swamp Snapper",
-        id: {
-            male: 886,
-            female: 886
-        }
+        id: 886
     },
     {
         name: "Mould Shell",
-        id: {
-            male: 887,
-            female: 887
-        }
+        id: 887
     },
     {
         name: "Reed Lurker",
-        id: {
-            male: 888,
-            female: 888
-        }
+        id: 888
     },
     {
         name: "Ivory Fang",
-        id: {
-            male: 901,
-            female: 901
-        }
+        id: 901
     },
     {
         name: "Shadow Claw",
-        id: {
-            male: 902,
-            female: 902
-        }
+        id: 902
     },
     {
         name: "Snow Pelt",
-        id: {
-            male: 903,
-            female: 903
-        }
+        id: 903
     },
     {
         name: "Jackalope",
-        id: {
-            male: 905,
-            female: 905
-        }
+        id: 905
     },
     {
         name: "Wolpertinger",
-        id: {
-            male: 906,
-            female: 906
-        }
+        id: 906
     },
     {
         name: "Dreadhare",
-        id: {
-            male: 907,
-            female: 907
-        }
+        id: 907
     },
     {
         name: "Gold Sphinx",
-        id: {
-            male: 950,
-            female: 950
-        }
+        id: 950
     },
     {
         name: "Emerald Sphinx",
-        id: {
-            male: 951,
-            female: 951
-        }
+        id: 951
     },
     {
         name: "Shadow Sphinx",
-        id: {
-            male: 952,
-            female: 952
-        }
+        id: 952
     },
     {
         name: "Jungle Saurian",
-        id: {
-            male: 959,
-            female: 959
-        }
+        id: 959
     },
     {
         name: "Ember Saurian",
-        id: {
-            male: 960,
-            female: 960
-        }
+        id: 960
     },
     {
         name: "Lagoon Saurian",
-        id: {
-            male: 961,
-            female: 961
-        }
+        id: 961
     },
     {
         name: "Blazing Unicorn",
-        id: {
-            male: 1017,
-            female: 1017
-        }
+        id: 1017
     },
     {
         name: "Arctic Unicorn",
-        id: {
-            male: 1018,
-            female: 1018
-        }
+        id: 1018
     },
     {
         name: "Prismatic Unicorn",
-        id: {
-            male: 1019,
-            female: 1019
-        }
+        id: 1019
     },
     {
         name: "Cranium Spider",
-        id: {
-            male: 1025,
-            female: 1025
-        }
+        id: 1025
     },
     {
         name: "Cave Tarantula",
-        id: {
-            male: 1026,
-            female: 1026
-        }
+        id: 1026
     },
     {
         name: "Gloom Widow",
-        id: {
-            male: 1027,
-            female: 1027
-        }
+        id: 1027
     },
     {
         name: "Marsh Toad",
-        id: {
-            male: 1052,
-            female: 1052
-        }
+        id: 1052
     },
     {
         name: "Sanguine Frog",
-        id: {
-            male: 1053,
-            female: 1053
-        }
+        id: 1053
     },
     {
         name: "Toxic Toad",
-        id: {
-            male: 1054,
-            female: 1054
-        }
+        id: 1054
     },
     {
         name: "Ebony Tiger",
-        id: {
-            male: 1091,
-            female: 1091
-        }
+        id: 1091
     },
     {
         name: "Feral Tiger",
-        id: {
-            male: 1092,
-            female: 1092
-        }
+        id: 1092
     },
     {
         name: "Jungle Tiger",
-        id: {
-            male: 1093,
-            female: 1093
-        }
+        id: 1093
     },
     {
         name: "Tawny Owl",
-        id: {
-            male: 1104,
-            female: 1104
-        }
+        id: 1104
     },
     {
         name: "Snowy Owl",
-        id: {
-            male: 1105,
-            female: 1105
-        }
+        id: 1105
     },
     {
         name: "Boreal Owl",
-        id: {
-            male: 1106,
-            female: 1106
-        }
+        id: 1106
     },
     {
         name: "Festive Snowman",
-        id: {
-            male: 1167,
-            female: 1167
-        }
+        id: 1167
     },
     {
         name: "Muffled Snowman",
-        id: {
-            male: 1168,
-            female: 1168
-        }
+        id: 1168
     },
     {
         name: "Caped Snowman",
-        id: {
-            male: 1169,
-            female: 1169
-        }
+        id: 1169
     },
     {
         name: "Rabbit Rickshaw",
-        id: {
-            male: 1179,
-            female: 1179
-        }
+        id: 1179
     },
     {
         name: "Bunny Dray",
-        id: {
-            male: 1180,
-            female: 1180
-        }
+        id: 1180
     },
     {
         name: "Cony Cart",
-        id: {
-            male: 1181,
-            female: 1181
-        }
+        id: 1181
     },
     {
         name: "River Crocovile",
-        id: {
-            male: 1183,
-            female: 1183
-        }
+        id: 1183
     },
     {
         name: "Swamp Crocovile",
-        id: {
-            male: 1184,
-            female: 1184
-        }
+        id: 1184
     },
     {
         name: "Nightmarish Crocovile",
-        id: {
-            male: 1185,
-            female: 1185
-        }
+        id: 1185
     },
     {
         name: "Jousting Eagle",
-        id: {
-            male: 1208,
-            female: 1208
-        }
+        id: 1208
     },
     {
         name: "Cerberus Champion",
-        id: {
-            male: 1209,
-            female: 1209
-        }
+        id: 1209
     },
     {
         name: "Battle Badger",
-        id: {
-            male: 1247,
-            female: 1247
-        }
+        id: 1247
     },
     {
         name: "Ether Badger",
-        id: {
-            male: 1248,
-            female: 1248
-        }
+        id: 1248
     },
     {
         name: "Zaoan Badger",
-        id: {
-            male: 1249,
-            female: 1249
-        }
+        id: 1249
     },
     {
         name: "Floating Sage",
-        id: {
-            male: 1264,
-            female: 1264
-        }
+        id: 1264
     },
     {
         name: "Floating Scholar",
-        id: {
-            male: 1265,
-            female: 1265
-        }
+        id: 1265
     },
     {
         name: "Floating Augur",
-        id: {
-            male: 1266,
-            female: 1266
-        }
+        id: 1266
     },
     {
         name: "Snow Strider",
-        id: {
-            male: 1284,
-            female: 1284
-        }
+        id: 1284
     },
     {
         name: "Dusk Pryer",
-        id: {
-            male: 1285,
-            female: 1285
-        }
+        id: 1285
     },
     {
         name: "Dawn Strayer",
-        id: {
-            male: 1286,
-            female: 1286
-        }
+        id: 1286
     },
     {
         name: "Benevolent Savanna Ostrich",
-        id: {
-            male: 1309,
-            female: 1309
-        }
+        id: 1309
     },
     {
         name: "Benevolent Coral Rhea",
-        id: {
-            male: 1310,
-            female: 1310
-        }
+        id: 1310
     },
     {
         name: "Benevolent Eventide Nandu",
-        id: {
-            male: 1311,
-            female: 1311
-        }
+        id: 1311
     },
     {
         name: "Savanna Ostrich",
-        id: {
-            male: 1324,
-            female: 1324
-        }
+        id: 1324
     },
     {
         name: "Coral Rhea",
-        id: {
-            male: 1325,
-            female: 1325
-        }
+        id: 1325
     },
     {
         name: "Eventide Nandu",
-        id: {
-            male: 1326,
-            female: 1326
-        }
+        id: 1326
     },
     {
         name: "Voracious Hyaena",
-        id: {
-            male: 1333,
-            female: 1333
-        }
+        id: 1333
     },
     {
         name: "Cunning Hyaena",
-        id: {
-            male: 1334,
-            female: 1334
-        }
+        id: 1334
     },
     {
         name: "Scruffy Hyaena",
-        id: {
-            male: 1335,
-            female: 1335
-        }
+        id: 1335
     },
     {
         name: "Merry Mammoth",
-        id: {
-            male: 1379,
-            female: 1379
-        }
+        id: 1379
     },
     {
         name: "Holiday Mammoth",
-        id: {
-            male: 1380,
-            female: 1380
-        }
+        id: 1380
     },
     {
         name: "Festive Mammoth",
-        id: {
-            male: 1381,
-            female: 1381
-        }
+        id: 1381
     },
     {
         name: "Void Watcher",
-        id: {
-            male: 1389,
-            female: 1389
-        }
+        id: 1389
     },
     {
         name: "Rune Watcher",
-        id: {
-            male: 1390,
-            female: 1390
-        }
+        id: 1390
     },
     {
         name: "Rift Watcher",
-        id: {
-            male: 1391,
-            female: 1391
-        }
+        id: 1391
     },
     {
         name: "Hyacinth",
-        id: {
-            male: 1439,
-            female: 1439
-        }
+        id: 1439
     },
     {
         name: "Peony",
-        id: {
-            male: 1440,
-            female: 1440
-        }
+        id: 1440
     },
     {
         name: "Dandelion",
-        id: {
-            male: 1441,
-            female: 1441
-        }
+        id: 1441
     },
     {
         name: "Rustwurm",
-        id: {
-            male: 1446,
-            female: 1446
-        }
+        id: 1446
     },
     {
         name: "Bogwurm",
-        id: {
-            male: 1447,
-            female: 1447
-        }
+        id: 1447
     },
     {
         name: "Gloomwurm",
-        id: {
-            male: 1448,
-            female: 1448
-        }
+        id: 1448
     }
 ]
 
-export const dictionary = dictionaryFactory(tokens)
+const scrapingTokens = lowerCaseKeys(outfitsToScrapingTokens(mounts))
+
+const tokens = Object.values(scrapingTokens)
+
+const dictionary = dictionaryFactory(tokens)
+
+module.exports = { scrapingTokens, tokens, dictionary }
