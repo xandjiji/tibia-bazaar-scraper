@@ -7,6 +7,17 @@ const lowerCaseKeys = (object) => {
     return newObject
 }
 
+const outfitsToScrapingTokens = (outfitArray) => {
+    const names = outfitArray.map(({ name }) => name)
+
+    const scrapingTokens = {}
+    names.forEach((name) => {
+        scrapingTokens[name] = name
+    })
+
+    return scrapingTokens
+}
+
 const dictionaryFactory = (keyArray) => {
     const dictionaryObject = {
         ...keyArray
@@ -19,4 +30,9 @@ const dictionaryFactory = (keyArray) => {
     return dictionaryObject;
 }
 
-module.exports = { sortDec, lowerCaseKeys, dictionaryFactory }
+module.exports = {
+    sortDec,
+    lowerCaseKeys,
+    dictionaryFactory,
+    outfitsToScrapingTokens
+}
