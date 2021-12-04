@@ -134,6 +134,13 @@ class AuctionPageHelper {
         return Number(levelRawText.replace(/level: /gi, ''));
     }
 
+    sex() {
+        const headerElement = this.$('.AuctionHeader')[0];
+        const [, , sex] = headerElement.children[2].data.split(' | ');
+
+        return sex === 'Female';
+    }
+
     skills() {
         const skillsElement = this.$('.TableContent tbody')[2];
         skillsElement.children.pop();
@@ -306,6 +313,7 @@ class AuctionPageHelper {
             outfitId: this.outfitId(),
             serverId: this.serverId(),
             vocationId: this.vocationId(),
+            sex: this.sex(),
             level: this.level(),
             skills: this.skills(),
             items: this.items(),
