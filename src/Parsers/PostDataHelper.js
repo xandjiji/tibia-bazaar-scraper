@@ -28,8 +28,7 @@ class PostDataHelper {
         icons.each((_, element) => {
             const title = element.attribs.title
             const [name, addons] = title.split(' (')
-            const [, addon1, addon2] = addons.split('&')
-            const type = +!!addon1 + (+!!addon2 * 2)
+            const type = +!!addons.includes(1) + (+!!addons.includes(2) * 2)
 
             outfits.push({ name, type })
         })
