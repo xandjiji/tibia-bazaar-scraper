@@ -198,6 +198,20 @@ const outfits = [
         }
     },
     {
+        name: "Crystal Warlord",
+        id: {
+            male: 512,
+            female: 513
+        }
+    },
+    {
+        name: "Soil Guardian",
+        id: {
+            male: 516,
+            female: 514
+        }
+    },
+    {
         name: "Demon Outfit",
         id: {
             male: 542,
