@@ -17,8 +17,21 @@ class PostDataHelper {
         5: 'Store Outfits'
     }
 
+    normalizedName = {
+        Noblewoman: 'Nobleman',
+        Norsewoman: 'Norseman',
+        'Retro Noblewoman': 'Retro Nobleman'
+    }
+
     setHtml($) {
         this.$ = $;
+    }
+
+    normalizeFemaleOutfit(name) {
+        const normalized = this.normalizedName[name]
+
+        if (normalized) return normalized
+        return name
     }
 
     outfits(baseParser) {
@@ -30,7 +43,7 @@ class PostDataHelper {
             const [name, addons] = title.split(' (')
             const type = +!!addons.includes(1) + (+!!addons.includes(2) * 2)
 
-            outfits.push({ name, type })
+            outfits.push({ name: this.normalizeFemaleOutfit(name), type })
         })
 
         return outfits
