@@ -198,7 +198,7 @@ const outfits = [
         }
     },
     {
-        name: "Demon",
+        name: "Demon Outfit",
         id: {
             male: 542,
             female: 541
@@ -247,7 +247,7 @@ const outfits = [
         }
     },
     {
-        name: "Festive",
+        name: "Festive Outfit",
         id: {
             male: 931,
             female: 929
@@ -289,7 +289,7 @@ const outfits = [
         }
     },
     {
-        name: "Golden",
+        name: "Golden Outfit",
         id: {
             male: 1210,
             female: 1211
