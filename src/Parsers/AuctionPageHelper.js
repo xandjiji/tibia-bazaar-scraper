@@ -1,20 +1,17 @@
 const cheerio = require('cheerio');
-const { timeStamp, dateParsing, popNull } = require('../utils');
+const { dateParsing, popNull } = require('../utils');
 const {
     imbuement,
     quest: { scrapingTokens: questList },
     rareAchievement: { scrapingTokens: rareAchievementList }
 } = require('../DataDictionary/dictionaries');
-const fs = require('fs').promises;
 const PostDataHelper = require('./PostDataHelper')
 
 class AuctionPageHelper {
     postHelper = new PostDataHelper()
 
-    async init() {
-        console.log(`${timeStamp('system')} loading ServerData.json ...`);
-        const serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
-        this.serverData = JSON.parse(serverListData);
+    init(serverListData) {
+        this.serverData = serverListData;
     }
 
     setHtml($) {

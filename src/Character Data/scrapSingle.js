@@ -6,15 +6,17 @@ const fs = require('fs').promises;
 
 var globalDataSize;
 var globalIndex = 0;
+var serverListData = {}
 
-const helper = new AuctionPageHelper();
 
 const main = async () => {
     console.log(`${timeStamp('system')} loading bazaarPages.json ...`);
     var data = await fs.readFile('./Output/bazaarPages.json', 'utf-8');
     data = JSON.parse(data);
 
-    await helper.init();
+    console.log(`${timeStamp('system')} loading ServerData.json ...`);
+    serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
+    serverListData = JSON.parse(serverListData)
 
     /* data = data.slice(0, 20); */
 
@@ -47,6 +49,8 @@ const scrapSinglePage = async (charObject) => {
     globalIndex++;
     console.log(`${timeStamp('neutral')} Scraping ${nickname}'s single page [${globalIndex}/${globalDataSize}]`);
 
+    const helper = new AuctionPageHelper();
+    helper.init(serverListData);
     helper.setHtml($);
     if (helper.maintenanceCheck()) process.exit();
 

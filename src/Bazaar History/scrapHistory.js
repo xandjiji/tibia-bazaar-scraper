@@ -12,8 +12,7 @@ const { scrapMountsAndOutfits } = require('../PostData')
 const { MAX_CONCURRENT_REQUESTS, DELAY, MAX_RETRIES } = require('../config');
 const fs = require('fs').promises;
 
-const helper = new AuctionPageHelper();
-
+var serverListData = {}
 var latestAuctionId;
 var currentAuctionId;
 
@@ -87,7 +86,9 @@ const loadGlobalVariables = async () => {
     currentAuctionId = lastScrapedId + 1;
     unfinishedFileBuffer = [...unfinishedAuctions];
 
-    await helper.init();
+    console.log(`${timeStamp('system')} loading ServerData.json ...`);
+    serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
+    serverListData = JSON.parse(serverListData)
 
     latestAuctionId = await retryGetLatestAuctionId();
 }
@@ -100,6 +101,8 @@ const retryWrapper = async (id) => {
 
 const scrapSinglePage = async (id) => {
     const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=pastcharactertrades&page=details&auctionid=${id}&source=overview`);
+    const helper = new AuctionPageHelper();
+    helper.init(serverListData);
     helper.setHtml($);
 
     if (helper.maintenanceCheck()) process.exit();

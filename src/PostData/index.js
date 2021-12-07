@@ -3,9 +3,9 @@ const { scrapPaginatedData } = require('./scrapPaginatedData')
 const { promiseAllInBatches } = require('../utils');
 const { MAX_CONCURRENT_REQUESTS } = require('../config');
 
-const postHelper = new PostDataHelper()
-
 const scrapMountsAndOutfits = async (pageHelper) => {
+    const postHelper = new PostDataHelper()
+
     console.group();
     const id = pageHelper.id()
 
