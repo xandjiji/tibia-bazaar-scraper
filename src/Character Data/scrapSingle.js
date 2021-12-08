@@ -16,11 +16,14 @@ const main = async () => {
 
     console.log(`${timeStamp('system')} Loading 'LatestCharacterData.json'...`);
     try {
-        var latestData = await fs.readFile('./Output/LatestCharacterData.json', 'utf-8');
-        latestData = JSON.parse(latestData);
+        let previousData = await fs.readFile('./Output/LatestCharacterData.json', 'utf-8');
+        previousData = JSON.parse(previousData);
+        previousData.forEach((auction) => latestData.push(auction))
     } catch {
         latestData = []
     }
+
+    data = data.filter(({ id }) => !latestData.some((previousAuction) => previousAuction.id === id))
 
     console.log(`${timeStamp('system')} loading ServerData.json ...`);
     serverListData = await fs.readFile('./Output/ServerData.json', 'utf-8');
@@ -33,14 +36,17 @@ const main = async () => {
     console.log(`${timeStamp('highlight')} Scraping every single page:`);
     console.group();
 
-    let allSingleData = await promiseAllInBatches(retryWrapper, data, MAX_CONCURRENT_REQUESTS);
+    let newSingleData = await promiseAllInBatches(retryWrapper, data, MAX_CONCURRENT_REQUESTS);
 
     console.groupEnd();
     console.groupEnd();
 
-    allSingleData = allSingleData.filter(element => element != null);
+    newSingleData = newSingleData.filter(element => element != null);
 
-    await fs.writeFile('./Output/AllCharacterData.json', JSON.stringify(allSingleData));
+    let fullData = [...latestData, ...newSingleData]
+    sortedData = fullData.sort((a, b) => a.auctionEnd - b.auctionEnd)
+
+    await fs.writeFile('./Output/AllCharacterData.json', JSON.stringify(sortedData));
     console.log(`${timeStamp('success')} All single data saved to 'AllCharacterData.json'`);
 }
 
@@ -53,9 +59,6 @@ const retryWrapper = async (url) => {
 const scrapSinglePage = async (charObject) => {
     const id = charObject.id;
     const nickname = charObject.nickname;
-
-    const previousCharacterData = latestData.find((auction) => auction.id === id)
-    if (previousCharacterData) return previousCharacterData
 
     const $ = await fetchAndLoad(`https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details&auctionid=${id}&source=overview`);
     globalIndex++;
