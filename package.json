@@ -4,10 +4,12 @@
   "description": "Helpers for scraping data from the official Tibia website",
   "author": "xandjiji <xandjiji@gmail.com>",
   "scripts": {
-    "dev": "nodemon src/dev.ts"
+    "dev": "NODE_PATH=./src nodemon src/dev.ts --transforms typescript,imports"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.30",
+    "@types/node-fetch": "^2.5.12",
+    "@types/user-agents": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
     "cheerio": "^1.0.0-rc.10",
@@ -20,6 +22,6 @@
     "prettier": "^2.3.0",
     "sucrase": "^3.20.3",
     "typescript": "^4.3.2",
-    "user-agents": "^1.0.588"
+    "user-agents": "^1.0.862"
   }
 }

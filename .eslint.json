@@ -1,0 +1,16 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "plugins": ["plugin:import/typescript", "@typescript-eslint", "prettier"],
+  "extends": ["airbnb", "plugin:@typescript-eslint/recommended", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {
+    "import/extensions": "off"
+  }
+}
