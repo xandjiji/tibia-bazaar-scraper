@@ -1,6 +1,6 @@
 node_modules/
 old_src/
 
-test.ts
+src/dev.ts
 
 backlog.txt
