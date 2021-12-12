@@ -1,6 +1,7 @@
 import cheerio from 'cheerio'
 import { sanitizeHtmlString, parseDate } from 'utils'
 import { serverData as file } from 'Data'
+import { getVocationId } from '../utils'
 
 export default class AuctionPage {
   $ = cheerio
@@ -92,5 +93,11 @@ export default class AuctionPage {
     )
 
     return server?.serverId ?? -1
+  }
+
+  vocationId() {
+    const headerText = this.$('.AuctionHeader').text()
+    const [, vocation] = headerText.split(' | ')
+    return getVocationId(vocation)
   }
 }
