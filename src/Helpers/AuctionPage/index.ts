@@ -38,9 +38,8 @@ export default class AuctionPage {
 
   auctionEnd() {
     const timestampElement = this.$('.AuctionTimer')
-    console.log(Number(timestampElement.attr('data-timestamp')))
 
-    if (timestampElement.length > 0) {
+    if (timestampElement.length) {
       const timestamp = timestampElement.attr('data-timestamp')
       return Number(timestamp)
     }
@@ -49,5 +48,34 @@ export default class AuctionPage {
     const sanitizedDateString = sanitizeHtmlString(auctionEndElement.text())
 
     return parseDate(sanitizedDateString)
+  }
+
+  currentBid() {
+    const currentBidText = this.$('.ShortAuctionDataValue b').text()
+    const formattedBid = Number(currentBidText.replace(/,/g, ''))
+    return formattedBid
+  }
+
+  hasBeenBidded() {
+    const auctionStatus = this.$('.AuctionInfo').text()
+    if (auctionStatus === 'cancelled') {
+      return false
+    }
+
+    const bidElement = this.$('.ShortAuctionDataBidRow')
+    const [bidText] = bidElement.text().split(':')
+
+    const biddedTexts = ['Winning Bid', 'Current Bid']
+
+    return biddedTexts.includes(bidText)
+  }
+
+  outfitId() {
+    const outfitElement = this.$('.AuctionOutfitImage')
+    const src = outfitElement.attr('src') as string
+    const [, filename] = src.split('/outfits/')
+    const [outfitId] = filename.split('.')
+
+    return outfitId
   }
 }
