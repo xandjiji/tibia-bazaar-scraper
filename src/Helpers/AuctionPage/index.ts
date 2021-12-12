@@ -32,6 +32,7 @@ export default class AuctionPage {
     const onClickHandler = buttonElement.attr('onclick') as string
     const [, dirtyId] = onClickHandler?.split('auctionid=')
     const [stringId] = dirtyId.split('&')
+
     return Number(stringId)
   }
 
@@ -60,6 +61,7 @@ export default class AuctionPage {
   currentBid() {
     const currentBidText = this.$('.ShortAuctionDataValue b').text()
     const formattedBid = Number(currentBidText.replace(/,/g, ''))
+
     return formattedBid
   }
 
@@ -98,6 +100,63 @@ export default class AuctionPage {
   vocationId() {
     const headerText = this.$('.AuctionHeader').text()
     const [, vocation] = headerText.split(' | ')
+
     return getVocationId(vocation)
+  }
+
+  level() {
+    const headerText = this.$('.AuctionHeader').text()
+    const [characterInfo] = headerText.split(' | ')
+    const [, level] = characterInfo.split(': ')
+
+    return Number(level)
+  }
+
+  sex() {
+    const headerText = this.$('.AuctionHeader').text()
+    const [, , characterInfo] = headerText.split(' | ')
+
+    return characterInfo.toLowerCase() === 'female'
+  }
+
+  skills(): CharacterSkillsObject {
+    const generalElement = this.$(
+      '#General .TableContentContainer tbody',
+    ).children()
+
+    const skillArray: number[] = []
+
+    generalElement
+      .find('.LevelColumn')
+      .parent()
+      .parent()
+      .children()
+      .each((_, element) => {
+        const [, levelElement, percentageElement] = element.children
+
+        const level = cheerio(levelElement).text()
+
+        const [percentage] = cheerio('.PercentageString', percentageElement)
+          .text()
+          .split('.')
+
+        const skillLevel = Number(`${level}.${percentage.padStart(2, '0')}`)
+
+        skillArray.push(skillLevel)
+      })
+
+    const [axe, club, distance, fishing, fist, magic, shielding, sword] =
+      skillArray
+
+    return {
+      magic,
+      club,
+      fist,
+      sword,
+      axe,
+      distance,
+      fishing,
+      shielding,
+    }
   }
 }
