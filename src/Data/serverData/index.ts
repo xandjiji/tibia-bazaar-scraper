@@ -10,7 +10,7 @@ const getServerData = async (): Promise<ServerObject[]> => {
     'system',
   )
   const data = await fs.readFile(file.SERVER_DATA.path, 'utf-8')
-  return JSON.parse(data)
+  return Object.values(JSON.parse(data))
 }
 
 export default { getServerData }

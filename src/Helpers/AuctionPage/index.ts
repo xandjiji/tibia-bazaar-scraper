@@ -1,8 +1,14 @@
 import cheerio from 'cheerio'
 import { sanitizeHtmlString, parseDate } from 'utils'
+import { serverData as file } from 'Data'
 
 export default class AuctionPage {
   $ = cheerio
+  serverData: ServerObject[] = []
+
+  async loadServerData() {
+    this.serverData = await file.getServerData()
+  }
 
   setContent(content: string) {
     this.$ = cheerio.load(content)
@@ -77,5 +83,14 @@ export default class AuctionPage {
     const [outfitId] = filename.split('.')
 
     return outfitId
+  }
+
+  serverId() {
+    const auctionServerName = this.$('.AuctionHeader a').text()
+    const server = this.serverData.find(
+      ({ serverName }) => serverName === auctionServerName,
+    )
+
+    return server?.serverId ?? -1
   }
 }
