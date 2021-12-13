@@ -1,7 +1,7 @@
 import cheerio from 'cheerio'
 import { sanitizeHtmlString, parseDate } from 'utils'
 import { serverData as file } from 'Data'
-import { getVocationId } from '../utils'
+import { getVocationId, filterListTable } from '../utils'
 
 export default class AuctionPage {
   $ = cheerio
@@ -125,7 +125,6 @@ export default class AuctionPage {
     ).children()
 
     const skillArray: number[] = []
-
     generalElement
       .find('.LevelColumn')
       .parent()
@@ -158,5 +157,35 @@ export default class AuctionPage {
       fishing,
       shielding,
     }
+  }
+
+  items() {
+    const itemImages = this.$('.AuctionItemsViewBox img')
+
+    const itemArray: number[] = []
+    itemImages.map((_, element) => {
+      const [, src] = cheerio(element)
+        .attr('src')
+        ?.split('/objects/') as string[]
+
+      const [itemId] = src.split('.')
+      itemArray.push(Number(itemId))
+    })
+
+    return itemArray
+  }
+
+  imbuements() {
+    const imbuementElements = this.$(
+      '#Imbuements .TableContentContainer tbody td',
+    )
+
+    const imbuementArray: string[] = []
+    imbuementElements.filter(filterListTable).each((_, element) => {
+      const imbuement = cheerio(element).text()
+      imbuementArray.push(imbuement)
+    })
+
+    return imbuementArray
   }
 }
