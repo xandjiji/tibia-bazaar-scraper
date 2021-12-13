@@ -119,6 +119,14 @@ export default class AuctionPage {
     return characterInfo.toLowerCase() === 'female'
   }
 
+  transfer() {
+    const transferText = this.$('.LabelV:contains("Regular World Transfer:")')
+      .siblings('div')
+      .text()
+
+    return transferText === 'can be purchased and used immediately'
+  }
+
   skills(): CharacterSkillsObject {
     const generalElement = this.$(
       '#General .TableContentContainer tbody',
@@ -187,5 +195,19 @@ export default class AuctionPage {
     })
 
     return imbuementArray
+  }
+
+  charms() {
+    const charmElements = this.$(
+      '#Charms .TableContentContainer tbody td:last-child',
+    )
+
+    const charmArray: string[] = []
+    charmElements.filter(filterListTable).each((_, element) => {
+      const charm = cheerio(element).text()
+      charmArray.push(charm)
+    })
+
+    return charmArray
   }
 }
