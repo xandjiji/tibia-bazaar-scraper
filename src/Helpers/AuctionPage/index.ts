@@ -1,6 +1,7 @@
 import cheerio from 'cheerio'
 import { sanitizeHtmlString, parseDate } from 'utils'
 import { serverData as file } from 'Data'
+import { quest as questDictionary } from 'DataDictionary/dictionaries'
 import { getVocationId, filterListTable } from '../utils'
 
 export default class AuctionPage {
@@ -209,5 +210,62 @@ export default class AuctionPage {
     })
 
     return charmArray
+  }
+
+  quests() {
+    const { scrapingTokens } = questDictionary
+    const questSet = new Set<string>([])
+
+    const achievementsElement = this.$(
+      '#Achievements .TableContentContainer tbody td',
+    )
+
+    achievementsElement.filter(filterListTable).each((_, element) => {
+      const achievement = cheerio(element).text().trim().toLowerCase()
+      const quest = scrapingTokens[achievement as keyof typeof scrapingTokens]
+      if (quest) {
+        questSet.add(quest)
+      }
+    })
+
+    const questsElement = this.$(
+      '#CompletedQuestLines .TableContentContainer tbody td',
+    )
+
+    questsElement.filter(filterListTable).each((_, element) => {
+      const questText = cheerio(element).text().trim().toLowerCase()
+      const quest = scrapingTokens[questText as keyof typeof scrapingTokens]
+      if (quest) {
+        questSet.add(quest)
+      }
+    })
+
+    return [...questSet]
+  }
+
+  charObject() {
+    return {
+      id: this.id(),
+      nickname: this.nickname(),
+      auctionEnd: this.auctionEnd(),
+      currentBid: this.currentBid(),
+      hasBeenBidded: this.hasBeenBidded(),
+      outfitId: this.outfitId(),
+      serverId: this.serverId(),
+      vocationId: this.vocationId(),
+      sex: this.sex(),
+      level: this.level(),
+      skills: this.skills(),
+      items: this.items(),
+      charms: this.charms(),
+      transfer: this.transfer(),
+      imbuements: this.imbuements(),
+      quests: this.quests(),
+      /* outfits: this.outfits(),
+      storeOutfits: this.storeOutfits(),
+      mounts: this.mounts(),
+      storeMounts: this.storeMounts(),
+      rareAchievements: this.rareAchievements(), */
+    }
   }
 }
