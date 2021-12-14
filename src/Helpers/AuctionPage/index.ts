@@ -1,7 +1,10 @@
 import cheerio from 'cheerio'
 import { sanitizeHtmlString, parseDate } from 'utils'
 import { serverData as file } from 'Data'
-import { quest as questDictionary } from 'DataDictionary/dictionaries'
+import {
+  quest as questDictionary,
+  rareAchievement as achievementDictionary,
+} from 'DataDictionary/dictionaries'
 import { getVocationId, filterListTable } from '../utils'
 
 export default class AuctionPage {
@@ -243,6 +246,26 @@ export default class AuctionPage {
     return [...questSet]
   }
 
+  rareAchievements() {
+    const achievementsElement = this.$(
+      '#Achievements .TableContentContainer tbody td',
+    )
+
+    const { scrapingTokens } = achievementDictionary
+    const achievementSet = new Set<string>([])
+
+    achievementsElement.filter(filterListTable).each((_, element) => {
+      const achievement = cheerio(element).text().trim().toLowerCase()
+      const rareAchievement =
+        scrapingTokens[achievement as keyof typeof scrapingTokens]
+      if (rareAchievement) {
+        achievementSet.add(rareAchievement)
+      }
+    })
+
+    return [...achievementSet]
+  }
+
   charObject() {
     return {
       id: this.id(),
@@ -264,8 +287,8 @@ export default class AuctionPage {
       /* outfits: this.outfits(),
       storeOutfits: this.storeOutfits(),
       mounts: this.mounts(),
-      storeMounts: this.storeMounts(),
-      rareAchievements: this.rareAchievements(), */
+      storeMounts: this.storeMounts(), */
+      rareAchievements: this.rareAchievements(),
     }
   }
 }
