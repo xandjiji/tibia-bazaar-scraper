@@ -1,4 +1,6 @@
 export * from './date'
 export * from './fetch'
 export { default as logging } from './logging'
+export * from './retryWrapper'
 export * from './sanitize'
+export * from './sleep'
