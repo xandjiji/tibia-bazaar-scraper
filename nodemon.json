@@ -3,5 +3,8 @@
   "execMap": {
     "ts": "sucrase-node src/dev.ts"
   },
+  "events": {
+    "start": "clear"
+  },
   "ext": "ts"
 }
