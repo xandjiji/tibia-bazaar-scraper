@@ -1,4 +1,5 @@
 import cheerio from 'cheerio'
+import { PostData } from 'Helpers'
 import { sanitizeHtmlString, parseDate } from 'utils'
 import { serverData as file } from 'Data'
 import {
@@ -10,6 +11,7 @@ import { getVocationId, filterListTable } from '../utils'
 export default class AuctionPage {
   $ = cheerio
   serverData: ServerObject[] = []
+  postHelper = new PostData()
 
   async loadServerData() {
     this.serverData = await file.getServerData()
@@ -266,7 +268,31 @@ export default class AuctionPage {
     return [...achievementSet]
   }
 
-  charObject() {
+  outfits() {
+    const firstPage = this.$(`#Outfits .TableContent tbody .BlockPage .CVIcon`)
+    return this.postHelper.outfits(firstPage)
+  }
+
+  storeOutfits() {
+    const firstPage = this.$(
+      `#StoreOutfits .TableContent tbody .BlockPage .CVIcon`,
+    )
+    return this.postHelper.outfits(firstPage)
+  }
+
+  mounts() {
+    const firstPage = this.$(`#Mounts .TableContent tbody .BlockPage .CVIcon`)
+    return this.postHelper.mounts(firstPage)
+  }
+
+  storeMounts() {
+    const firstPage = this.$(
+      `#StoreMounts .TableContent tbody .BlockPage .CVIcon`,
+    )
+    return this.postHelper.mounts(firstPage)
+  }
+
+  partialCharacterObject(): PartialCharacterObject {
     return {
       id: this.id(),
       nickname: this.nickname(),
@@ -284,10 +310,10 @@ export default class AuctionPage {
       transfer: this.transfer(),
       imbuements: this.imbuements(),
       quests: this.quests(),
-      /* outfits: this.outfits(),
+      outfits: this.outfits(),
       storeOutfits: this.storeOutfits(),
       mounts: this.mounts(),
-      storeMounts: this.storeMounts(), */
+      storeMounts: this.storeMounts(),
       rareAchievements: this.rareAchievements(),
     }
   }
