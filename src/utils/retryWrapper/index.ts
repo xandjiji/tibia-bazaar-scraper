@@ -4,9 +4,9 @@ import { requests } from 'Constants'
 const BASE_DELAY = 2
 const MILLISECONDS = 1000
 
-const exponentialBackoffDelay = async (retry: number): Promise<void> => {
-  if (retry > 0) {
-    const magnitude = requests.MAX_RETRIES - retry
+const exponentialBackoffDelay = async (retriesLeft: number): Promise<void> => {
+  if (retriesLeft > 0) {
+    const magnitude = requests.MAX_RETRIES - retriesLeft
     const exponentialDelay = Math.pow(BASE_DELAY, magnitude) * MILLISECONDS
 
     logging.broadcast(`Next retry in ${exponentialDelay}ms`, 'control')
@@ -20,8 +20,11 @@ const retryCall = async <T>(
 ): Promise<T> => {
   if (retries > 0) {
     try {
-      return await callback()
+      const result = await callback()
+      if (retries !== requests.MAX_RETRIES) console.groupEnd()
+      return result
     } catch (error) {
+      if (retries === requests.MAX_RETRIES) console.group()
       logging.broadcast('ERROR! Trying again...', 'fail')
 
       const retriesLeft = retries - 1
