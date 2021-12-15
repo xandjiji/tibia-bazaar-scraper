@@ -1,7 +1,7 @@
 import cheerio from 'cheerio'
 import { PostData } from 'Helpers'
 import { sanitizeHtmlString, parseDate, exitIfMaintenance } from 'utils'
-import { serverData as file } from 'Data'
+import { ServerData } from 'Data'
 import {
   quest as questDictionary,
   rareAchievement as achievementDictionary,
@@ -10,11 +10,11 @@ import { getVocationId, filterListTable } from '../utils'
 
 export default class AuctionPage {
   $ = cheerio
-  serverData: ServerObject[] = []
+  serverDataHelper = new ServerData()
   postHelper = new PostData()
 
   async loadServerData() {
-    this.serverData = await file.getServerData()
+    await this.serverDataHelper.load()
   }
 
   setContent(content: string) {
@@ -94,11 +94,10 @@ export default class AuctionPage {
 
   serverId() {
     const auctionServerName = this.$('.AuctionHeader a').text()
-    const server = this.serverData.find(
-      ({ serverName }) => serverName === auctionServerName,
-    )
+    const { serverId } =
+      this.serverDataHelper.getServerByName(auctionServerName)
 
-    return server?.serverId ?? -1
+    return serverId
   }
 
   vocationId() {
