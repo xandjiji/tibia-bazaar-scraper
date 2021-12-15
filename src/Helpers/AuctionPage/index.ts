@@ -35,11 +35,11 @@ export default class AuctionPage {
     const buttonElement = this.$(
       '.DisplayOptionsButton a.BigButtonText',
     ).first()
-    const onClickHandler = buttonElement.attr('onclick') as string
+    const onClickHandler = buttonElement.attr('onclick')!
     const [, dirtyId] = onClickHandler?.split('auctionid=')
     const [stringId] = dirtyId.split('&')
 
-    return Number(stringId)
+    return +stringId
   }
 
   isFinished() {
@@ -54,8 +54,8 @@ export default class AuctionPage {
     const timestampElement = this.$('.AuctionTimer')
 
     if (timestampElement.length) {
-      const timestamp = timestampElement.attr('data-timestamp')
-      return Number(timestamp)
+      const timestamp = timestampElement.attr('data-timestamp')!
+      return +timestamp
     }
 
     const auctionEndElement = this.$('.ShortAuctionDataValue').next().next()
@@ -66,9 +66,7 @@ export default class AuctionPage {
 
   currentBid() {
     const currentBidText = this.$('.ShortAuctionDataValue b').text()
-    const formattedBid = Number(currentBidText.replace(/,/g, ''))
-
-    return formattedBid
+    return +currentBidText.replace(/,/g, '')
   }
 
   hasBeenBidded() {
@@ -87,7 +85,7 @@ export default class AuctionPage {
 
   outfitId() {
     const outfitElement = this.$('.AuctionOutfitImage')
-    const src = outfitElement.attr('src') as string
+    const src = outfitElement.attr('src')!
     const [, filename] = src.split('/outfits/')
     const [outfitId] = filename.split('.')
 
@@ -115,7 +113,7 @@ export default class AuctionPage {
     const [characterInfo] = headerText.split(' | ')
     const [, level] = characterInfo.split(': ')
 
-    return Number(level)
+    return +level
   }
 
   sex() {
@@ -153,7 +151,7 @@ export default class AuctionPage {
           .text()
           .split('.')
 
-        const skillLevel = Number(`${level}.${percentage.padStart(2, '0')}`)
+        const skillLevel = +`${level}.${percentage.padStart(2, '0')}`
 
         skillArray.push(skillLevel)
       })
@@ -180,10 +178,10 @@ export default class AuctionPage {
     itemImages.map((_, element) => {
       const [, src] = cheerio(element)
         .attr('src')
-        ?.split('/objects/') as string[]
+        ?.split('/objects/')!
 
       const [itemId] = src.split('.')
-      itemArray.push(Number(itemId))
+      itemArray.push(+itemId)
     })
 
     return itemArray
