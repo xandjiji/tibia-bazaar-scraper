@@ -1,6 +1,6 @@
 import cheerio from 'cheerio'
 import { PostData } from 'Helpers'
-import { sanitizeHtmlString, parseDate } from 'utils'
+import { sanitizeHtmlString, parseDate, exitIfMaintenance } from 'utils'
 import { serverData as file } from 'Data'
 import {
   quest as questDictionary,
@@ -176,9 +176,7 @@ export default class AuctionPage {
 
     const itemArray: number[] = []
     itemImages.map((_, element) => {
-      const [, src] = cheerio(element)
-        .attr('src')
-        ?.split('/objects/')!
+      const [, src] = cheerio(element).attr('src')?.split('/objects/')!
 
       const [itemId] = src.split('.')
       itemArray.push(+itemId)
@@ -291,6 +289,8 @@ export default class AuctionPage {
   }
 
   partialCharacterObject(): PartialCharacterObject {
+    exitIfMaintenance(() => this.maintenanceCheck())
+
     return {
       id: this.id(),
       nickname: this.nickname(),

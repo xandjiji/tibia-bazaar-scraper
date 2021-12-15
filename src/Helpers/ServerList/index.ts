@@ -1,4 +1,5 @@
 import cheerio, { Element } from 'cheerio'
+import { exitIfMaintenance } from 'utils'
 import { buildServerLocation, buildPvpType } from './utils'
 import { PartialServerObject } from './types'
 
@@ -50,8 +51,9 @@ export default class ServerList {
   }
 
   servers(): PartialServerObject[] {
-    const serverElements = this.$('.Odd, .Even')
+    exitIfMaintenance(() => this.maintenanceCheck())
 
+    const serverElements = this.$('.Odd, .Even')
     const serverArray: PartialServerObject[] = []
     serverElements.each((_, element) => {
       serverArray.push({

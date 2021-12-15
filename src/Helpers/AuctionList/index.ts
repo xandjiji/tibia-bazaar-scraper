@@ -1,4 +1,5 @@
 import cheerio, { Element } from 'cheerio'
+import { exitIfMaintenance } from 'utils'
 
 export default class AuctionList {
   $ = cheerio
@@ -51,8 +52,9 @@ export default class AuctionList {
   }
 
   auctionBlocks(): AuctionBlock[] {
-    const auctionBlocks = this.$('.Auction')
+    exitIfMaintenance(() => this.maintenanceCheck())
 
+    const auctionBlocks = this.$('.Auction')
     const auctions: AuctionBlock[] = []
     auctionBlocks.each((_, element) => {
       auctions.push({
