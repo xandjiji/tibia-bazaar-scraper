@@ -4,29 +4,26 @@ import { file } from 'Constants'
 
 const { broadcast, coloredText } = logging
 
+const SERVER_FILE_PATH = file.SERVER_DATA.path
+const SERVER_FILE_NAME = coloredText(file.SERVER_DATA.name, 'highlight')
+
 export default class ServerData {
   serverList: ServerObject[] = []
 
   async load() {
-    broadcast(
-      `loading ${coloredText(file.SERVER_DATA.name, 'highlight')}...`,
-      'system',
-    )
+    broadcast(`loading ${SERVER_FILE_NAME}...`, 'system')
 
     try {
-      const data = await fs.readFile(file.SERVER_DATA.path, 'utf-8')
+      const data = await fs.readFile(SERVER_FILE_PATH, 'utf-8')
       this.serverList = Object.values(JSON.parse(data))
     } catch {
       broadcast(
-        `failed to load ${coloredText(
-          file.SERVER_DATA.name,
-          'highlight',
-        )}, initializing a new one...`,
+        `failed to load ${SERVER_FILE_NAME}, initializing a new one...`,
         'fail',
       )
 
       const newData: ServerObject[] = []
-      await fs.writeFile(file.SERVER_DATA.path, JSON.stringify({}))
+      await fs.writeFile(SERVER_FILE_PATH, JSON.stringify({}))
       this.serverList = newData
     }
   }
@@ -38,16 +35,10 @@ export default class ServerData {
     )
 
     if (this.serverList.length === 0) {
-      broadcast(
-        `WARNING! Writing empty values to ${coloredText(
-          file.SERVER_DATA.name,
-          'highlight',
-        )}`,
-        'fail',
-      )
+      broadcast(`WARNING! Writing empty values to ${SERVER_FILE_NAME}`, 'fail')
     }
 
-    await fs.writeFile(file.SERVER_DATA.path, JSON.stringify(serverObject))
+    await fs.writeFile(SERVER_FILE_PATH, JSON.stringify(serverObject))
   }
 
   getAllServers(): ServerObject[] {
@@ -78,10 +69,7 @@ export default class ServerData {
 
     await this.save()
     broadcast(
-      `New server '${partialServer.serverName}' was registered to ${coloredText(
-        file.SERVER_DATA.name,
-        'highlight',
-      )}`,
+      `New server '${partialServer.serverName}' was registered to ${SERVER_FILE_NAME}`,
       'success',
     )
   }
