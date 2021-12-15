@@ -18,3 +18,5 @@ declare interface ServerObject {
   serverLocation: ServerLocation
   pvpType: PvpType
 }
+
+declare type PartialServerObject = Omit<ServerObject, 'serverId'>
