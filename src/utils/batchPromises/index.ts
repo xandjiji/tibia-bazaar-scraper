@@ -1,4 +1,4 @@
-import { logging, sleep } from 'utils'
+import { sleep } from 'utils'
 import { requests } from 'Constants'
 
 const { MAX_CONCURRENT_REQUESTS, DELAY } = requests
