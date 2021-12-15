@@ -1,6 +1,6 @@
 import cheerio, { Element } from 'cheerio'
 
-export default class ListPageHelper {
+export default class AuctionList {
   $ = cheerio
 
   setContent(content: string) {
