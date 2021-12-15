@@ -50,7 +50,7 @@ export default class AuctionList {
     return +currentBidText.replace(/,/g, '')
   }
 
-  auctionBlocks() {
+  auctionBlocks(): AuctionBlock[] {
     const auctionBlocks = this.$('.Auction')
 
     const auctions: AuctionBlock[] = []
