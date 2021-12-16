@@ -2,20 +2,16 @@ import cheerio, { Element } from 'cheerio'
 import { exitIfMaintenance } from 'utils'
 
 export default class AuctionList {
-  $ = cheerio
-
-  setContent(content: string) {
-    this.$ = cheerio.load(content)
-  }
-
-  maintenanceCheck() {
-    const headingElement = this.$('h1')
+  maintenanceCheck(content: string) {
+    const $ = cheerio.load(content)
+    const headingElement = $('h1')
     return headingElement.text() === 'Downtime'
   }
 
-  lastPageIndex() {
+  lastPageIndex(content: string) {
+    const $ = cheerio.load(content)
     try {
-      const lastPageElement = this.$(
+      const lastPageElement = $(
         '.PageNavigation .PageLink:last-child a',
       ).first()
 
@@ -51,10 +47,12 @@ export default class AuctionList {
     return +currentBidText.replace(/,/g, '')
   }
 
-  auctionBlocks(): AuctionBlock[] {
-    exitIfMaintenance(() => this.maintenanceCheck())
+  auctionBlocks(content: string): AuctionBlock[] {
+    const $ = cheerio.load(content)
 
-    const auctionBlocks = this.$('.Auction')
+    exitIfMaintenance(() => this.maintenanceCheck(content))
+
+    const auctionBlocks = $('.Auction')
     const auctions: AuctionBlock[] = []
     auctionBlocks.each((_, element) => {
       auctions.push({
