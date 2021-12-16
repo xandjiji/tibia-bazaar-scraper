@@ -83,7 +83,7 @@ export default class CurrentAuctionsData {
     await this.save()
     broadcast(
       `Fresh auctions (${coloredText(
-        newAuctions.length.toString(),
+        newAuctions.length,
         'highlight',
       )} entries) were saved to ${AUCTIONS_FILE_NAME}`,
       'success',

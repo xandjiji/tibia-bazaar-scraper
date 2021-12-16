@@ -14,7 +14,7 @@ const colors = {
 
 type ColorKey = keyof typeof colors
 
-const coloredText = (text: string, color: ColorKey): string => {
+const coloredText = (text: string | number, color: ColorKey): string => {
   return `${colors[color]}${text}${colors['reset']}`
 }
 
@@ -50,25 +50,21 @@ export const humanReadableTimestamp = (timestamp: number) => {
   const seconds = Math.floor(millisecondsLeft / MILLISECONDS_IN_A_SECOND)
 
   const hoursString = hours
-    ? `${coloredText(hours.toString(), 'highlight')} hour${
-        hours > 1 ? 's' : ''
-      }, `
+    ? `${coloredText(hours, 'highlight')} hour${hours > 1 ? 's' : ''}, `
     : ''
   const minutesString = minutes
-    ? `${coloredText(minutes.toString(), 'highlight')} minute${
+    ? `${coloredText(minutes, 'highlight')} minute${
         minutes > 1 ? 's' : ''
       } and `
     : ''
   const secondsString = seconds
-    ? `${coloredText(seconds.toString(), 'highlight')} second${
-        seconds > 1 ? 's' : ''
-      }`
+    ? `${coloredText(seconds, 'highlight')} second${seconds > 1 ? 's' : ''}`
     : ''
 
   return `${hoursString}${minutesString}${secondsString}`
 }
 
-const broadcast = (text: string, color: ColorKey) =>
+const broadcast = (text: string | number, color: ColorKey) =>
   console.log(`${getTimestamp(color)} ${text}`)
 
 export default {
