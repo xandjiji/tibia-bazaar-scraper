@@ -274,26 +274,29 @@ export default class AuctionPage {
 
   outfits(content: string) {
     const $ = cheerio.load(content)
-    const firstPage = $(`#Outfits .TableContent tbody .BlockPage .CVIcon`)
-    return this.postHelper.outfits(firstPage)
+    const firstPage = $('#Outfits .TableContent tbody .BlockPage')
+    return this.postHelper.outfits(firstPage.html()!)
   }
 
   storeOutfits(content: string) {
     const $ = cheerio.load(content)
-    const firstPage = $(`#StoreOutfits .TableContent tbody .BlockPage .CVIcon`)
-    return this.postHelper.outfits(firstPage)
+    const firstPage = $('#StoreOutfits .TableContent tbody .BlockPage')
+    const html = firstPage.html()
+    return html ? this.postHelper.outfits(html) : []
   }
 
   mounts(content: string) {
     const $ = cheerio.load(content)
-    const firstPage = $(`#Mounts .TableContent tbody .BlockPage .CVIcon`)
-    return this.postHelper.mounts(firstPage)
+    const firstPage = $('#Mounts .TableContent tbody .BlockPage')
+    const html = firstPage.html()
+    return html ? this.postHelper.mounts(html) : []
   }
 
   storeMounts(content: string) {
     const $ = cheerio.load(content)
-    const firstPage = $(`#StoreMounts .TableContent tbody .BlockPage .CVIcon`)
-    return this.postHelper.mounts(firstPage)
+    const firstPage = $('#StoreMounts .TableContent tbody .BlockPage')
+    const html = firstPage.html()
+    return html ? this.postHelper.mounts(html) : []
   }
 
   partialCharacterObject(content: string): PartialCharacterObject {

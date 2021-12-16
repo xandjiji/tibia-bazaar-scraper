@@ -1,24 +1,19 @@
-import cheerio, { Cheerio, Element } from 'cheerio'
+import cheerio from 'cheerio'
 
 export default class PostData {
-  $ = cheerio
-
   normalizedName: Record<string, string> = {
     Noblewoman: 'Nobleman',
     Norsewoman: 'Norseman',
     'Retro Noblewoman': 'Retro Nobleman',
   }
 
-  setContent(content: string) {
-    this.$ = cheerio.load(content)
-  }
-
   normalizeFemaleOutfit(name: string) {
     return this.normalizedName[name] ?? name
   }
 
-  outfits(baseParser?: Cheerio<Element>) {
-    const icons = baseParser ?? this.$('.CVIcon')
+  outfits(content: string) {
+    const $ = cheerio.load(content)
+    const icons = $('.CVIcon')
 
     const outfits: Outfit[] = []
     icons.each((_, element) => {
@@ -32,8 +27,9 @@ export default class PostData {
     return outfits
   }
 
-  mounts(baseParser?: Cheerio<Element>) {
-    const icons = baseParser ?? this.$('.CVIcon')
+  mounts(content: string) {
+    const $ = cheerio.load(content)
+    const icons = $('.CVIcon')
 
     const mounts: string[] = []
     icons.each((_, element) => {
