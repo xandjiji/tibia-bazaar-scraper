@@ -98,7 +98,7 @@ export default class CurrentAuctionsData {
       `Fresh auctions (${coloredText(
         newAuctions.length,
         'highlight',
-      )} entries) were saved to ${AUCTIONS_FILE_NAME}`,
+      )} new entries) were saved to ${AUCTIONS_FILE_NAME}`,
       'success',
     )
   }
