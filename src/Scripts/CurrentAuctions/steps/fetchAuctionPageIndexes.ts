@@ -10,9 +10,8 @@ export const fetchAuctionPageIndexes = retryWrapper(
 
     const helper = new AuctionList()
     const html = await fetchHtml(FIRST_PAGE_AUCTION_LIST)
-    helper.setContent(html)
 
-    const lastPageIndex = helper.lastPageIndex()
+    const lastPageIndex = helper.lastPageIndex(html)
     return Array.from({ length: lastPageIndex }, (_, index) => index + 1)
   },
 )

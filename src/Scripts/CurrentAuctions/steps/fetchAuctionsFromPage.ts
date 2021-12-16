@@ -8,8 +8,7 @@ const AUCTION_LIST_URL = 'https://www.tibia.com/charactertrade'
 const fetchAuctionsFromPage = retryWrapper(async (pageIndex) => {
   const helper = new AuctionList()
   const html = await fetchHtml(`${AUCTION_LIST_URL}/?currentpage=${pageIndex}`)
-  helper.setContent(html)
-  return helper.auctionBlocks()
+  return helper.auctionBlocks(html)
 })
 
 export const fetchAllAuctionBlocks = async (
