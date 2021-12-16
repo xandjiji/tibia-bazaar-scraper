@@ -25,7 +25,16 @@ const getTimestamp = (color: ColorKey = 'reset'): string => {
   return `${coloredText('[', color)}${timestamp}${coloredText(']', color)}`
 }
 
+const colorProgress = (
+  [current, last]: [number, number],
+  color: ColorKey = 'system',
+): string =>
+  `${coloredText('[', color)}${current}${coloredText(
+    '/',
+    color,
+  )}${last}${coloredText(']', color)}`
+
 const broadcast = (text: string, color: ColorKey) =>
   console.log(`${getTimestamp(color)} ${text}`)
 
-export default { coloredText, getTimestamp, broadcast }
+export default { coloredText, getTimestamp, colorProgress, broadcast }
