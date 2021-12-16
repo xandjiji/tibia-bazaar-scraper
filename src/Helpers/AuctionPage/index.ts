@@ -299,6 +299,20 @@ export default class AuctionPage {
     return html ? this.postHelper.mounts(html) : []
   }
 
+  boxSectionLastIndex(id: string, content: string): number {
+    const $ = cheerio.load(content)
+    const lastPageLink = $(`#${id} .TableContent tbody .PageLink:last-child a`)
+
+    let lastIndex = 1
+    lastPageLink.each((_, element) => {
+      const href = cheerio(element).attr('href') as string
+      const [, lastPageIndex] = href.split('&currentpage=')
+      lastIndex = +lastPageIndex
+    })
+
+    return lastIndex
+  }
+
   partialCharacterObject(content: string): PartialCharacterObject {
     exitIfMaintenance(() => this.maintenanceCheck(content))
 
