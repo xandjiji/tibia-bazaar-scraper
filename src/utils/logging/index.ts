@@ -22,7 +22,7 @@ const getTimestamp = (color: ColorKey = 'reset'): string => {
     second: 'numeric',
   })
 
-  return `${coloredText('[', color)}${timestamp}${coloredText(']', color)}`
+  return coloredText(`[${timestamp}]`, color)
 }
 
 const colorProgress = (
