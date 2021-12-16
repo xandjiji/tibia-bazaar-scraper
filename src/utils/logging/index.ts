@@ -57,7 +57,7 @@ export const humanReadableTimestamp = (timestamp: number) => {
   const minutesString = minutes
     ? `${coloredText(minutes.toString(), 'highlight')} minute${
         minutes > 1 ? 's' : ''
-      } and  `
+      } and `
     : ''
   const secondsString = seconds
     ? `${coloredText(seconds.toString(), 'highlight')} second${
