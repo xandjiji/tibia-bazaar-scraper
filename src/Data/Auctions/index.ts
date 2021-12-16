@@ -81,6 +81,12 @@ export default class CurrentAuctionsData {
     this.currentAuctions = [...this.currentAuctions, ...newAuctions]
 
     await this.save()
-    broadcast(`Fresh auctions were saved to ${AUCTIONS_FILE_NAME}`, 'success')
+    broadcast(
+      `Fresh auctions (${coloredText(
+        newAuctions.length.toString(),
+        'highlight',
+      )} entries) were saved to ${AUCTIONS_FILE_NAME}`,
+      'success',
+    )
   }
 }
