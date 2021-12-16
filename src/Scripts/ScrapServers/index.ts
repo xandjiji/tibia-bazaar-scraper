@@ -12,9 +12,8 @@ const main = async () => {
 
   logging.broadcast('Fetching server data...', 'neutral')
   const serverPageHtml = await fetchServerPage()
-  helper.setContent(serverPageHtml)
 
-  const newServerData = helper.servers()
+  const newServerData = helper.servers(serverPageHtml)
 
   newServerData.forEach((newServer) => {
     if (!currentServerNames.has(newServer.serverName)) {
