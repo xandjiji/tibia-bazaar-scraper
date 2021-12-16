@@ -1,13 +1,13 @@
 import cheerio from 'cheerio'
 
 export default class PostData {
-  normalizedName: Record<string, string> = {
+  private normalizedName: Record<string, string> = {
     Noblewoman: 'Nobleman',
     Norsewoman: 'Norseman',
     'Retro Noblewoman': 'Retro Nobleman',
   }
 
-  normalizeFemaleOutfit(name: string) {
+  private normalizeFemaleOutfit(name: string) {
     return this.normalizedName[name] ?? name
   }
 
