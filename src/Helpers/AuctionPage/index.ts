@@ -178,7 +178,7 @@ export default class AuctionPage {
 
   items(content: string) {
     const $ = cheerio.load(content)
-    const itemImages = $('.AuctionItemsViewBox img')
+    const itemImages = $('.AuctionItemsViewBox .CVIcon > img')
 
     const itemArray: number[] = []
     itemImages.map((_, element) => {
