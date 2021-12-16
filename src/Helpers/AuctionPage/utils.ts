@@ -3,11 +3,10 @@ import { retryWrapper, postHtml, logging } from 'utils'
 import { PostHtmlProps } from 'utils/fetch/types'
 import { CharacterPostData, readableTypes } from './types'
 
-const { broadcast, coloredText } = logging
+const { broadcast, bumpBroadcast, coloredText } = logging
 
-const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void => {
-  console.group()
-  broadcast(
+const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void =>
+  bumpBroadcast(
     `Requesting ${coloredText(
       readableTypes[type],
       'control',
@@ -17,8 +16,6 @@ const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void => {
     )} for auction id ${coloredText(auctionId, 'highlight')}`,
     'neutral',
   )
-  console.groupEnd()
-}
 
 const getPostData = retryWrapper((args: PostHtmlProps) => {
   logRequest(args)

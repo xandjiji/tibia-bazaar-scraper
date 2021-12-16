@@ -67,10 +67,17 @@ export const humanReadableTimestamp = (timestamp: number) => {
 const broadcast = (text: string | number, color: ColorKey) =>
   console.log(`${getTimestamp(color)} ${text}`)
 
+const bumpBroadcast: typeof broadcast = (...args) => {
+  console.group()
+  broadcast(...args)
+  console.groupEnd()
+}
+
 export default {
   coloredText,
   getTimestamp,
   colorProgress,
   humanReadableTimestamp,
+  bumpBroadcast,
   broadcast,
 }
