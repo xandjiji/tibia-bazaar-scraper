@@ -1,3 +1,7 @@
+const MILLISECONDS_IN_A_SECOND = 1000
+const MILLISECONDS_IN_A_MINUTE = MILLISECONDS_IN_A_SECOND * 60
+const MILLISECONDS_IN_AN_HOUR = MILLISECONDS_IN_A_MINUTE * 60
+
 const colors = {
   reset: '\x1b[0m', // white
   fail: '\x1b[31m', // red
@@ -34,7 +38,43 @@ const colorProgress = (
     color,
   )}${last}${coloredText(']', color)}`
 
+export const humanReadableTimestamp = (timestamp: number) => {
+  let millisecondsLeft = timestamp
+
+  const hours = Math.floor(millisecondsLeft / MILLISECONDS_IN_AN_HOUR)
+
+  millisecondsLeft -= hours * MILLISECONDS_IN_AN_HOUR
+  const minutes = Math.floor(millisecondsLeft / MILLISECONDS_IN_A_MINUTE)
+
+  millisecondsLeft -= minutes * MILLISECONDS_IN_A_MINUTE
+  const seconds = Math.floor(millisecondsLeft / MILLISECONDS_IN_A_SECOND)
+
+  const hoursString = hours
+    ? `${coloredText(hours.toString(), 'highlight')} hour${
+        hours > 1 ? 's' : ''
+      }, `
+    : ''
+  const minutesString = minutes
+    ? `${coloredText(minutes.toString(), 'highlight')} minute${
+        minutes > 1 ? 's' : ''
+      } and  `
+    : ''
+  const secondsString = seconds
+    ? `${coloredText(seconds.toString(), 'highlight')} second${
+        seconds > 1 ? 's' : ''
+      }`
+    : ''
+
+  return `${hoursString}${minutesString}${secondsString}`
+}
+
 const broadcast = (text: string, color: ColorKey) =>
   console.log(`${getTimestamp(color)} ${text}`)
 
-export default { coloredText, getTimestamp, colorProgress, broadcast }
+export default {
+  coloredText,
+  getTimestamp,
+  colorProgress,
+  humanReadableTimestamp,
+  broadcast,
+}
