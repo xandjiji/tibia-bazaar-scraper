@@ -10,7 +10,7 @@ const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void => {
   broadcast(
     `Requesting ${coloredText(
       readableTypes[type],
-      'neutral',
+      'control',
     )} data page ${coloredText(
       pageIndex,
       'highlight',

@@ -3,12 +3,6 @@ import { logging, fetchHtml, retryWrapper, batchPromises } from 'utils'
 
 const { broadcast, coloredText, colorProgress } = logging
 
-/* @ ToDo:
-    - pegar o lastIndex de cada outfit, mount, etc...
-    - montar fila de requisiçoes pra cada um e dar batch promises
-    - pegar os dados novos e mergear com os antigos
-*/
-
 const AUCTION_PAGE_URL =
   'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details'
 
