@@ -1,4 +1,5 @@
 import { Auctions } from 'Data'
+import ScrapServers from 'Scripts/ScrapServers'
 import {
   fetchAuctionPageIndexes,
   fetchAllAuctionBlocks,
@@ -6,6 +7,8 @@ import {
 } from './tasks'
 
 const main = async () => {
+  await ScrapServers()
+
   const auctionData = new Auctions()
 
   const pageIndexes = await fetchAuctionPageIndexes()
