@@ -13,8 +13,3 @@ export const colors = {
 } as const
 
 export type ColorKey = keyof typeof colors
-
-export type Timer = {
-  key: string
-  timestamp: number
-}

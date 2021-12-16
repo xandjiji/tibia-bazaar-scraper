@@ -1,6 +1,6 @@
 import { ServerList } from 'Helpers'
 import { ServerData } from 'Data'
-import { logging } from 'utils'
+import { broadcast } from 'logging'
 import { fetchServerPage } from './utils'
 
 const main = async () => {
@@ -10,7 +10,7 @@ const main = async () => {
   await serverData.load()
   const currentServerNames = serverData.getServerNamesSet()
 
-  logging.broadcast('Fetching server data...', 'neutral')
+  broadcast('Fetching server data...', 'neutral')
   const serverPageHtml = await fetchServerPage()
 
   const newServerData = helper.servers(serverPageHtml)

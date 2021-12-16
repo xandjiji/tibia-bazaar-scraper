@@ -1,9 +1,8 @@
 import { AuctionPage, PostData } from 'Helpers'
-import { retryWrapper, postHtml, logging } from 'utils'
+import { bumpBroadcast, coloredText } from 'logging'
+import { retryWrapper, postHtml } from 'utils'
 import { PostHtmlProps } from 'utils/fetch/types'
 import { CharacterPostData, readableTypes } from './types'
-
-const { broadcast, bumpBroadcast, coloredText } = logging
 
 const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void =>
   bumpBroadcast(

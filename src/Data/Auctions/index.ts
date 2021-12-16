@@ -1,8 +1,6 @@
 import fs from 'fs/promises'
-import { logging } from 'utils'
+import { broadcast, coloredText } from 'logging'
 import { file } from 'Constants'
-
-const { broadcast, coloredText } = logging
 
 const AUCTIONS_FILE_PATH = file.CURRENT_AUCTIONS.path
 const AUCTIONS_FILE_NAME = coloredText(file.CURRENT_AUCTIONS.name, 'highlight')

@@ -1,7 +1,6 @@
 import { AuctionPage } from 'Helpers'
-import { logging, fetchHtml, retryWrapper, batchPromises } from 'utils'
-
-const { broadcast, coloredText, colorProgress } = logging
+import { broadcast, coloredText, colorProgress } from 'logging'
+import { fetchHtml, retryWrapper, batchPromises } from 'utils'
 
 const AUCTION_PAGE_URL =
   'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details'

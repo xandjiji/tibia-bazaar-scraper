@@ -1,7 +1,7 @@
-import { logging, sleep } from 'utils'
+import { broadcast, bumpBroadcast } from 'logging'
+import { sleep } from 'utils'
 import { requests } from 'Constants'
 
-const { broadcast, bumpBroadcast } = logging
 const BASE_DELAY = 2
 const MILLISECONDS = 1000
 

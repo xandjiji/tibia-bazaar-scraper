@@ -1,7 +1,6 @@
 import { AuctionList } from 'Helpers'
-import { logging, fetchHtml, retryWrapper, batchPromises } from 'utils'
-
-const { broadcast, colorProgress } = logging
+import { broadcast, colorProgress } from 'logging'
+import { fetchHtml, retryWrapper, batchPromises } from 'utils'
 
 const AUCTION_LIST_URL = 'https://www.tibia.com/charactertrade'
 

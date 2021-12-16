@@ -1,18 +1,18 @@
 import { Auctions } from 'Data'
+import { broadcast, coloredText, Timer } from 'logging'
 import ScrapServers from 'Scripts/ScrapServers'
-import { logging } from 'utils'
 import {
   fetchAuctionPageIndexes,
   fetchAllAuctionBlocks,
   fetchNewAuctions,
 } from './tasks'
 
-const { broadcast, coloredText, humanReadableTimestamp } = logging
-
 const SCRIPT_NAME = coloredText('UpdateAuctions', 'highlight')
 
+const timer = new Timer()
+
 const main = async () => {
-  const startTimestamp = +new Date()
+  timer.setTimer()
   broadcast(`Starting ${SCRIPT_NAME} script routine`, 'success')
 
   await ScrapServers()
@@ -30,11 +30,8 @@ const main = async () => {
   const newAuctions = await fetchNewAuctions(newAuctionIds)
   await auctionData.appendAuctions(newAuctions)
 
-  const runTimestamp = +new Date() - startTimestamp
-  logging.broadcast(
-    `${SCRIPT_NAME} script routine finished in ${humanReadableTimestamp(
-      runTimestamp,
-    )}`,
+  broadcast(
+    `${SCRIPT_NAME} script routine finished in ${timer.stopTimer()}`,
     'success',
   )
 }
