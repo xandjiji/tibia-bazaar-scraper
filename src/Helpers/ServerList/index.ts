@@ -3,14 +3,9 @@ import { exitIfMaintenance } from 'utils'
 import { buildServerLocation, buildPvpType } from './utils'
 
 export default class ServerList {
-  $ = cheerio
-
-  setContent(content: string) {
-    this.$ = cheerio.load(content)
-  }
-
-  maintenanceCheck() {
-    const headingElement = this.$('h1')
+  maintenanceCheck(content: string) {
+    const $ = cheerio.load(content)
+    const headingElement = $('h1')
     return headingElement.text() === 'Downtime'
   }
 
@@ -49,10 +44,12 @@ export default class ServerList {
     return serverInfoText.includes('experimental')
   }
 
-  servers(): PartialServerObject[] {
-    exitIfMaintenance(() => this.maintenanceCheck())
+  servers(content: string): PartialServerObject[] {
+    exitIfMaintenance(() => this.maintenanceCheck(content))
 
-    const serverElements = this.$('.Odd, .Even')
+    const $ = cheerio.load(content)
+
+    const serverElements = $('.Odd, .Even')
     const serverArray: PartialServerObject[] = []
     serverElements.each((_, element) => {
       serverArray.push({
