@@ -4,7 +4,8 @@
   "description": "Helpers for scraping data from the official Tibia website",
   "author": "xandjiji <xandjiji@gmail.com>",
   "scripts": {
-    "dev": "NODE_PATH=./src nodemon -q src/dev.ts --transforms typescript,imports"
+    "dev": "NODE_PATH=./src nodemon -q src/dev.ts --transforms typescript,imports",
+    "dev:slow": "SLOW_MODE=true NODE_PATH=./src nodemon -q src/dev.ts --transforms typescript,imports"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.30",
