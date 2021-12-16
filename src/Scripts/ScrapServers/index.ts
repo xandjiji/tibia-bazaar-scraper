@@ -3,10 +3,10 @@ import { ServerData } from 'Data'
 import { logging } from 'utils'
 import { fetchServerPage } from './utils'
 
-const helper = new ServerList()
-const serverData = new ServerData()
-
 const main = async () => {
+  const helper = new ServerList()
+  const serverData = new ServerData()
+
   await serverData.load()
   const currentServerNames = serverData.getServerNamesSet()
 
