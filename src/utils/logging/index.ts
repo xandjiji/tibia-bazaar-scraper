@@ -14,15 +14,18 @@ const coloredText = (text: string, color: ColorKey): string => {
   return `${colors[color]}${text}${colors['reset']}`
 }
 
-const getTimestamp = (): string =>
-  `[${new Date().toLocaleTimeString('en-US', {
+const getTimestamp = (color: ColorKey = 'reset'): string => {
+  const timestamp = new Date().toLocaleTimeString('en-US', {
     hour12: false,
     hour: 'numeric',
     minute: 'numeric',
     second: 'numeric',
-  })}]`
+  })
+
+  return `${coloredText('[', color)}${timestamp}${coloredText(']', color)}`
+}
 
 const broadcast = (text: string, color: ColorKey) =>
-  console.log(`${coloredText(getTimestamp(), color)} ${text}`)
+  console.log(`${getTimestamp(color)} ${text}`)
 
 export default { coloredText, getTimestamp, broadcast }
