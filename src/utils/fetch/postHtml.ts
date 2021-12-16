@@ -33,5 +33,6 @@ export const postHtml = async ({
   }
 
   const data = await response.json()
-  return data.AjaxObjects[0].Data as string
+  const [ajaxObject] = data.AjaxObjects
+  return ajaxObject.Data as string
 }
