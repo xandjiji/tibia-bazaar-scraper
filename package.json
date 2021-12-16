@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "NODE_PATH=./src nodemon -q src/dev.ts",
     "dev:slow": "SLOW_MODE=true NODE_PATH=./src nodemon -q src/dev.ts",
-    "scrap:auctions": "NODE_PATH=./src sucrase-node src/Scripts/CurrentAuctions/run.ts"
+    "scrap:auctions": "NODE_PATH=./src sucrase-node src/Scripts/UpdateAuctions/run.ts"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.30",

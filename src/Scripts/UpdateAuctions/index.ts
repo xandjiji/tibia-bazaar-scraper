@@ -9,12 +9,11 @@ import {
 
 const { broadcast, coloredText, humanReadableTimestamp } = logging
 
+const SCRIPT_NAME = coloredText('UpdateAuctions', 'highlight')
+
 const main = async () => {
   const startTimestamp = +new Date()
-  broadcast(
-    `Starting ${coloredText('CurrentAuctions', 'highlight')} script routine`,
-    'success',
-  )
+  broadcast(`Starting ${SCRIPT_NAME} script routine`, 'success')
 
   await ScrapServers()
 
@@ -33,10 +32,9 @@ const main = async () => {
 
   const runTimestamp = +new Date() - startTimestamp
   logging.broadcast(
-    `${coloredText(
-      'CurrentAuctions',
-      'highlight',
-    )} script routine finished in ${humanReadableTimestamp(runTimestamp)}`,
+    `${SCRIPT_NAME} script routine finished in ${humanReadableTimestamp(
+      runTimestamp,
+    )}`,
     'success',
   )
 }
