@@ -14,7 +14,7 @@ const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void => {
     )} data page ${coloredText(
       pageIndex,
       'highlight',
-    )} for auction id ${coloredText(auctionId, 'highlight')}...`,
+    )} for auction id ${coloredText(auctionId, 'highlight')}`,
     'neutral',
   )
   console.groupEnd()
