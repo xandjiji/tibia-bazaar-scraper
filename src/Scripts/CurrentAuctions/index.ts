@@ -13,7 +13,7 @@ const main = async () => {
   const startTimestamp = +new Date()
   broadcast(
     `Starting ${coloredText('CurrentAuctions', 'highlight')} script routine`,
-    'system',
+    'success',
   )
 
   await ScrapServers()
@@ -37,7 +37,7 @@ const main = async () => {
       'CurrentAuctions',
       'highlight',
     )} script routine finished in ${humanReadableTimestamp(runTimestamp)}`,
-    'system',
+    'success',
   )
 }
 
