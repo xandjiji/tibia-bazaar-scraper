@@ -7,10 +7,11 @@ import {
   rareAchievement as achievementDictionary,
 } from 'DataDictionary/dictionaries'
 import { getVocationId, filterListTable } from '../utils'
+import { getPagedData } from './utils'
 
 export default class AuctionPage {
-  serverDataHelper = new ServerData()
-  postHelper = new PostData()
+  private serverDataHelper = new ServerData()
+  private postHelper = new PostData()
 
   async loadServerData() {
     await this.serverDataHelper.load()
@@ -272,27 +273,27 @@ export default class AuctionPage {
     return [...achievementSet]
   }
 
-  outfits(content: string) {
+  outfitFirstPage(content: string) {
     const $ = cheerio.load(content)
     const firstPage = $('#Outfits .TableContent tbody .BlockPage')
     return this.postHelper.outfits(firstPage.html()!)
   }
 
-  storeOutfits(content: string) {
+  storeOutfitFirstPage(content: string) {
     const $ = cheerio.load(content)
     const firstPage = $('#StoreOutfits .TableContent tbody .BlockPage')
     const html = firstPage.html()
     return html ? this.postHelper.outfits(html) : []
   }
 
-  mounts(content: string) {
+  mountFirstPage(content: string) {
     const $ = cheerio.load(content)
     const firstPage = $('#Mounts .TableContent tbody .BlockPage')
     const html = firstPage.html()
     return html ? this.postHelper.mounts(html) : []
   }
 
-  storeMounts(content: string) {
+  storeMountFirstPage(content: string) {
     const $ = cheerio.load(content)
     const firstPage = $('#StoreMounts .TableContent tbody .BlockPage')
     const html = firstPage.html()
@@ -313,7 +314,9 @@ export default class AuctionPage {
     return lastIndex
   }
 
-  partialCharacterObject(content: string): PartialCharacterObject {
+  async partialCharacterObject(
+    content: string,
+  ): Promise<PartialCharacterObject> {
     exitIfMaintenance(() => this.maintenanceCheck(content))
 
     return {
@@ -333,11 +336,8 @@ export default class AuctionPage {
       transfer: this.transfer(content),
       imbuements: this.imbuements(content),
       quests: this.quests(content),
-      outfits: this.outfits(content),
-      storeOutfits: this.storeOutfits(content),
-      mounts: this.mounts(content),
-      storeMounts: this.storeMounts(content),
       rareAchievements: this.rareAchievements(content),
+      ...(await getPagedData(content)),
     }
   }
 }
