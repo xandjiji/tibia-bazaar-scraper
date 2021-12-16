@@ -2,10 +2,35 @@ import cheerio, { Element } from 'cheerio'
 import { exitIfMaintenance } from 'utils'
 
 export default class AuctionList {
-  maintenanceCheck(content: string) {
+  private maintenanceCheck(content: string) {
     const $ = cheerio.load(content)
     const headingElement = $('h1')
     return headingElement.text() === 'Downtime'
+  }
+
+  private id(element: Element) {
+    const auctionLink = cheerio('.AuctionCharacterName a', element)
+
+    const href = new URL(auctionLink.attr('href')!)
+    return +href.searchParams.get('auctionid')!
+  }
+
+  private hasBeenBidded(element: Element) {
+    const auctionStatus = cheerio('.AuctionInfo', element).text()
+    if (auctionStatus === 'cancelled') {
+      return false
+    }
+
+    const bidElement = cheerio('.ShortAuctionDataBidRow', element)
+    const [bidText] = bidElement.text().split(':')
+
+    const biddedTexts = ['Winning Bid', 'Current Bid']
+    return biddedTexts.includes(bidText)
+  }
+
+  private currentBid(element: Element) {
+    const currentBidText = cheerio('.ShortAuctionDataValue b', element).text()
+    return +currentBidText.replace(/,/g, '')
   }
 
   lastPageIndex(content: string) {
@@ -20,31 +45,6 @@ export default class AuctionList {
     } catch {
       return -1
     }
-  }
-
-  id(element: Element) {
-    const auctionLink = cheerio('.AuctionCharacterName a', element)
-
-    const href = new URL(auctionLink.attr('href')!)
-    return +href.searchParams.get('auctionid')!
-  }
-
-  hasBeenBidded(element: Element) {
-    const auctionStatus = cheerio('.AuctionInfo', element).text()
-    if (auctionStatus === 'cancelled') {
-      return false
-    }
-
-    const bidElement = cheerio('.ShortAuctionDataBidRow', element)
-    const [bidText] = bidElement.text().split(':')
-
-    const biddedTexts = ['Winning Bid', 'Current Bid']
-    return biddedTexts.includes(bidText)
-  }
-
-  currentBid(element: Element) {
-    const currentBidText = cheerio('.ShortAuctionDataValue b', element).text()
-    return +currentBidText.replace(/,/g, '')
   }
 
   auctionBlocks(content: string): AuctionBlock[] {
