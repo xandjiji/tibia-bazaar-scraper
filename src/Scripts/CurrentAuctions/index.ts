@@ -1,7 +1,7 @@
 import { AuctionList } from 'Helpers'
 import { Auctions } from 'Data'
 import { logging, batchPromises } from 'utils'
-import { fetchAuctionPageIndexes, fetchAllAuctionBlocks } from './utils'
+import { fetchAuctionPageIndexes, fetchAllAuctionBlocks } from './steps'
 
 const helper = new AuctionList()
 const auctionData = new Auctions()
