@@ -36,11 +36,11 @@ export default class CurrentAuctionsData {
       )
     }
 
-    const sortedAuctions = this.currentAuctions.sort(
+    this.currentAuctions = this.currentAuctions.sort(
       (a, b) => a.auctionEnd - b.auctionEnd,
     )
 
-    await fs.writeFile(AUCTIONS_FILE_PATH, JSON.stringify(sortedAuctions))
+    await fs.writeFile(AUCTIONS_FILE_PATH, JSON.stringify(this.currentAuctions))
   }
 
   async updatePreviousAuctions(auctionBlocks: AuctionBlock[]) {
@@ -67,5 +67,20 @@ export default class CurrentAuctionsData {
       `Current auctions from ${AUCTIONS_FILE_NAME} were updated`,
       'success',
     )
+  }
+
+  newAuctionIds(auctionBlocks: AuctionBlock[]): number[] {
+    const currentAuctionIds = new Set(this.currentAuctions.map(({ id }) => id))
+
+    return auctionBlocks
+      .filter(({ id }) => !currentAuctionIds.has(id))
+      .map(({ id }) => id)
+  }
+
+  async appendAuctions(newAuctions: PartialCharacterObject[]) {
+    this.currentAuctions = [...this.currentAuctions, ...newAuctions]
+
+    await this.save()
+    broadcast(`Fresh auctions were saved to ${AUCTIONS_FILE_NAME}`, 'success')
   }
 }

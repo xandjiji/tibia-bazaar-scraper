@@ -1,14 +1,11 @@
-import { AuctionList } from 'Helpers'
 import { Auctions } from 'Data'
-import { fetchAuctionPageIndexes, fetchAllAuctionBlocks } from './steps'
-
-/* @ ToDo:
-    - scrapar individualmente leiloes paginados que nao estao nos salvos
-    - mergear a lista, ordenar e salvar
-*/
+import {
+  fetchAuctionPageIndexes,
+  fetchAllAuctionBlocks,
+  fetchNewAuctions,
+} from './tasks'
 
 const main = async () => {
-  const helper = new AuctionList()
   const auctionData = new Auctions()
 
   const pageIndexes = await fetchAuctionPageIndexes()
@@ -16,6 +13,11 @@ const main = async () => {
 
   await auctionData.load()
   await auctionData.updatePreviousAuctions(auctionBlocks)
+
+  const newAuctionIds = auctionData.newAuctionIds(auctionBlocks)
+
+  const newAuctions = await fetchNewAuctions(newAuctionIds)
+  await auctionData.appendAuctions(newAuctions)
 }
 
 export default main
