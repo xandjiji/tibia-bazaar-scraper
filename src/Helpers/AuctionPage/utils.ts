@@ -1,8 +1,29 @@
 import { AuctionPage, PostData } from 'Helpers'
-import { retryWrapper, postHtml } from 'utils'
-import { CharacterPostData } from './types'
+import { retryWrapper, postHtml, logging } from 'utils'
+import { PostHtmlProps } from 'utils/fetch/types'
+import { CharacterPostData, readableTypes } from './types'
 
-const getPostData = retryWrapper(postHtml)
+const { broadcast, coloredText } = logging
+
+const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void => {
+  console.group()
+  broadcast(
+    `Requesting ${coloredText(
+      readableTypes[type],
+      'neutral',
+    )} data page ${coloredText(
+      pageIndex,
+      'highlight',
+    )} for auction id ${coloredText(auctionId, 'highlight')}...`,
+    'neutral',
+  )
+  console.groupEnd()
+}
+
+const getPostData = retryWrapper((args: PostHtmlProps) => {
+  logRequest(args)
+  return postHtml(args)
+})
 
 export const getPagedData = async (
   content: string,
