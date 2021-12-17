@@ -9,10 +9,8 @@ import {
 
 const SCRIPT_NAME = coloredText('UpdateAuctions', 'highlight')
 
-const timer = new Timer()
-
 const main = async () => {
-  timer.setTimer()
+  const timer = new Timer()
   broadcast(`Starting ${SCRIPT_NAME} script routine`, 'success')
 
   await ScrapServers()
@@ -31,7 +29,7 @@ const main = async () => {
   await auctionData.appendAuctions(newAuctions)
 
   broadcast(
-    `${SCRIPT_NAME} script routine finished in ${timer.stopTimer()}`,
+    `${SCRIPT_NAME} script routine finished in ${timer.elapsedTime()}`,
     'success',
   )
 }
