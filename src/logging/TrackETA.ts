@@ -1,4 +1,4 @@
-import { broadcast, footer } from '.'
+import { broadcast, setFooterText } from '.'
 import { humanReadableTimestamp, coloredText } from './utils'
 
 export class TackETA {
@@ -23,7 +23,7 @@ export class TackETA {
     const tasksLeft = this.totalTasks - this.currentTask
     const estimatedTimeLeft = (elapsedTime * tasksLeft) / this.currentTask
 
-    footer.setText(
+    setFooterText(
       coloredText(
         `Task is ${this.getReadablePercentage()} completed. ${humanReadableTimestamp(
           estimatedTimeLeft,
@@ -41,10 +41,8 @@ export class TackETA {
   }
 
   public finish = () => {
-    footer.clear()
-    broadcast(
+    setFooterText(
       `Task was ${this.getReadablePercentage()} completed in ${this.elapsedTime()}`,
-      'success',
     )
   }
 }
