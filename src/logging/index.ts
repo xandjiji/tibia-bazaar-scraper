@@ -1,10 +1,10 @@
-import {
-  getTimestamp,
-  coloredText,
-  colorProgress,
-  humanReadableTimestamp,
-} from './utils'
+import { getTimestamp, coloredText, colorProgress } from './utils'
 import { ColorKey } from './types'
+
+export * from './BroadcastETA'
+export * from './Timer'
+
+export { coloredText, colorProgress }
 
 export const broadcast = (text: string | number, color: ColorKey) => {
   console.log(`${getTimestamp(color)} ${text}`)
@@ -15,11 +15,3 @@ export const bumpBroadcast: typeof broadcast = (...args) => {
   broadcast(...args)
   console.groupEnd()
 }
-
-export class Timer {
-  timestamp: number = 0
-  setTimer = () => (this.timestamp = +new Date())
-  stopTimer = () => humanReadableTimestamp(+new Date() - this.timestamp)
-}
-
-export { coloredText, colorProgress }
