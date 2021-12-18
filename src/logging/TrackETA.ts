@@ -1,10 +1,14 @@
-import { broadcast, setFooterText } from '.'
-import { humanReadableTimestamp, coloredText } from './utils'
+import { setFooterText } from '.'
+import { humanReadableTimestamp, etaTimestamp, coloredText } from './utils'
 
 export class TackETA {
   constructor(totalTasks: number) {
     this.startTimestamp = +new Date()
     this.totalTasks = totalTasks
+
+    setFooterText(
+      coloredText(`Task is ${this.getReadablePercentage()}`, 'reset'),
+    )
   }
 
   private startTimestamp: number = 0
@@ -25,10 +29,10 @@ export class TackETA {
 
     setFooterText(
       coloredText(
-        `Task is ${this.getReadablePercentage()} completed. ${humanReadableTimestamp(
+        `Task is ${this.getReadablePercentage()} completed. ${etaTimestamp(
           estimatedTimeLeft,
-        )} estimated time left`,
-        'control',
+        )}`,
+        'reset',
       ),
     )
   }

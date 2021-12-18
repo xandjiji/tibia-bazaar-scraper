@@ -1,6 +1,7 @@
 import {
   colors,
   ColorKey,
+  TimeObject,
   MILLISECONDS_IN_A_SECOND,
   MILLISECONDS_IN_A_MINUTE,
   MILLISECONDS_IN_AN_HOUR,
@@ -30,7 +31,7 @@ export const colorProgress = (
     color,
   )}${last}${coloredText(']', color)}`
 
-export const humanReadableTimestamp = (timestamp: number) => {
+const calcTimeObject = (timestamp: number): TimeObject => {
   let millisecondsLeft = timestamp
 
   const hours = Math.floor(millisecondsLeft / MILLISECONDS_IN_AN_HOUR)
@@ -41,17 +42,44 @@ export const humanReadableTimestamp = (timestamp: number) => {
   millisecondsLeft -= minutes * MILLISECONDS_IN_A_MINUTE
   const seconds = Math.floor(millisecondsLeft / MILLISECONDS_IN_A_SECOND)
 
+  return { hours, minutes, seconds }
+}
+
+const plural = (count: number): string => (count > 1 ? 's' : '')
+
+export const humanReadableTimestamp = (timestamp: number) => {
+  const { hours, seconds, minutes } = calcTimeObject(timestamp)
+
   const hoursString = hours
-    ? `${coloredText(hours, 'highlight')} hour${hours > 1 ? 's' : ''}, `
+    ? `${coloredText(hours, 'highlight')} hour${plural(hours)}, `
     : ''
   const minutesString = minutes
-    ? `${coloredText(minutes, 'highlight')} minute${
-        minutes > 1 ? 's' : ''
-      } and `
+    ? `${coloredText(minutes, 'highlight')} minute${plural(minutes)} and `
     : ''
   const secondsString = seconds
-    ? `${coloredText(seconds, 'highlight')} second${seconds > 1 ? 's' : ''}`
+    ? `${coloredText(seconds, 'highlight')} second${plural(seconds)}`
     : ''
 
   return `${hoursString}${minutesString}${secondsString}`
+}
+
+const checkHours = (timestamp: number) => timestamp > MILLISECONDS_IN_AN_HOUR
+const checkMinutes = (timestamp: number) => timestamp > MILLISECONDS_IN_A_MINUTE
+const checkSeconds = (timestamp: number) => timestamp > MILLISECONDS_IN_A_SECOND
+
+export const etaTimestamp = (timestamp: number) => {
+  const { hours, minutes, seconds } = calcTimeObject(timestamp)
+
+  const hoursString = checkHours(timestamp)
+    ? `${coloredText(hours, 'neutral')}h `
+    : ''
+  const minutesString = checkMinutes(timestamp)
+    ? `${coloredText(minutes, 'neutral')}m  `
+    : ''
+  const secondsString = checkSeconds(timestamp)
+    ? `${coloredText(seconds, 'neutral')}s`
+    : ''
+  const leftString = secondsString ? ' left' : ''
+
+  return `${hoursString}${minutesString}${secondsString}${leftString}`
 }

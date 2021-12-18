@@ -13,3 +13,9 @@ export const colors = {
 } as const
 
 export type ColorKey = keyof typeof colors
+
+export type TimeObject = {
+  hours: number
+  minutes: number
+  seconds: number
+}
