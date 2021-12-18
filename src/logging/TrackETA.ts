@@ -33,14 +33,18 @@ export class TackETA {
     const tasksLeft = this.totalTasks - this.currentTask
     const estimatedTimeLeft = (elapsedTime * tasksLeft) / this.currentTask
 
-    setFooterText(
-      coloredText(
-        `${this.getProgressBar()} Task is ${this.getReadablePercentage()} completed. ${Timestamp.ETA(
-          estimatedTimeLeft,
-        )}`,
-        'reset',
-      ),
-    )
+    if (tasksLeft) {
+      setFooterText(
+        coloredText(
+          `${this.getProgressBar()} Task is ${this.getReadablePercentage()} completed. ${Timestamp.ETA(
+            estimatedTimeLeft,
+          )}`,
+          'reset',
+        ),
+      )
+    } else {
+      this.finish()
+    }
   }
 
   public setCurrentTask = (currentTask: number) => {
