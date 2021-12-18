@@ -1,5 +1,5 @@
 import { AuctionPage } from 'Helpers'
-import { broadcast, coloredText, colorProgress, BroadcastETA } from 'logging'
+import { broadcast, coloredText, coloredProgress, BroadcastETA } from 'logging'
 import { fetchHtml, retryWrapper, batchPromises } from 'utils'
 
 const AUCTION_PAGE_URL =
@@ -25,7 +25,7 @@ export const fetchNewAuctions = async (
         `Scraping auction id: ${coloredText(
           auctionId,
           'highlight',
-        )} ${colorProgress([currentIndex + 1, batchSize])}`,
+        )} ${coloredProgress([currentIndex + 1, batchSize])}`,
         'neutral',
       )
 

@@ -1,4 +1,6 @@
 export * from './calcTimeObject'
-export * from './colorProgress'
+export * from './coloredBackground'
+export * from './coloredProgress'
 export * from './coloredText'
 export * from './plural'
+export * from './progressBar'

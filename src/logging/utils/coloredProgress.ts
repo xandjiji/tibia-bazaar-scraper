@@ -1,7 +1,7 @@
 import { coloredText } from './coloredText'
 import { ColorKey } from '../types'
 
-export const colorProgress = (
+export const coloredProgress = (
   [current, last]: [number, number],
   color: ColorKey = 'system',
 ): string =>
