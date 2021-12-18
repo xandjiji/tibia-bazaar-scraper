@@ -1,5 +1,6 @@
 import { setFooterText } from '.'
-import { humanReadableTimestamp, etaTimestamp, coloredText } from './utils'
+import { coloredText } from './utils'
+import { Timestamp } from './Timestamp'
 
 export class TackETA {
   constructor(totalTasks: number) {
@@ -17,7 +18,7 @@ export class TackETA {
   private percentageCompleted = 0
 
   private elapsedTime = () =>
-    humanReadableTimestamp(+new Date() - this.startTimestamp)
+    Timestamp.humanReadable(+new Date() - this.startTimestamp)
 
   private getReadablePercentage = () =>
     coloredText(`${(this.percentageCompleted * 100).toFixed(2)}%`, 'system')
@@ -29,7 +30,7 @@ export class TackETA {
 
     setFooterText(
       coloredText(
-        `Task is ${this.getReadablePercentage()} completed. ${etaTimestamp(
+        `Task is ${this.getReadablePercentage()} completed. ${Timestamp.ETA(
           estimatedTimeLeft,
         )}`,
         'reset',

@@ -1,4 +1,4 @@
-import { getTimestamp } from './utils'
+import { Timestamp } from './Timestamp'
 import { ColorKey } from './types'
 
 class FooterStream {
@@ -38,7 +38,7 @@ class Logger {
   }
 
   public broadcast = (text: string | number, color: ColorKey) => {
-    const message = `${getTimestamp(color)} ${text}`
+    const message = `${Timestamp.now(color)} ${text}`
     this.log(message)
   }
 

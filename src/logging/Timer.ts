@@ -1,4 +1,4 @@
-import { humanReadableTimestamp } from './utils'
+import { Timestamp } from './Timestamp'
 
 export class Timer {
   constructor() {
@@ -7,5 +7,5 @@ export class Timer {
 
   private startTimestamp: number = 0
 
-  elapsedTime = () => humanReadableTimestamp(+new Date() - this.startTimestamp)
+  elapsedTime = () => Timestamp.humanReadable(+new Date() - this.startTimestamp)
 }
