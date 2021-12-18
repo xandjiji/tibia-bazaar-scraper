@@ -1,5 +1,5 @@
 import { setFooterText } from '.'
-import { coloredText } from './utils'
+import { coloredText, progressBar } from './utils'
 import { Timestamp } from './Timestamp'
 
 export class TackETA {
@@ -8,7 +8,10 @@ export class TackETA {
     this.totalTasks = totalTasks
 
     setFooterText(
-      coloredText(`Task is ${this.getReadablePercentage()}`, 'reset'),
+      coloredText(
+        `${this.getProgressBar()} Task is ${this.getReadablePercentage()}`,
+        'reset',
+      ),
     )
   }
 
@@ -23,6 +26,8 @@ export class TackETA {
   private getReadablePercentage = () =>
     coloredText(`${(this.percentageCompleted * 100).toFixed(2)}%`, 'system')
 
+  private getProgressBar = () => progressBar(this.percentageCompleted)
+
   private updateETA = () => {
     const elapsedTime = +new Date() - this.startTimestamp
     const tasksLeft = this.totalTasks - this.currentTask
@@ -30,7 +35,7 @@ export class TackETA {
 
     setFooterText(
       coloredText(
-        `Task is ${this.getReadablePercentage()} completed. ${Timestamp.ETA(
+        `${this.getProgressBar()} Task is ${this.getReadablePercentage()} completed. ${Timestamp.ETA(
           estimatedTimeLeft,
         )}`,
         'reset',
@@ -47,7 +52,7 @@ export class TackETA {
 
   public finish = () => {
     setFooterText(
-      `Task was ${this.getReadablePercentage()} completed in ${this.elapsedTime()}`,
+      `${this.getProgressBar()} Task was ${this.getReadablePercentage()} completed in ${this.elapsedTime()}`,
     )
   }
 }

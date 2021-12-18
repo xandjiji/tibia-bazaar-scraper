@@ -12,7 +12,18 @@ export const colors = {
   control: '\x1b[90m', // gray
 } as const
 
+export const bgColors = {
+  reset: '\x1b[0m', // transparent
+  fail: '\x1b[41m', // red
+  success: '\x1b[42m', // green
+  highlight: '\x1b[43m', // yellow
+  system: '\x1b[45m', // magenta
+  neutral: '\x1b[46m', // cian
+  control: '\x1b[47m' // white
+} as const
+
 export type ColorKey = keyof typeof colors
+export type BGColorKey = keyof typeof bgColors
 
 export type TimeObject = {
   hours: number
