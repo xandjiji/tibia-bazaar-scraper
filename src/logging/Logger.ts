@@ -1,40 +1,34 @@
 import { Timestamp } from './Timestamp'
 import { ColorKey } from './types'
 
-class FooterStream {
+const CLEAR_REST_OF_LINE = '\x1b[K'
+const NEWLINE = '\n'
+const newline = () => `${CLEAR_REST_OF_LINE}${NEWLINE}`
+
+class TerminalStream {
   constructor() {
-    this.printStream()
+    process.stdout.write(`${this.footerText}${newline()}`)
   }
 
-  private text = ''
+  private footerText = ''
 
-  private clearStream = () => {
+  public log = (message: string) => {
     process.stdout.moveCursor(0, -1)
-    process.stdout.clearLine(1)
+    process.stdout.write(`${message}${newline()}${this.footerText}${newline()}`)
   }
 
-  private printStream = () => {
-    console.log(this.text)
-  }
-
-  public safeLog = (callback: Function) => {
-    this.clearStream()
-    callback()
-    this.printStream()
-  }
-
-  public setText = (value: string) => {
-    this.text = value
-    this.clearStream()
-    this.printStream()
+  public setFooterText = (value: string) => {
+    this.footerText = value
+    process.stdout.moveCursor(0, -1)
+    process.stdout.write(`${value}${newline()}`)
   }
 }
 
 class Logger {
-  private footerStream = new FooterStream()
+  private stream = new TerminalStream()
 
   private log = (message: string) => {
-    this.footerStream.safeLog(() => console.log(message))
+    this.stream.log(message)
   }
 
   public broadcast = (text: string | number, color: ColorKey) => {
@@ -48,7 +42,7 @@ class Logger {
     console.groupEnd()
   }
 
-  public setFooterText = this.footerStream.setText
+  public setFooterText = this.stream.setFooterText
 }
 
 export const logger = new Logger()
