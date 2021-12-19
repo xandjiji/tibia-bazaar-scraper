@@ -62,7 +62,7 @@ export class TrackETA {
         this.taskName
       } was ${this.getReadablePercentage()} completed in ${Timestamp.humanReadable(
         +new Date() - this.startTimestamp,
-      )}`,
+      )}\n`,
     )
     setFooterText('')
   }
