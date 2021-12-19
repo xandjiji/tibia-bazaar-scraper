@@ -1,5 +1,5 @@
 import { AuctionPage } from 'Helpers'
-import { broadcast, coloredText, coloredProgress, BroadcastETA } from 'logging'
+import { broadcast, coloredText, coloredProgress, TrackETA } from 'logging'
 import { fetchHtml, retryWrapper, batchPromises } from 'utils'
 
 const AUCTION_PAGE_URL =
@@ -14,7 +14,10 @@ export const fetchNewAuctions = async (
   newAuctionIds: number[],
 ): Promise<PartialCharacterObject[]> => {
   const batchSize = newAuctionIds.length
-  const timer = new BroadcastETA(0, batchSize)
+  const taskTracking = new TrackETA(
+    batchSize,
+    coloredText('Scraping single auctions', 'highlight'),
+  )
 
   const helper = new AuctionPage()
   await helper.loadServerData()
@@ -30,12 +33,13 @@ export const fetchNewAuctions = async (
       )
 
       const newAuctionHtml = await fetchAuctionPage(auctionId)
-      timer.setCurrentTask(currentIndex)
-      return helper.partialCharacterObject(newAuctionHtml)
+      const auction = await helper.partialCharacterObject(newAuctionHtml)
+      taskTracking.setCurrentTask(currentIndex)
+      return auction
     },
   )
 
   const auctions = await batchPromises(auctionPageRequests)
-  timer.finish()
+  taskTracking.finish()
   return auctions
 }
