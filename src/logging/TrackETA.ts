@@ -3,15 +3,20 @@ import { coloredText, progressBar } from './utils'
 import { Timestamp } from './Timestamp'
 
 export class TackETA {
-  constructor(totalTasks: number) {
+  constructor(totalTasks: number, taskName = 'Task') {
+    this.taskName = taskName
     this.startTimestamp = +new Date()
     this.totalTasks = totalTasks
 
     this.setText(
-      coloredText(`Task is ${this.getReadablePercentage()}`, 'reset'),
+      coloredText(
+        `${this.taskName} is ${this.getReadablePercentage()} completed`,
+        'reset',
+      ),
     )
   }
 
+  private taskName = 'Task'
   private startTimestamp: number = 0
   private currentTask = 0
   private totalTasks = 1
@@ -31,7 +36,9 @@ export class TackETA {
     if (tasksLeft) {
       this.setText(
         coloredText(
-          `Task is ${this.getReadablePercentage()} completed. ${Timestamp.ETA(
+          `${
+            this.taskName
+          } is ${this.getReadablePercentage()} completed. ${Timestamp.ETA(
             estimatedTimeLeft,
           )}`,
           'reset',
@@ -51,7 +58,9 @@ export class TackETA {
 
   public finish = () => {
     this.setText(
-      `Task was ${this.getReadablePercentage()} completed in ${Timestamp.humanReadable(
+      `${
+        this.taskName
+      } was ${this.getReadablePercentage()} completed in ${Timestamp.humanReadable(
         +new Date() - this.startTimestamp,
       )}`,
     )
