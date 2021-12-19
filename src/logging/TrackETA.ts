@@ -1,4 +1,4 @@
-import { setFooterText } from '.'
+import { log, setFooterText } from '.'
 import { coloredText, progressBar } from './utils'
 import { Timestamp } from './Timestamp'
 
@@ -57,12 +57,13 @@ export class TrackETA {
   }
 
   public finish = () => {
-    this.setText(
-      `${
+    log(
+      `${progressBar(this.percentageCompleted, 'success')} ${
         this.taskName
       } was ${this.getReadablePercentage()} completed in ${Timestamp.humanReadable(
         +new Date() - this.startTimestamp,
       )}`,
     )
+    setFooterText('')
   }
 }

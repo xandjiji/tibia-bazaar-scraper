@@ -27,7 +27,7 @@ class TerminalStream {
 class Logger {
   private stream = new TerminalStream()
 
-  private log = (message: string) => {
+  public log = (message: string) => {
     this.stream.log(message)
   }
 
