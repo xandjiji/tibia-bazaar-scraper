@@ -12,16 +12,18 @@ class TerminalStream {
   }
 
   private footerText = ''
+  private print = (text: string) => {
+    process.stdout.moveCursor(0, -1)
+    process.stdout.write(text)
+  }
 
   public log = (message: string) => {
-    process.stdout.moveCursor(0, -1)
-    process.stdout.write(`${message}${newline()}${this.footerText}${newline()}`)
+    this.print(`${message}${newline()}${this.footerText}${newline()}`)
   }
 
   public setFooterText = (value: string) => {
     this.footerText = value
-    process.stdout.moveCursor(0, -1)
-    process.stdout.write(`${value}${newline()}`)
+    this.print(`${value}${newline()}`)
   }
 }
 
