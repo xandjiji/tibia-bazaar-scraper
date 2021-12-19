@@ -1,4 +1,4 @@
-import { broadcast, bumpBroadcast } from 'logging'
+import { broadcast, tabBroadcast } from 'logging'
 import { sleep } from 'utils'
 import { requests } from 'Constants'
 
@@ -10,7 +10,7 @@ const exponentialBackoffDelay = async (retriesLeft: number): Promise<void> => {
     const magnitude = requests.MAX_RETRIES - retriesLeft
     const exponentialDelay = Math.pow(BASE_DELAY, magnitude) * MILLISECONDS
 
-    bumpBroadcast(`Next retry in ${exponentialDelay}ms`, 'control')
+    tabBroadcast(`Next retry in ${exponentialDelay}ms`, 'control')
     await sleep(exponentialDelay)
   }
 }
@@ -24,7 +24,7 @@ const retryCall = async <T>(
       const result = await callback()
       return result
     } catch (error) {
-      bumpBroadcast('ERROR! Trying again...', 'fail')
+        tabBroadcast('ERROR! Trying again...', 'fail')
 
       const retriesLeft = retries - 1
       await exponentialBackoffDelay(retriesLeft)

@@ -1,11 +1,11 @@
 import { AuctionPage, PostData } from 'Helpers'
-import { bumpBroadcast, coloredText } from 'logging'
+import { tabBroadcast, coloredText } from 'logging'
 import { retryWrapper, postHtml } from 'utils'
 import { PostHtmlProps } from 'utils/fetch/types'
 import { CharacterPostData, readableTypes } from './types'
 
 const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void =>
-  bumpBroadcast(
+  tabBroadcast(
     `Requesting ${coloredText(
       readableTypes[type],
       'control',

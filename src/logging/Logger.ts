@@ -1,6 +1,7 @@
 import { Timestamp } from './Timestamp'
 import { ColorKey } from './types'
 
+const TAB = '  └> '
 const CLEAR_REST_OF_LINE = '\x1b[K'
 const NEWLINE = '\n'
 const newline = () => `${CLEAR_REST_OF_LINE}${NEWLINE}`
@@ -36,10 +37,8 @@ class Logger {
     this.log(message)
   }
 
-  public bumpBroadcast: typeof this.broadcast = (...args) => {
-    console.group()
-    this.broadcast(...args)
-    console.groupEnd()
+  public tabBroadcast: typeof this.broadcast = (text, ...args) => {
+    this.broadcast(`${TAB} ${text}`, ...args)
   }
 
   public setFooterText = this.stream.setFooterText
