@@ -24,17 +24,19 @@ export const fetchNewAuctions = async (
 
   const auctionPageRequests = newAuctionIds.map(
     (auctionId, currentIndex) => async () => {
+      const taskIndex = currentIndex + 1
+
       broadcast(
         `Scraping auction id: ${coloredText(
           auctionId,
           'highlight',
-        )} ${coloredProgress([currentIndex + 1, batchSize])}`,
+        )} ${coloredProgress([taskIndex, batchSize])}`,
         'neutral',
       )
 
       const newAuctionHtml = await fetchAuctionPage(auctionId)
       const auction = await helper.partialCharacterObject(newAuctionHtml)
-      taskTracking.setCurrentTask(currentIndex)
+      taskTracking.setCurrentTask(taskIndex)
       return auction
     },
   )
