@@ -2,7 +2,7 @@ import { setFooterText } from '.'
 import { coloredText, progressBar } from './utils'
 import { Timestamp } from './Timestamp'
 
-export class TackETA {
+export class TrackETA {
   constructor(totalTasks: number, taskName = 'Task') {
     this.taskName = taskName
     this.startTimestamp = +new Date()
