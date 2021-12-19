@@ -49,11 +49,15 @@ export class TrackETA {
     }
   }
 
-  public setCurrentTask = (currentTask: number) => {
-    this.currentTask = currentTask
+  public setCurrentTask = (newTask: number) => {
+    this.currentTask = newTask
     this.percentageCompleted = this.currentTask / this.totalTasks
-
     this.updateETA()
+  }
+
+  public incTask = () => {
+    this.currentTask++
+    this.setCurrentTask(this.currentTask)
   }
 
   public finish = () => {

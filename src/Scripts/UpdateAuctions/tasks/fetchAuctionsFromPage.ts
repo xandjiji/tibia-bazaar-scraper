@@ -26,7 +26,7 @@ export const fetchAllAuctionBlocks = async (
     )
 
     const auctionBlock = await fetchAuctionsFromPage(currentIndex)
-    taskTracking.setCurrentTask(currentIndex)
+    taskTracking.incTask()
     return auctionBlock
   })
 
