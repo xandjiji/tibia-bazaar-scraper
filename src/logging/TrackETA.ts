@@ -44,8 +44,6 @@ export class TrackETA {
           'reset',
         ),
       )
-    } else {
-      this.finish()
     }
   }
 

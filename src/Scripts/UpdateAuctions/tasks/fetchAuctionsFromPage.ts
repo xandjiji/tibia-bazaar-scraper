@@ -31,5 +31,6 @@ export const fetchAllAuctionBlocks = async (
   })
 
   const auctionBlocks = await batchPromises(auctionBlocksRequests)
+  taskTracking.finish()
   return auctionBlocks.flat()
 }
