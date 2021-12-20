@@ -1,19 +1,13 @@
 import { AuctionList } from 'Helpers'
-import { broadcast } from 'logging'
-import { fetchHtml, retryWrapper } from 'utils'
+import { broadcast, coloredProgress, TrackETA, coloredText } from 'logging'
+import { batchPromises, fetchHtml, retryWrapper } from 'utils'
+import { buildItemPageUrl, buildRareItemCollection } from '../utils'
+import { itemList } from '../items'
 import { RareItemBlock, RareItemBlockCollection } from '../types'
 
-const BASE_URL =
-  'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades'
-
-const buildItemPageUrl = (itemName: string, index: number) =>
-  encodeURI(
-    `${BASE_URL}&searchstring=${itemName}&searchtype=2&currentpage=${index}`,
-  )
-
-export const fetchItemFirstPage = retryWrapper(
-  async (itemName: string): Promise<RareItemBlock> => {
-    const url = buildItemPageUrl(itemName, 1)
+const fetchItemPage = retryWrapper(
+  async (itemName: string, index: number): Promise<RareItemBlock> => {
+    const url = buildItemPageUrl(itemName, index)
 
     const helper = new AuctionList()
     const html = await fetchHtml(url)
@@ -24,3 +18,33 @@ export const fetchItemFirstPage = retryWrapper(
     return { name: itemName, lastPageIndex, ids }
   },
 )
+
+export const fetchAllFirstPages =
+  async (): Promise<RareItemBlockCollection> => {
+    const lastIndex = itemList.length
+    const taskTracking = new TrackETA(
+      lastIndex,
+      coloredText('Scraping rare item auction blocks', 'highlight'),
+    )
+
+    const rareItemBlockRequests = itemList.map(
+      (name, currentIndex) => async () => {
+        broadcast(
+          `Scraping ${name}'s frist page ${coloredProgress([
+            currentIndex + 1,
+            lastIndex,
+          ])}`,
+          'neutral',
+        )
+
+        const rareItemBlock = await fetchItemPage(name, 1)
+        taskTracking.incTask()
+        return rareItemBlock
+      },
+    )
+
+    const rareItemBlocks = await batchPromises(rareItemBlockRequests)
+    taskTracking.finish()
+
+    return buildRareItemCollection(rareItemBlocks)
+  }
