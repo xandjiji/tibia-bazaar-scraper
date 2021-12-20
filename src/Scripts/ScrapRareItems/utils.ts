@@ -1,3 +1,5 @@
+import { AuctionList } from 'Helpers'
+import { fetchHtml, retryWrapper } from 'utils'
 import { RareItemBlock, RareItemBlockCollection } from './types'
 
 const BASE_URL =
@@ -7,6 +9,20 @@ export const buildItemPageUrl = (itemName: string, index: number) =>
   encodeURI(
     `${BASE_URL}&searchstring=${itemName}&searchtype=2&currentpage=${index}`,
   )
+
+export const fetchItemPage = retryWrapper(
+  async (itemName: string, index: number): Promise<RareItemBlock> => {
+    const url = buildItemPageUrl(itemName, index)
+
+    const helper = new AuctionList()
+    const html = await fetchHtml(url)
+
+    const lastPageIndex = helper.lastPageIndex(html)
+    const ids = helper.auctionBlocks(html).map(({ id }) => id)
+
+    return { name: itemName, lastPageIndex, ids }
+  },
+)
 
 export const buildRareItemCollection = (
   itemBlocks: RareItemBlock[],

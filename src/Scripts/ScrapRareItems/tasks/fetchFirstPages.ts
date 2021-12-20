@@ -1,23 +1,8 @@
-import { AuctionList } from 'Helpers'
 import { broadcast, coloredProgress, TrackETA, coloredText } from 'logging'
-import { batchPromises, fetchHtml, retryWrapper } from 'utils'
-import { buildItemPageUrl, buildRareItemCollection } from '../utils'
+import { batchPromises } from 'utils'
+import { fetchItemPage, buildRareItemCollection } from '../utils'
 import { itemList } from '../items'
-import { RareItemBlock, RareItemBlockCollection } from '../types'
-
-const fetchItemPage = retryWrapper(
-  async (itemName: string, index: number): Promise<RareItemBlock> => {
-    const url = buildItemPageUrl(itemName, index)
-
-    const helper = new AuctionList()
-    const html = await fetchHtml(url)
-
-    const lastPageIndex = helper.lastPageIndex(html)
-    const ids = helper.auctionBlocks(html).map(({ id }) => id)
-
-    return { name: itemName, lastPageIndex, ids }
-  },
-)
+import { RareItemBlockCollection } from '../types'
 
 export const fetchAllFirstPages =
   async (): Promise<RareItemBlockCollection> => {
