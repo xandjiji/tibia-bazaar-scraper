@@ -1,7 +1,6 @@
 import { broadcast, coloredProgress, TrackETA, coloredText } from 'logging'
 import { batchPromises } from 'utils'
 import { fetchItemPage } from '../utils'
-import { RareItemBlock, RareItemBlockCollection } from '../types'
 
 const countRequests = (blocks: RareItemBlock[]): number => {
   let count = 0

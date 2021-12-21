@@ -1,5 +1,3 @@
-import { RareItemBlockCollection } from '../types'
-
 export const buildRareItemData = (
   completeCollection: RareItemBlockCollection,
 ): RareItemData => {

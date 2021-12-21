@@ -2,7 +2,6 @@ import { broadcast, coloredProgress, TrackETA, coloredText } from 'logging'
 import { batchPromises } from 'utils'
 import { fetchItemPage, buildRareItemCollection } from '../utils'
 import { itemList } from '../items'
-import { RareItemBlockCollection } from '../types'
 
 export const fetchAllFirstPages =
   async (): Promise<RareItemBlockCollection> => {

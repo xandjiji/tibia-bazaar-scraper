@@ -1,6 +1,5 @@
 import { AuctionList } from 'Helpers'
 import { fetchHtml, retryWrapper } from 'utils'
-import { RareItemBlock, RareItemBlockCollection } from './types'
 
 const BASE_URL =
   'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades'

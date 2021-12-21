@@ -1,6 +1,4 @@
-import { RareItem } from './types'
-
-export const itemList: RareItem[] = [
+export const itemList: string[] = [
   'Amazon Armor',
   'Amazon Helmet',
   'Amazon Shield',
