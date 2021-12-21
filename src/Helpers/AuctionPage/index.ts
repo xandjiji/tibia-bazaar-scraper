@@ -26,7 +26,9 @@ export default class AuctionPage {
 
   errorCheck(content: string) {
     const $ = cheerio.load(content)
-    const errorText = $('#currentcharactertrades .Text').text()
+    const errorText = $(
+      '#currentcharactertrades .Text, #pastcharactertrades .Text',
+    ).text()
     return errorText === 'Error'
   }
 
