@@ -9,14 +9,14 @@ export default class CurrentAuctionsData {
   private currentAuctions: PartialCharacterObject[] = []
 
   async load() {
-    broadcast(`loading ${FILE_NAME}...`, 'system')
+    broadcast(`Loading ${FILE_NAME}...`, 'system')
 
     try {
       const data = await fs.readFile(FILE_PATH, 'utf-8')
       this.currentAuctions = JSON.parse(data)
     } catch {
       broadcast(
-        `failed to load ${FILE_NAME}, initializing a new one...`,
+        `Failed to load ${FILE_NAME}, initializing a new one...`,
         'fail',
       )
 
