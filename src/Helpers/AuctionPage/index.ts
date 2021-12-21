@@ -158,7 +158,11 @@ export default class AuctionPage {
           .text()
           .split(' %')
 
-        const skillLevel = +`${level}.${Math.round(+percentage)}`
+        const roundedPercentage = Math.round(+percentage)
+          .toString()
+          .padStart(2, '0')
+
+        const skillLevel = +`${level}.${roundedPercentage}`
 
         skillArray.push(skillLevel)
       })
@@ -341,8 +345,8 @@ export default class AuctionPage {
       transfer: this.transfer(content),
       imbuements: this.imbuements(content),
       quests: this.quests(content),
-      rareAchievements: this.rareAchievements(content),
       ...(await getPagedData(content)),
+      rareAchievements: this.rareAchievements(content),
     }
   }
 }
