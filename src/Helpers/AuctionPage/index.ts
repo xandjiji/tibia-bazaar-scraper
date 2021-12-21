@@ -156,9 +156,9 @@ export default class AuctionPage {
 
         const [percentage] = cheerio('.PercentageString', percentageElement)
           .text()
-          .split('.')
+          .split(' %')
 
-        const skillLevel = +`${level}.${percentage.padStart(2, '0')}`
+        const skillLevel = +`${level}.${Math.round(+percentage)}`
 
         skillArray.push(skillLevel)
       })
