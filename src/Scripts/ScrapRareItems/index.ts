@@ -1,8 +1,7 @@
 import { broadcast, coloredText, Timer } from 'logging'
-import { fetchAllFirstPages, fetchOtherPages } from './tasks'
+import { fetchAllFirstPages, fetchOtherPages, buildRareItemData } from './tasks'
 
 /* @ ToDo:
-    - filtrar e buildar RareItemData
     - salvar com Data class
 */
 
@@ -14,6 +13,7 @@ const main = async () => {
 
   const incompleteCollection = await fetchAllFirstPages()
   const completeCollection = await fetchOtherPages(incompleteCollection)
+  const rareItemData = buildRareItemData(completeCollection)
 
   broadcast(
     `${SCRIPT_NAME} script routine finished in ${timer.elapsedTime()}`,
