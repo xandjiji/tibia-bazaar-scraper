@@ -43,6 +43,8 @@ export default class RareItemsData {
       rareItemData[name] = ids
     })
 
+    this.itemData = rareItemData
+
     await this.save()
     broadcast(`Fresh rare item data was saved to ${FILE_NAME}`, 'success')
   }
