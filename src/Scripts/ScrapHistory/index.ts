@@ -1,7 +1,7 @@
 import { History } from 'Data'
 import { broadcast, coloredText, Timer } from 'logging'
 import ScrapServers from 'Scripts/ScrapServers'
-import { fetchHighestAuctionId } from './tasks'
+import { fetchHighestAuctionId, fetchUnscrapedAuctions } from './tasks'
 
 const SCRIPT_NAME = coloredText('ScrapHistory', 'highlight')
 
@@ -14,8 +14,13 @@ const main = async () => {
   const historyData = new History()
   await historyData.load()
 
-  const id = await fetchHighestAuctionId()
-  broadcast(id, 'neutral')
+  const unscrapedIds = historyData.getUnscrapedIds(
+    await fetchHighestAuctionId(),
+  )
+
+  if (unscrapedIds.length) {
+    await fetchUnscrapedAuctions(unscrapedIds, historyData)
+  }
 
   broadcast(
     `${SCRIPT_NAME} script routine finished in ${timer.elapsedTime()}`,

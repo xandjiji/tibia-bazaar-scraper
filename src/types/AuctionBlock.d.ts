@@ -3,3 +3,8 @@ declare interface AuctionBlock {
   currentBid: number
   hasBeenBidded: boolean
 }
+
+declare type UnfinishedAuction = {
+  id: number
+  auctionEnd: number
+}
