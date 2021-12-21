@@ -171,9 +171,9 @@ export default class AuctionPage {
       club,
       fist,
       sword,
+      fishing,
       axe,
       distance,
-      fishing,
       shielding,
     }
   }
