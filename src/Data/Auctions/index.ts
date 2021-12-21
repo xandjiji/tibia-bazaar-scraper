@@ -20,9 +20,7 @@ export default class CurrentAuctionsData {
         'fail',
       )
 
-      const newData: PartialCharacterObject[] = []
       await fs.writeFile(FILE_PATH, JSON.stringify([]))
-      this.currentAuctions = newData
     }
   }
 
