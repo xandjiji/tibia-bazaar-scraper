@@ -12,8 +12,8 @@ export default class CurrentAuctionsData {
   private unfinishedAuctions: UnfinishedAuction[] = []
   private historyAuctions: PartialCharacterObject[] = []
 
-  private finishedBuffer: PartialCharacterObject[] = []
   private unfinishedBuffer: UnfinishedAuction[] = []
+  private finishedBuffer: PartialCharacterObject[] = []
 
   private async loadScrapData() {
     broadcast(`Loading ${printFilename(SCRAP_HISTORY_DATA.name)}...`, 'system')
@@ -85,6 +85,14 @@ export default class CurrentAuctionsData {
     )
   }
 
+  private appendBuffers() {
+    this.historyAuctions = [...this.historyAuctions, ...this.finishedBuffer]
+    this.unfinishedAuctions = [
+      ...this.unfinishedAuctions,
+      ...this.unfinishedBuffer,
+    ]
+  }
+
   private flushBuffers() {
     this.finishedBuffer = []
     this.unfinishedBuffer = []
@@ -103,7 +111,7 @@ export default class CurrentAuctionsData {
   }
 
   public getUnscrapedIds(newHighestAuctionId: number) {
-    return makeRangeArray(this.lastScrapedId, newHighestAuctionId)
+    return makeRangeArray(this.lastScrapedId + 1, newHighestAuctionId)
   }
 
   public appendFinishedBuffer(finishedAuction: PartialCharacterObject) {
@@ -115,10 +123,9 @@ export default class CurrentAuctionsData {
   }
 
   public async saveBuffers() {
+    this.appendBuffers()
     this.lastScrapedId = this.getHighestAuctionId()
-
     await this.save()
-    this.flushBuffers()
 
     broadcast(
       `Fresh history auctions (${coloredText(
@@ -134,5 +141,7 @@ export default class CurrentAuctionsData {
       )} new entries) were saved to ${SCRAP_HISTORY_DATA.name}`,
       'success',
     )
+
+    this.flushBuffers()
   }
 }
