@@ -1,6 +1,7 @@
 import { Auctions } from 'Data'
 import { broadcast, coloredText, Timer } from 'logging'
 import ScrapServers from 'Scripts/ScrapServers'
+import ScrapRareItems from 'Scripts/ScrapRareItems'
 import {
   fetchAuctionPageIndexes,
   fetchAllAuctionBlocks,
@@ -25,8 +26,11 @@ const main = async () => {
 
   const newAuctionIds = auctionData.newAuctionIds(auctionBlocks)
 
-  const newAuctions = await fetchNewAuctions(newAuctionIds)
-  await auctionData.appendAuctions(newAuctions)
+  if (newAuctionIds.length) {
+    const newAuctions = await fetchNewAuctions(newAuctionIds)
+    await auctionData.appendAuctions(newAuctions)
+    await ScrapRareItems()
+  }
 
   broadcast(
     `${SCRIPT_NAME} script routine finished in ${timer.elapsedTime()}`,

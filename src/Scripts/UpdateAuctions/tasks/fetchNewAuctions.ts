@@ -16,7 +16,7 @@ export const fetchNewAuctions = async (
   const batchSize = newAuctionIds.length
   const taskTracking = new TrackETA(
     batchSize,
-    coloredText('Scraping single auctions', 'highlight'),
+    coloredText('Scraping new auctions', 'highlight'),
   )
 
   const helper = new AuctionPage()
