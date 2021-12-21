@@ -1,3 +1,4 @@
+export * from './arrayPartitions'
 export * from './batchPromises'
 export * from './date'
 export * from './exitIfMaintenance'
