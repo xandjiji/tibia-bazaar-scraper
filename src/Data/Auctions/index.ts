@@ -2,43 +2,40 @@ import fs from 'fs/promises'
 import { broadcast, coloredText } from 'logging'
 import { file } from 'Constants'
 
-const AUCTIONS_FILE_PATH = file.CURRENT_AUCTIONS.path
-const AUCTIONS_FILE_NAME = coloredText(file.CURRENT_AUCTIONS.name, 'highlight')
+const FILE_PATH = file.CURRENT_AUCTIONS.path
+const FILE_NAME = coloredText(file.CURRENT_AUCTIONS.name, 'highlight')
 
 export default class CurrentAuctionsData {
-  currentAuctions: PartialCharacterObject[] = []
+  private currentAuctions: PartialCharacterObject[] = []
 
   async load() {
-    broadcast(`loading ${AUCTIONS_FILE_NAME}...`, 'system')
+    broadcast(`loading ${FILE_NAME}...`, 'system')
 
     try {
-      const data = await fs.readFile(AUCTIONS_FILE_PATH, 'utf-8')
+      const data = await fs.readFile(FILE_PATH, 'utf-8')
       this.currentAuctions = JSON.parse(data)
     } catch {
       broadcast(
-        `failed to load ${AUCTIONS_FILE_NAME}, initializing a new one...`,
+        `failed to load ${FILE_NAME}, initializing a new one...`,
         'fail',
       )
 
       const newData: PartialCharacterObject[] = []
-      await fs.writeFile(AUCTIONS_FILE_PATH, JSON.stringify([]))
+      await fs.writeFile(FILE_PATH, JSON.stringify([]))
       this.currentAuctions = newData
     }
   }
 
   private async save() {
     if (this.currentAuctions.length === 0) {
-      broadcast(
-        `WARNING! Writing empty values to ${AUCTIONS_FILE_NAME}`,
-        'fail',
-      )
+      broadcast(`WARNING! Writing empty values to ${FILE_NAME}`, 'fail')
     }
 
     this.currentAuctions = this.currentAuctions.sort(
       (a, b) => a.auctionEnd - b.auctionEnd,
     )
 
-    await fs.writeFile(AUCTIONS_FILE_PATH, JSON.stringify(this.currentAuctions))
+    await fs.writeFile(FILE_PATH, JSON.stringify(this.currentAuctions))
   }
 
   async updatePreviousAuctions(auctionBlocks: AuctionBlock[]) {
@@ -74,7 +71,7 @@ export default class CurrentAuctionsData {
 
     await this.save()
     broadcast(
-      `${AUCTIONS_FILE_NAME} entries were updated (${coloredText(
+      `${FILE_NAME} entries were updated (${coloredText(
         removedCount,
         'highlight',
       )} removed and ${coloredText(updatedCount, 'highlight')} updated)`,
@@ -98,7 +95,7 @@ export default class CurrentAuctionsData {
       `Fresh auctions (${coloredText(
         newAuctions.length,
         'highlight',
-      )} new entries) were saved to ${AUCTIONS_FILE_NAME}`,
+      )} new entries) were saved to ${FILE_NAME}`,
       'success',
     )
   }
