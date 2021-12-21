@@ -38,6 +38,10 @@ export default class CurrentAuctionsData {
     await fs.writeFile(FILE_PATH, JSON.stringify(this.currentAuctions))
   }
 
+  getAllAuctions() {
+    return this.currentAuctions
+  }
+
   async updatePreviousAuctions(auctionBlocks: AuctionBlock[]) {
     const auctionBlockIds = new Set(auctionBlocks.map(({ id }) => id))
     let removedCount = 0
