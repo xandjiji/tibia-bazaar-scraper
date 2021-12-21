@@ -4,6 +4,7 @@ import { sanitizeHtmlString, parseDate, exitIfMaintenance } from 'utils'
 import { ServerData } from 'Data'
 import {
   quest as questDictionary,
+  imbuement as imbuementDictionary,
   rareAchievement as achievementDictionary,
 } from 'DataDictionary/dictionaries'
 import { getVocationId, filterListTable } from '../utils'
@@ -196,13 +197,18 @@ export default class AuctionPage {
     const $ = cheerio.load(content)
     const imbuementElements = $('#Imbuements .TableContentContainer tbody td')
 
+    const { scrapingTokens } = imbuementDictionary
     const imbuementArray: string[] = []
     imbuementElements.filter(filterListTable).each((_, element) => {
-      const imbuement = cheerio(element).text()
-      imbuementArray.push(imbuement)
+      const imbuement = cheerio(element).text().trim().toLowerCase()
+
+      const imbuementName = scrapingTokens[imbuement]
+      if (imbuementName) {
+        imbuementArray.push(imbuementName)
+      }
     })
 
-    return imbuementArray
+    return imbuementArray.sort()
   }
 
   charms(content: string) {
@@ -231,7 +237,7 @@ export default class AuctionPage {
 
     achievementsElement.filter(filterListTable).each((_, element) => {
       const achievement = cheerio(element).text().trim().toLowerCase()
-      const quest = scrapingTokens[achievement as keyof typeof scrapingTokens]
+      const quest = scrapingTokens[achievement]
       if (quest) {
         questSet.add(quest)
       }
@@ -243,7 +249,7 @@ export default class AuctionPage {
 
     questsElement.filter(filterListTable).each((_, element) => {
       const questText = cheerio(element).text().trim().toLowerCase()
-      const quest = scrapingTokens[questText as keyof typeof scrapingTokens]
+      const quest = scrapingTokens[questText]
       if (quest) {
         questSet.add(quest)
       }
@@ -263,8 +269,7 @@ export default class AuctionPage {
 
     achievementsElement.filter(filterListTable).each((_, element) => {
       const achievement = cheerio(element).text().trim().toLowerCase()
-      const rareAchievement =
-        scrapingTokens[achievement as keyof typeof scrapingTokens]
+      const rareAchievement = scrapingTokens[achievement]
       if (rareAchievement) {
         achievementSet.add(rareAchievement)
       }
