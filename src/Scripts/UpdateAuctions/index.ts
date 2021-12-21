@@ -1,4 +1,4 @@
-import { Auctions } from 'Data'
+import { Auctions, RareItems } from 'Data'
 import { broadcast, coloredText, Timer } from 'logging'
 import ScrapServers from 'Scripts/ScrapServers'
 import ScrapRareItems from 'Scripts/ScrapRareItems'
@@ -31,6 +31,10 @@ const main = async () => {
     await auctionData.appendAuctions(newAuctions)
     await ScrapRareItems()
   }
+
+  const itemsData = new RareItems()
+  await itemsData.load()
+  await itemsData.filterStaleItems(auctionData.getAllAuctions())
 
   broadcast(
     `${SCRIPT_NAME} script routine finished in ${timer.elapsedTime()}`,

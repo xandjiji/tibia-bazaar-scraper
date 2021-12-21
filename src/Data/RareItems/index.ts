@@ -48,4 +48,36 @@ export default class RareItemsData {
     await this.save()
     broadcast(`Fresh rare item data was saved to ${FILE_NAME}`, 'success')
   }
+
+  async filterStaleItems(currentAuctions: PartialCharacterObject[]) {
+    const filteredData: RareItemData = {}
+
+    let staleCount = 0
+    Object.keys(this.itemData).forEach((itemName) => {
+      const currentTimestamp = +new Date() / 1000
+      filteredData[itemName] = this.itemData[itemName].filter((auctionId) => {
+        const foundAuction = currentAuctions.find(({ id }) => auctionId === id)
+
+        if (!foundAuction) {
+          staleCount += 1
+          return false
+        }
+
+        const isStale = foundAuction.auctionEnd < currentTimestamp
+        if (isStale) staleCount += 1
+
+        return !isStale
+      })
+    })
+
+    this.itemData = filteredData
+    await this.save()
+    broadcast(
+      `Stale rare item auctions (${coloredText(
+        staleCount,
+        'highlight',
+      )} entries) were removed from ${FILE_NAME}`,
+      'success',
+    )
+  }
 }
