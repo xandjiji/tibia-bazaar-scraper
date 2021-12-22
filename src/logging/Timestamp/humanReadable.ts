@@ -3,7 +3,7 @@ import { ColorKey } from '../types'
 
 export const humanReadable = (
   timestamp: number,
-  color: ColorKey = 'highlight',
+  color: ColorKey = 'neutral',
 ) => {
   const { hours, seconds, minutes } = calcTimeObject(timestamp)
 
