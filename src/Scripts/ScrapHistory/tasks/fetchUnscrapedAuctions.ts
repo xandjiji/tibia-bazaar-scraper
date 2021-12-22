@@ -28,22 +28,25 @@ export const fetchUnscrapedAuctions = async (
 
   const auctionPageRequests = unscrapedIds.map(
     (auctionId, currentIndex) => async () => {
-      broadcast(
-        `Scraping auction id: ${coloredText(
-          auctionId,
-          'highlight',
-        )} ${coloredProgress([currentIndex + 1, batchSize])}`,
-        'neutral',
-      )
+      const readableId = coloredText(auctionId, 'highlight')
+      const readableProgress = coloredProgress([currentIndex + 1, batchSize])
 
       const html = await fetchAuctionPage(auctionId)
 
       if (helper.errorCheck(html)) {
         taskTracking.incTask()
+        broadcast(
+          `Not found  auction id: ${readableId} ${readableProgress}`,
+          'control',
+        )
         return
       }
 
       if (!helper.isFinished(html)) {
+        broadcast(
+          `Unfinished auction id: ${readableId} ${readableProgress}`,
+          'neutral',
+        )
         historyData.appendUnfinishedBuffer({
           id: helper.id(html),
           auctionEnd: helper.auctionEnd(html),
@@ -52,6 +55,10 @@ export const fetchUnscrapedAuctions = async (
         return
       }
 
+      broadcast(
+        `Scraping   auction id: ${readableId} ${readableProgress}`,
+        'neutral',
+      )
       historyData.appendFinishedBuffer(
         await helper.partialCharacterObject(html),
       )
