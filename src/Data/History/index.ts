@@ -15,6 +15,8 @@ export default class CurrentAuctionsData {
   private unfinishedBuffer: UnfinishedAuction[] = []
   private finishedBuffer: PartialCharacterObject[] = []
 
+  private maturedIdsBuffer: Set<number> = new Set([])
+
   private async loadScrapData() {
     broadcast(`Loading ${printFilename(SCRAP_HISTORY_DATA.name)}...`, 'system')
     try {
@@ -90,15 +92,16 @@ export default class CurrentAuctionsData {
     this.unfinishedAuctions = [
       ...this.unfinishedAuctions,
       ...this.unfinishedBuffer,
-    ]
+    ].filter(({ id }) => !this.maturedIdsBuffer.has(id))
   }
 
   private flushBuffers() {
     this.finishedBuffer = []
     this.unfinishedBuffer = []
+    this.maturedIdsBuffer = new Set([])
   }
 
-  private getHighestAuctionId() {
+  private getNewHighestAuctionId() {
     return Math.max(
       ...this.finishedBuffer.map(getId),
       ...this.unfinishedBuffer.map(getId),
@@ -129,10 +132,23 @@ export default class CurrentAuctionsData {
     this.unfinishedBuffer.push(unfinishedAuction)
   }
 
+  public appendMaturedId(id: number) {
+    this.maturedIdsBuffer.add(id)
+  }
+
   public async saveBuffers() {
+    const previousUnfinishedCount = this.unfinishedAuctions.length
     this.appendBuffers()
-    this.lastScrapedId = this.getHighestAuctionId()
+    this.lastScrapedId = this.getNewHighestAuctionId()
     await this.save()
+
+    const unfinishedDiff =
+      this.unfinishedAuctions.length - previousUnfinishedCount
+    const positiveDiff = unfinishedDiff >= 0
+    const diffMessage = coloredText(
+      `${positiveDiff ? '+' : ''}${unfinishedDiff}`,
+      positiveDiff ? 'success' : 'fail',
+    )
 
     broadcast(
       `Fresh history auctions (${coloredText(
@@ -142,10 +158,7 @@ export default class CurrentAuctionsData {
       'success',
     )
     broadcast(
-      `Updated scrap history data (${coloredText(
-        this.unfinishedBuffer.length,
-        'highlight',
-      )} new entries) were saved to ${SCRAP_HISTORY_DATA.name}`,
+      `Updated scrap history data (${diffMessage} entries) were saved to ${SCRAP_HISTORY_DATA.name}`,
       'success',
     )
 
