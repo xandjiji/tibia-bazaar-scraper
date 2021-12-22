@@ -1,4 +1,5 @@
-import { fetchHtml, retryWrapper } from 'utils'
+import { HttpClient } from 'services'
+import { retryWrapper } from 'utils'
 
 export const BUFFER_SIZE = 100
 
@@ -7,5 +8,5 @@ const AUCTION_PAGE_URL =
 
 export const fetchAuctionPage = retryWrapper(
   async (auctionId: number) =>
-    await fetchHtml(`${AUCTION_PAGE_URL}&auctionid=${auctionId}`),
+    await HttpClient.getHtml(`${AUCTION_PAGE_URL}&auctionid=${auctionId}`),
 )

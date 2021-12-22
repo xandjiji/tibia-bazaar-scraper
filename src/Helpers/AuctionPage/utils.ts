@@ -1,7 +1,8 @@
 import { AuctionPage, PostData } from 'Helpers'
+import { HttpClient } from 'services'
 import { tabBroadcast, coloredText } from 'logging'
-import { retryWrapper, postHtml } from 'utils'
-import { PostHtmlProps } from 'utils/fetch/types'
+import { retryWrapper } from 'utils'
+import { PostHtmlProps } from 'services/httpClient/types'
 import { CharacterPostData, readableTypes } from './types'
 
 const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void =>
@@ -18,7 +19,7 @@ const logRequest = ({ auctionId, pageIndex, type }: PostHtmlProps): void =>
 
 const getPostData = retryWrapper((args: PostHtmlProps) => {
   logRequest(args)
-  return postHtml(args)
+  return HttpClient.postHtml(args)
 })
 
 export const getPagedData = async (

@@ -1,5 +1,6 @@
 import { AuctionList } from 'Helpers'
-import { fetchHtml, retryWrapper } from 'utils'
+import { HttpClient } from 'services'
+import { retryWrapper } from 'utils'
 
 const BASE_URL =
   'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades'
@@ -14,7 +15,7 @@ export const fetchItemPage = retryWrapper(
     const url = buildItemPageUrl(itemName, index)
 
     const helper = new AuctionList()
-    const html = await fetchHtml(url)
+    const html = await HttpClient.getHtml(url)
 
     const lastPageIndex = helper.lastPageIndex(html)
     const ids = helper.auctionBlocks(html).map(({ id }) => id)

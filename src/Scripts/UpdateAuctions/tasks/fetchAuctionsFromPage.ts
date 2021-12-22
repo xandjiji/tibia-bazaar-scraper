@@ -1,12 +1,15 @@
 import { AuctionList } from 'Helpers'
+import { HttpClient } from 'services'
 import { broadcast, TrackETA, coloredText } from 'logging'
-import { fetchHtml, retryWrapper, batchPromises } from 'utils'
+import { retryWrapper, batchPromises } from 'utils'
 
 const AUCTION_LIST_URL = 'https://www.tibia.com/charactertrade'
 
 const fetchAuctionsFromPage = retryWrapper(async (pageIndex) => {
   const helper = new AuctionList()
-  const html = await fetchHtml(`${AUCTION_LIST_URL}/?currentpage=${pageIndex}`)
+  const html = await HttpClient.getHtml(
+    `${AUCTION_LIST_URL}/?currentpage=${pageIndex}`,
+  )
   return helper.auctionBlocks(html)
 })
 

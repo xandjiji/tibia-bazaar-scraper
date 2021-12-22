@@ -1,4 +1,4 @@
-import { RequestTypes } from 'utils/fetch/types'
+import { RequestTypes } from 'services/httpClient/types'
 
 export type CharacterPostData = Pick<
   PartialCharacterObject,
