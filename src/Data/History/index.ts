@@ -114,6 +114,13 @@ export default class CurrentAuctionsData {
     return makeRangeArray(this.lastScrapedId + 1, newHighestAuctionId)
   }
 
+  public getMaturedAuctionIds() {
+    const currentTimestamp = +new Date() / 1000
+    return this.unfinishedAuctions
+      .filter(({ auctionEnd }) => currentTimestamp > auctionEnd)
+      .map(({ id }) => id)
+  }
+
   public appendFinishedBuffer(finishedAuction: PartialCharacterObject) {
     this.finishedBuffer.push(finishedAuction)
   }
