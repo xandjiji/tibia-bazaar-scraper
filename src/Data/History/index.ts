@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import { broadcast, coloredText } from 'logging'
 import { file } from 'Constants'
 import { makeRangeArray } from 'utils'
-import { printFilename, getId } from './utils'
+import { printFilename, getId, removeDupedIds } from './utils'
 import { ScrapHistoryData } from './types'
 
 const { SCRAP_HISTORY_DATA, HISTORY_AUCTIONS } = file
@@ -69,9 +69,10 @@ export default class CurrentAuctionsData {
       )
     }
 
-    this.historyAuctions = this.historyAuctions.sort(
-      (a, b) => b.auctionEnd - a.auctionEnd,
+    this.historyAuctions = removeDupedIds(
+      this.historyAuctions.sort((a, b) => b.auctionEnd - a.auctionEnd),
     )
+
     await fs.writeFile(
       HISTORY_AUCTIONS.path,
       JSON.stringify(this.historyAuctions),
