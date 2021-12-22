@@ -100,8 +100,8 @@ export default class CurrentAuctionsData {
 
   private getHighestAuctionId() {
     return Math.max(
-      ...this.unfinishedAuctions.map(getId),
-      ...this.historyAuctions.map(getId),
+      ...this.finishedBuffer.map(getId),
+      ...this.unfinishedBuffer.map(getId),
     )
   }
 
