@@ -1,4 +1,4 @@
-import { broadcast, coloredText, coloredProgress, TrackETA } from 'logging'
+import { broadcast, coloredText, TrackETA } from 'logging'
 import { sleep } from '../sleep'
 import { retryWrapper } from '../retryWrapper'
 import { batchPromises } from '../batchPromises'
@@ -21,19 +21,13 @@ export const runMockedRequests = async (
   errorChance?: number,
 ) => {
   const eta = new TrackETA(amount, coloredText('Mocked requests', 'highlight'))
-  const tasks = Array.from(
-    { length: amount },
-    (_, currentIndex) => async () => {
-      const currentTask = currentIndex + 1
 
-      broadcast(
-        `Mocking request ${coloredProgress([currentTask, amount])}`,
-        'neutral',
-      )
-      await mockedPromise(errorChance)
-      eta.incTask()
-    },
-  )
+  const tasks = Array.from({ length: amount }, () => async () => {
+    eta.incTask()
+    broadcast(`Mocking request ${eta.getProgress()}`, 'neutral')
+    await mockedPromise(errorChance)
+  })
+
   await batchPromises(tasks)
   eta.finish()
 }

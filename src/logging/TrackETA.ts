@@ -1,6 +1,7 @@
 import { log, setFooterText } from '.'
-import { coloredText, progressBar } from './utils'
+import { coloredText, progressBar, coloredProgress } from './utils'
 import { Timestamp } from './Timestamp'
+import { ColorKey } from './types'
 
 export class TrackETA {
   constructor(totalTasks: number, taskName = 'Task') {
@@ -58,7 +59,10 @@ export class TrackETA {
     this.setCurrentTask(this.currentTask)
   }
 
-  public finish = () => {
+  public getProgress = (color: ColorKey = 'system') =>
+    coloredProgress([this.currentTask, this.totalTasks], color)
+
+  finish = () => {
     log(
       `${progressBar(this.percentageCompleted, 'success')} ${
         this.taskName

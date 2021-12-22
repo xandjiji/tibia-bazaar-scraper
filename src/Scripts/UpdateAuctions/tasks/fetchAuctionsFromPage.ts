@@ -1,5 +1,5 @@
 import { AuctionList } from 'Helpers'
-import { broadcast, coloredProgress, TrackETA, coloredText } from 'logging'
+import { broadcast, TrackETA, coloredText } from 'logging'
 import { fetchHtml, retryWrapper, batchPromises } from 'utils'
 
 const AUCTION_LIST_URL = 'https://www.tibia.com/charactertrade'
@@ -20,13 +20,10 @@ export const fetchAllAuctionBlocks = async (
   )
 
   const auctionBlocksRequests = pageIndexes.map((currentIndex) => async () => {
-    broadcast(
-      `Scraping auction page ${coloredProgress([currentIndex, lastIndex])}`,
-      'neutral',
-    )
+    taskTracking.incTask()
+    broadcast(`Scraping auction page ${taskTracking.getProgress()}`, 'neutral')
 
     const auctionBlock = await fetchAuctionsFromPage(currentIndex)
-    taskTracking.incTask()
     return auctionBlock
   })
 

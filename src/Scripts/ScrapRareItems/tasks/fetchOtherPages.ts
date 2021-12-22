@@ -1,4 +1,4 @@
-import { broadcast, coloredProgress, TrackETA, coloredText } from 'logging'
+import { broadcast, TrackETA, coloredText } from 'logging'
 import { batchPromises } from 'utils'
 import { fetchItemPage } from '../utils'
 
@@ -21,7 +21,6 @@ export const fetchOtherPages = async (
 
   const totalRequests = countRequests(incompleteBlocks)
   if (totalRequests) {
-    let requestedCount = 0
     const taskTracking = new TrackETA(
       totalRequests,
       coloredText('Scraping rest of the rare items', 'highlight'),
@@ -31,13 +30,9 @@ export const fetchOtherPages = async (
       ({ name, lastPageIndex }) =>
         async () => {
           for (let index = 2; index <= lastPageIndex; index++) {
-            requestedCount++
-
+            taskTracking.incTask()
             broadcast(
-              `Scraping ${name}'s other pages ${coloredProgress([
-                requestedCount,
-                totalRequests,
-              ])}`,
+              `Scraping ${name}'s other pages ${taskTracking.getProgress()}`,
               'neutral',
             )
 
@@ -46,7 +41,6 @@ export const fetchOtherPages = async (
               ...fullCollection[name].ids,
               ...rareItemBlock.ids,
             ]
-            taskTracking.incTask()
           }
         },
     )

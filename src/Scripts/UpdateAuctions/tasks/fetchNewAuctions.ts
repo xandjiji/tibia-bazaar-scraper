@@ -1,5 +1,5 @@
 import { AuctionPage } from 'Helpers'
-import { broadcast, coloredText, coloredProgress, TrackETA } from 'logging'
+import { broadcast, coloredText, TrackETA } from 'logging'
 import { fetchHtml, retryWrapper, batchPromises } from 'utils'
 
 const AUCTION_PAGE_URL =
@@ -23,18 +23,18 @@ export const fetchNewAuctions = async (
   await helper.loadServerData()
 
   const auctionPageRequests = newAuctionIds.map(
-    (auctionId, currentIndex) => async () => {
+    (auctionId) => async () => {
+      taskTracking.incTask()
       broadcast(
         `Scraping auction id: ${coloredText(
           auctionId,
           'highlight',
-        )} ${coloredProgress([currentIndex + 1, batchSize])}`,
+        )} ${taskTracking.getProgress()}`,
         'neutral',
       )
 
       const newAuctionHtml = await fetchAuctionPage(auctionId)
       const auction = await helper.partialCharacterObject(newAuctionHtml)
-      taskTracking.incTask()
       return auction
     },
   )

@@ -1,6 +1,6 @@
 import { History } from 'Data'
 import { AuctionPage } from 'Helpers'
-import { broadcast, coloredText, coloredProgress, TrackETA } from 'logging'
+import { broadcast, coloredText, TrackETA } from 'logging'
 import { batchPromises, arrayPartitions } from 'utils'
 import { BUFFER_SIZE, fetchAuctionPage } from '../utils'
 
@@ -17,33 +17,28 @@ export const fetchMaturedAuctions = async (
   const helper = new AuctionPage()
   await helper.loadServerData()
 
-  const auctionPageRequests = maturedIds.map(
-    (auctionId, currentIndex) => async () => {
-      const readableId = coloredText(auctionId, 'highlight')
-      const readableProgress = coloredProgress([currentIndex + 1, batchSize])
+  const auctionPageRequests = maturedIds.map((auctionId) => async () => {
+    const readableId = coloredText(auctionId, 'highlight')
 
-      const html = await fetchAuctionPage(auctionId)
+    const html = await fetchAuctionPage(auctionId)
+    taskTracking.incTask()
+    const readableProgress = taskTracking.getProgress()
 
-      if (helper.errorCheck(html)) {
-        taskTracking.incTask()
-        broadcast(
-          `Not found  auction id: ${readableId} ${readableProgress}`,
-          'control',
-        )
-        return
-      }
-
+    if (helper.errorCheck(html)) {
       broadcast(
-        `Scraping   auction id: ${readableId} ${readableProgress}`,
-        'neutral',
+        `Not found  auction id: ${readableId} ${readableProgress}`,
+        'control',
       )
-      historyData.appendFinishedBuffer(
-        await helper.partialCharacterObject(html),
-      )
-      historyData.appendMaturedId(auctionId)
-      taskTracking.incTask()
-    },
-  )
+      return
+    }
+
+    broadcast(
+      `Scraping   auction id: ${readableId} ${readableProgress}`,
+      'neutral',
+    )
+    historyData.appendFinishedBuffer(await helper.partialCharacterObject(html))
+    historyData.appendMaturedId(auctionId)
+  })
 
   const requestQueues = arrayPartitions(auctionPageRequests, BUFFER_SIZE)
   for (const queue of requestQueues) {

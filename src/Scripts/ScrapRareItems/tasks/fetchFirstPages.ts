@@ -1,4 +1,4 @@
-import { broadcast, coloredProgress, TrackETA, coloredText } from 'logging'
+import { broadcast, TrackETA, coloredText } from 'logging'
 import { batchPromises } from 'utils'
 import { fetchItemPage, buildRareItemCollection } from '../utils'
 import { itemList } from '../items'
@@ -11,21 +11,16 @@ export const fetchAllFirstPages =
       coloredText('Scraping rare item auction blocks', 'highlight'),
     )
 
-    const rareItemBlockRequests = itemList.map(
-      (name, currentIndex) => async () => {
-        broadcast(
-          `Scraping ${name}'s frist page ${coloredProgress([
-            currentIndex + 1,
-            lastIndex,
-          ])}`,
-          'neutral',
-        )
+    const rareItemBlockRequests = itemList.map((name) => async () => {
+      taskTracking.incTask()
+      broadcast(
+        `Scraping ${name}'s frist page ${taskTracking.getProgress()}`,
+        'neutral',
+      )
 
-        const rareItemBlock = await fetchItemPage(name, 1)
-        taskTracking.incTask()
-        return rareItemBlock
-      },
-    )
+      const rareItemBlock = await fetchItemPage(name, 1)
+      return rareItemBlock
+    })
 
     const rareItemBlocks = await batchPromises(rareItemBlockRequests)
     taskTracking.finish()
