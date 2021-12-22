@@ -64,7 +64,9 @@ export default class CurrentAuctionsData {
   private async save() {
     if (this.historyAuctions.length === 0) {
       broadcast(
-        `WARNING! Writing empty values to ${HISTORY_AUCTIONS.name}`,
+        `WARNING! Writing empty values to ${printFilename(
+          HISTORY_AUCTIONS.name,
+        )}`,
         'fail',
       )
     }
@@ -155,11 +157,13 @@ export default class CurrentAuctionsData {
       `Fresh history auctions (${coloredText(
         this.finishedBuffer.length,
         'highlight',
-      )} entries) were saved to ${HISTORY_AUCTIONS.name}`,
+      )} entries) were saved to ${printFilename(HISTORY_AUCTIONS.name)}`,
       'success',
     )
     broadcast(
-      `Updated scrap history data (${diffMessage} entries) were saved to ${SCRAP_HISTORY_DATA.name}`,
+      `Updated scrap history data (${diffMessage} entries) were saved to ${printFilename(
+        SCRAP_HISTORY_DATA.name,
+      )}`,
       'success',
     )
 
