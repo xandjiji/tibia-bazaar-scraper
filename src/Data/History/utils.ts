@@ -11,6 +11,6 @@ export const removeDupedIds = <T extends { id: number }>(array: T[]): T[] => {
   return array.filter(({ id }) => {
     const wasInSet = idSet.has(id)
     idSet.add(id)
-    return wasInSet
+    return !wasInSet
   })
 }
