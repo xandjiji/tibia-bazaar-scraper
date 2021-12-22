@@ -1,17 +1,8 @@
 import { History } from 'Data'
 import { AuctionPage } from 'Helpers'
 import { broadcast, coloredText, coloredProgress, TrackETA } from 'logging'
-import { fetchHtml, retryWrapper, batchPromises, arrayPartitions } from 'utils'
-
-const BUFFER_SIZE = 100
-
-const AUCTION_PAGE_URL =
-  'https://www.tibia.com/charactertrade/?subtopic=currentcharactertrades&page=details'
-
-const fetchAuctionPage = retryWrapper(
-  async (auctionId: number) =>
-    await fetchHtml(`${AUCTION_PAGE_URL}&auctionid=${auctionId}`),
-)
+import { batchPromises, arrayPartitions } from 'utils'
+import { BUFFER_SIZE, fetchAuctionPage } from '../utils'
 
 export const fetchUnscrapedAuctions = async (
   unscrapedIds: number[],
