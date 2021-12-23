@@ -8,3 +8,16 @@ export const pushAndShift = <T>(
   const newArray = [...array, item]
   return newArray.slice(newArray.length - maxSize)
 }
+
+export const forceFillValues = <T>(
+  array: T[],
+  maxSize = DEFAULT_MAX_VALUE,
+): T[] => {
+  const [clonedValue] = array
+  const fillValues = Array.from(
+    { length: maxSize - array.length },
+    () => clonedValue,
+  )
+
+  return [...fillValues, ...array]
+}

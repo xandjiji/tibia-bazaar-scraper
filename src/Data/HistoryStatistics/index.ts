@@ -3,7 +3,7 @@ import { broadcast, coloredText, coloredDiff } from 'logging'
 import { file } from 'Constants'
 import { countObjectDiff } from 'utils'
 import { EMPTY_STATISTICS } from './schema'
-import { pushAndShift } from './utils'
+import { pushAndShift, forceFillValues } from './utils'
 import { PatchableData, AppendableDataKey } from './types'
 
 const FILE_PATH = file.HISTORY_STATISTICS.path
@@ -94,7 +94,9 @@ export default class HistoryStatisticsData {
 
     const newSummary: MonthlySummary = {
       current: latestValue,
-      lastMonth: pushAndShift(latestDailyChange, previousSummary.lastMonth),
+      lastMonth: forceFillValues(
+        pushAndShift(latestDailyChange, previousSummary.lastMonth),
+      ),
     }
 
     this.statisticsData = {
