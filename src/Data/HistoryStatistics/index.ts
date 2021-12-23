@@ -29,19 +29,18 @@ export default class HistoryStatisticsData {
     }
   }
 
-  private async save() {
+  public async save() {
     await fs.writeFile(FILE_PATH, JSON.stringify(this.statisticsData))
+    broadcast(`Updated statistics were saved to ${FILE_NAME}`, 'success')
   }
 
-  public async patchData(newValues: Partial<PatchableData>) {
+  public patchData(newValues: Partial<PatchableData>) {
     const previousData = { ...this.statisticsData }
 
     this.statisticsData = {
       ...this.statisticsData,
       ...newValues,
     }
-
-    /* await this.save() */
 
     const characterInfoKeys: Array<keyof PatchableData> = [
       'top10Axe',
@@ -65,10 +64,10 @@ export default class HistoryStatisticsData {
         const updatedCount = countObjectDiff(previousData[key], value)
         if (updatedCount > 0) {
           broadcast(
-            `Patched ${coloredText(key, 'highlight')} values (${coloredDiff(
+            `Patched ${coloredText(key, 'neutral')} values (${coloredDiff(
               updatedCount,
-            )} diff)`,
-            'success',
+            )} entries diff)`,
+            'neutral',
           )
         }
         continue
@@ -78,17 +77,17 @@ export default class HistoryStatisticsData {
         const previousValue = previousData[key] as number
         const valueDiff = (value as number) - previousValue
         broadcast(
-          `Patched ${coloredText(key, 'highlight')} value (${coloredDiff(
+          `Patched ${coloredText(key, 'neutral')} value (${coloredDiff(
             valueDiff,
-          )} diff)`,
-          'success',
+          )} value diff)`,
+          'neutral',
         )
         continue
       }
     }
   }
 
-  public async appendData(dataKey: AppendableDataKey, latestValue: number) {
+  public appendData(dataKey: AppendableDataKey, latestValue: number) {
     const previousSummary: MonthlySummary = this.statisticsData[dataKey]
 
     const latestDailyChange = latestValue - previousSummary.current
@@ -103,8 +102,11 @@ export default class HistoryStatisticsData {
       [dataKey]: newSummary,
     }
 
-    /* await this.save() */
-
-    /* @ ToDo: cool logging */
+    broadcast(
+      `Appended ${coloredText(dataKey, 'neutral')} value (${coloredDiff(
+        latestDailyChange,
+      )} value diff)`,
+      'neutral',
+    )
   }
 }

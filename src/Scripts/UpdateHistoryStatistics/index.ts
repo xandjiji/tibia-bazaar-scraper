@@ -25,13 +25,13 @@ const main = async () => {
     ({ hasBeenBidded }) => hasBeenBidded,
   )
 
-  await statisticsData.appendData('totalRevenue', calculateTotalRevenue(allAuctions))
-  await statisticsData.appendData(
+  statisticsData.appendData('totalRevenue', calculateTotalRevenue(allAuctions))
+  statisticsData.appendData(
     'totalTibiaCoins',
     calculateTotalNegotiated(allAuctions),
   )
 
-  await statisticsData.patchData({
+  statisticsData.patchData({
     successRate: calculateSuccessRate(allAuctions),
     top10Bid: calculateTop10.byBid(successfulAuctions),
     top10Level: calculateTop10.byLevel(successfulAuctions),
@@ -45,6 +45,8 @@ const main = async () => {
     top10Shielding: calculateTop10.byShielding(successfulAuctions),
     vocationPercentage: calculateVocationDistribution(allAuctions),
   })
+
+  await statisticsData.save()
 
   broadcast(
     `${SCRIPT_NAME} script routine finished in ${timer.elapsedTime()}`,
