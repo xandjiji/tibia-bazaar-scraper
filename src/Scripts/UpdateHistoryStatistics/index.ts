@@ -1,6 +1,8 @@
 import { History, HistoryStatistics } from 'Data'
 import { broadcast, coloredText, Timer } from 'logging'
 import {
+  calculateTotalRevenue,
+  calculateTotalNegotiated,
   calculateSuccessRate,
   calculateTop10,
   calculateVocationDistribution,
@@ -21,6 +23,12 @@ const main = async () => {
 
   const successfulAuctions = allAuctions.filter(
     ({ hasBeenBidded }) => hasBeenBidded,
+  )
+
+  await statisticsData.appendData('totalRevenue', calculateTotalRevenue(allAuctions))
+  await statisticsData.appendData(
+    'totalTibiaCoins',
+    calculateTotalNegotiated(allAuctions),
   )
 
   await statisticsData.patchData({

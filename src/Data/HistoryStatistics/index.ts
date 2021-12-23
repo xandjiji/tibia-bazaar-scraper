@@ -2,7 +2,8 @@ import fs from 'fs/promises'
 import { broadcast, coloredText } from 'logging'
 import { file } from 'Constants'
 import { EMPTY_STATISTICS } from './schema'
-import { PatchableData } from './types'
+import { pushAndShift } from './utils'
+import { PatchableData, AppendableDataKey } from './types'
 
 const FILE_PATH = file.HISTORY_STATISTICS.path
 const FILE_NAME = coloredText(file.HISTORY_STATISTICS.name, 'highlight')
@@ -37,10 +38,27 @@ export default class HistoryStatisticsData {
       ...newValues,
     }
 
-    /* @ ToDo: cool logging */
-
     await this.save()
+    /* @ ToDo: cool logging */
   }
 
-  /* @ ToDo: append data */
+  public async appendData(dataKey: AppendableDataKey, latestValue: number) {
+    const previousSummary: MonthlySummary = this.statisticsData[dataKey]
+
+    const latestDailyChange = latestValue - previousSummary.current
+
+    const newSummary: MonthlySummary = {
+      current: latestValue,
+      lastMonth: pushAndShift(latestDailyChange, previousSummary.lastMonth),
+    }
+
+    this.statisticsData = {
+      ...this.statisticsData,
+      [dataKey]: newSummary,
+    }
+
+    await this.save()
+
+    /* @ ToDo: cool logging */
+  }
 }
