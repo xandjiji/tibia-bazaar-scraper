@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import { broadcast, coloredText } from 'logging'
 import { file } from 'Constants'
 import { EMPTY_STATISTICS } from './schema'
+import { PatchableData } from './types'
 
 const FILE_PATH = file.HISTORY_STATISTICS.path
 const FILE_NAME = coloredText(file.HISTORY_STATISTICS.name, 'highlight')
@@ -29,4 +30,17 @@ export default class HistoryStatisticsData {
   private async save() {
     await fs.writeFile(FILE_PATH, JSON.stringify(this.statisticsData))
   }
+
+  public async patchData(newValues: Partial<PatchableData>) {
+    this.statisticsData = {
+      ...this.statisticsData,
+      ...newValues,
+    }
+
+    /* @ ToDo: cool logging */
+
+    await this.save()
+  }
+
+  /* @ ToDo: append data */
 }
