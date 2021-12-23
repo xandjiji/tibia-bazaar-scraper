@@ -1,5 +1,6 @@
 export * from './arrayPartitions'
 export * from './batchPromises'
+export * from './countObjectDiff'
 export * from './date'
 export * from './exitIfMaintenance'
 export * from './makeRangeArray'
