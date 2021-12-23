@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
-import { broadcast, coloredText } from 'logging'
+import { broadcast, coloredText, coloredDiff } from 'logging'
 import { file } from 'Constants'
+import { countObjectDiff } from 'utils'
 import { EMPTY_STATISTICS } from './schema'
 import { pushAndShift } from './utils'
 import { PatchableData, AppendableDataKey } from './types'
@@ -33,13 +34,58 @@ export default class HistoryStatisticsData {
   }
 
   public async patchData(newValues: Partial<PatchableData>) {
+    const previousData = { ...this.statisticsData }
+
     this.statisticsData = {
       ...this.statisticsData,
       ...newValues,
     }
 
-    await this.save()
-    /* @ ToDo: cool logging */
+    /* await this.save() */
+
+    const characterInfoKeys: Array<keyof PatchableData> = [
+      'top10Axe',
+      'top10Bid',
+      'top10Club',
+      'top10Distance',
+      'top10Fishing',
+      'top10Fist',
+      'top10Level',
+      'top10Magic',
+      'top10Shielding',
+      'top10Sword',
+    ]
+
+    const numberValueInfoKeys: Array<keyof PatchableData> = ['successRate']
+
+    for (const [untypedKey, value] of Object.entries(newValues)) {
+      const key = untypedKey as keyof PatchableData
+
+      if (characterInfoKeys.includes(key)) {
+        const updatedCount = countObjectDiff(previousData[key], value)
+        if (updatedCount > 0) {
+          broadcast(
+            `Patched ${coloredText(key, 'highlight')} values (${coloredDiff(
+              updatedCount,
+            )} diff)`,
+            'success',
+          )
+        }
+        continue
+      }
+
+      if (numberValueInfoKeys.includes(key)) {
+        const previousValue = previousData[key] as number
+        const valueDiff = (value as number) - previousValue
+        broadcast(
+          `Patched ${coloredText(key, 'highlight')} value (${coloredDiff(
+            valueDiff,
+          )} diff)`,
+          'success',
+        )
+        continue
+      }
+    }
   }
 
   public async appendData(dataKey: AppendableDataKey, latestValue: number) {
@@ -57,7 +103,7 @@ export default class HistoryStatisticsData {
       [dataKey]: newSummary,
     }
 
-    await this.save()
+    /* await this.save() */
 
     /* @ ToDo: cool logging */
   }
