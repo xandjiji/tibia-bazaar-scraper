@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import { broadcast, coloredText } from 'logging'
+import { broadcast, coloredText, coloredDiff } from 'logging'
 import { file } from 'Constants'
 import { makeRangeArray } from 'utils'
 import { printFilename, getId, removeDupedIds } from './utils'
@@ -151,23 +151,17 @@ export default class CurrentAuctionsData {
 
     const unfinishedDiff =
       this.unfinishedAuctions.length - previousUnfinishedCount
-    const positiveDiff = unfinishedDiff >= 0
-    const diffMessage = coloredText(
-      `${positiveDiff ? '+' : ''}${unfinishedDiff}`,
-      positiveDiff ? 'success' : 'fail',
-    )
 
     broadcast(
-      `Fresh history auctions (${coloredText(
+      `Fresh history auctions (${coloredDiff(
         this.finishedBuffer.length,
-        'highlight',
       )} entries) were saved to ${printFilename(HISTORY_AUCTIONS.name)}`,
       'success',
     )
     broadcast(
-      `Updated scrap history data (${diffMessage} entries) were saved to ${printFilename(
-        SCRAP_HISTORY_DATA.name,
-      )}`,
+      `Updated scrap history data (${coloredDiff(
+        unfinishedDiff,
+      )} entries) were saved to ${printFilename(SCRAP_HISTORY_DATA.name)}`,
       'success',
     )
 

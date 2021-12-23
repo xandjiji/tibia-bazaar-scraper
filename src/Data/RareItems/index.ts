@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import { broadcast, coloredText } from 'logging'
+import { broadcast, coloredText, coloredDiff } from 'logging'
 import { file } from 'Constants'
 
 const FILE_PATH = file.RARE_ITEM_DATA.path
@@ -73,9 +73,8 @@ export default class RareItemsData {
     this.itemData = filteredData
     await this.save()
     broadcast(
-      `Stale rare item auctions (${coloredText(
-        staleCount,
-        'highlight',
+      `Stale rare item auctions (${coloredDiff(
+        -staleCount,
       )} entries) were removed from ${FILE_NAME}`,
       'success',
     )
