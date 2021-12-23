@@ -116,6 +116,10 @@ export default class CurrentAuctionsData {
     await this.loadHistory()
   }
 
+  public getEntireHistory() {
+    return this.historyAuctions
+  }
+
   public getUnscrapedIds(newHighestAuctionId: number) {
     return makeRangeArray(this.lastScrapedId + 1, newHighestAuctionId)
   }
