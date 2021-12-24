@@ -5,10 +5,9 @@ const HOUR = MINUTE * 60
 module.exports = {
   apps: [
     /* {
-      name: 'scrap:history',
+      name: 'History Auctions',
       cwd: '/home/xand/tibia-bazaar-scraper',
-      script: 'yarn',
-      args: 'scrap:history',
+      script: 'historyAuctions',
       restart_delay: HOUR * 4,
     }, */
     {
