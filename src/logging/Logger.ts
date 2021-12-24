@@ -1,10 +1,10 @@
-import readline from 'readline'
 import { Timestamp } from './Timestamp'
 import { ColorKey } from './types'
 
 const TAB = '  └> '
 const CLEAR_REST_OF_LINE = '\x1b[K'
 const NEWLINE = '\n'
+const MOVE_CURSOR_TO_PREVIOUS_LINE = '\x1b[A'
 const newline = () => `${CLEAR_REST_OF_LINE}${NEWLINE}`
 
 class TerminalStream {
@@ -14,8 +14,7 @@ class TerminalStream {
 
   private footerText = ''
   private print = (text: string) => {
-    readline.moveCursor(process.stdout, 0, -1)
-    process.stdout.write(text)
+    process.stdout.write(`${MOVE_CURSOR_TO_PREVIOUS_LINE}${text}`)
   }
 
   public log = (message: string) => {
