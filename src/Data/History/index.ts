@@ -91,7 +91,7 @@ export default class CurrentAuctionsData {
   }
 
   private appendBuffers() {
-    this.historyAuctions = [...this.historyAuctions, ...this.finishedBuffer]
+    this.finishedBuffer.forEach((auction) => this.historyAuctions.push(auction))
     this.unfinishedAuctions = [
       ...this.unfinishedAuctions,
       ...this.unfinishedBuffer,
