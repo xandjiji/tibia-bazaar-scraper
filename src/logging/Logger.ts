@@ -1,3 +1,4 @@
+import readline from 'readline'
 import { Timestamp } from './Timestamp'
 import { ColorKey } from './types'
 
@@ -13,7 +14,7 @@ class TerminalStream {
 
   private footerText = ''
   private print = (text: string) => {
-    process.stdout.moveCursor(0, -1)
+    readline.moveCursor(process.stdout, 0, -1)
     process.stdout.write(text)
   }
 
