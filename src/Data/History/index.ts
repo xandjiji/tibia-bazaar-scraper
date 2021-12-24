@@ -92,10 +92,12 @@ export default class CurrentAuctionsData {
 
   private appendBuffers() {
     this.finishedBuffer.forEach((auction) => this.historyAuctions.push(auction))
-    this.unfinishedAuctions = [
-      ...this.unfinishedAuctions,
-      ...this.unfinishedBuffer,
-    ].filter(({ id }) => !this.maturedIdsBuffer.has(id))
+    this.unfinishedBuffer.forEach((unfinishedAuction) =>
+      this.unfinishedAuctions.push(unfinishedAuction),
+    )
+    this.unfinishedAuctions = this.unfinishedAuctions.filter(
+      ({ id }) => !this.maturedIdsBuffer.has(id),
+    )
   }
 
   private flushBuffers() {

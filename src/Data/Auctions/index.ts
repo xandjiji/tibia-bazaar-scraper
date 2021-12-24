@@ -89,7 +89,7 @@ export default class CurrentAuctionsData {
   }
 
   async appendAuctions(newAuctions: PartialCharacterObject[]) {
-    this.currentAuctions = [...this.currentAuctions, ...newAuctions]
+    newAuctions.forEach((auction) => this.currentAuctions.push(auction))
 
     await this.save()
     broadcast(
