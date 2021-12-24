@@ -1,5 +1,6 @@
 node_modules/
 old_src/
+old_automations/
 
 src/dev.ts
 src/cache.ts
