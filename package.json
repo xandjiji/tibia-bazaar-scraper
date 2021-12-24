@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Helpers for scraping data from the official Tibia website",
   "author": "xandjiji <xandjiji@gmail.com>",
+  "license": "Unlicense",
   "scripts": {
     "dev": "NODE_PATH=./src nodemon -q src/dev.ts",
     "dev:slow": "SLOW_MODE=true NODE_PATH=./src nodemon -q src/dev.ts",
