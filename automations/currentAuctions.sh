@@ -1,6 +1,7 @@
 #!/bin/bash
 cd ~/tibia-bazaar-scraper/
 yarn scrap:auctions
+yarn update:highlighted
 
 cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/exevo-pan-data/
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/exevo-pan-data/
@@ -21,4 +22,4 @@ cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/worker-exevopan/src/Data
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/worker-exevopan/src/Data
 
 cd ~/worker-exevopan/
-/home/pi/.cargo/bin/wrangler publish
+wrangler publish
