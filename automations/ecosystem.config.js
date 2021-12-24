@@ -12,7 +12,7 @@ module.exports = {
       restart_delay: HOUR * 4,
     }, */
     {
-      name: 'scrap:auctions',
+      name: 'Current Auctions',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'currentAuctions.sh',
       restart_delay: MINUTE * 5,
