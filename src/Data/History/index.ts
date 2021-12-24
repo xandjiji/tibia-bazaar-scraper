@@ -1,5 +1,5 @@
 import fs from 'fs/promises'
-import { broadcast, coloredText, coloredDiff } from 'logging'
+import { broadcast, coloredDiff } from 'logging'
 import { file } from 'Constants'
 import { makeRangeArray } from 'utils'
 import { printFilename, getId, removeDupedIds } from './utils'
