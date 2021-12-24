@@ -15,12 +15,15 @@ export const buildHighlightedAuctions = async (
   const serverData = new ServerData()
   await serverData.load()
 
+  const currentTimestamp = +new Date() / 1000
+
   const allAuctions = auctionData.getAllAuctions()
   const buildedAuctions: CharacterObject[] = allAuctions
     .filter(({ id }) => highlightedIds.has(id))
+    .filter(({ auctionEnd }) => auctionEnd > currentTimestamp)
     .map((auction) => ({
       ...auction,
-      serverData: serverData.getServerById(auction.id),
+      serverData: serverData.getServerById(auction.serverId),
     }))
 
   return buildedAuctions

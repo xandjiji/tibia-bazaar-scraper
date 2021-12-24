@@ -1,4 +1,5 @@
 export { default as Auctions } from './Auctions'
+export { default as HighlightedAuctions } from './HighlightedAuctions'
 export { default as History } from './History'
 export { default as HistoryStatistics } from './HistoryStatistics'
 export { default as RareItems } from './RareItems'

@@ -1,3 +1,4 @@
+import { HighlightedAuctions } from 'Data'
 import { broadcast, coloredText } from 'logging'
 import { fetchHighlightedAuctionData, buildHighlightedAuctions } from './tasks'
 
@@ -7,7 +8,11 @@ const main = async () => {
   broadcast(`Starting ${SCRIPT_NAME} script routine`, 'success')
 
   const highlightedData = await fetchHighlightedAuctionData()
-  const characterObjects = buildHighlightedAuctions(highlightedData)
+  const characterObjects = await buildHighlightedAuctions(highlightedData)
+
+  const highlightedAuctionsData = new HighlightedAuctions()
+  highlightedAuctionsData.setHighlightedAuctions(characterObjects)
+  await highlightedAuctionsData.save()
 
   broadcast(`${SCRIPT_NAME} script routine finished`, 'success')
 }
