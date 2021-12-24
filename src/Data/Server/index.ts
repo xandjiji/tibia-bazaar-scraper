@@ -39,16 +39,16 @@ export default class ServerData {
     await fs.writeFile(FILE_PATH, JSON.stringify(serverObject))
   }
 
-  getAllServers(): ServerObject[] {
+  public getAllServers(): ServerObject[] {
     return this.serverList
   }
 
-  getServerNamesSet(): Set<string> {
+  public getServerNamesSet(): Set<string> {
     const names = this.serverList.map(({ serverName }) => serverName)
     return new Set(names)
   }
 
-  getServerByName(name: string): ServerObject {
+  public getServerByName(name: string): ServerObject {
     const foundServer = this.serverList.find(
       ({ serverName }) => serverName === name,
     )
@@ -58,7 +58,15 @@ export default class ServerData {
     return foundServer
   }
 
-  async registerServer(partialServer: PartialServerObject) {
+  public getServerById(id: number): ServerObject {
+    const foundServer = this.serverList.find(({ serverId }) => serverId === id)
+
+    if (!foundServer) throw `Unknown server id: ${id}`
+
+    return foundServer
+  }
+
+  public async registerServer(partialServer: PartialServerObject) {
     const newId = this.serverList.length
     this.serverList.push({
       ...partialServer,
