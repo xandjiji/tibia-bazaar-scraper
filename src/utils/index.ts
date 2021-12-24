@@ -8,3 +8,5 @@ export * from './mockRequests'
 export * from './retryWrapper'
 export * from './sanitize'
 export * from './sleep'
+
+export { default as MemoryWatcher } from './MemoryWatcher'
