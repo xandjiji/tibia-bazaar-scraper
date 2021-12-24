@@ -24,6 +24,18 @@ export default class HttpClient {
     return await response.text()
   }
 
+  static async getJSON<T>(url: string): Promise<T> {
+    const response = await fetch(url)
+
+    if (response.status !== 200) {
+      throw new Error(
+        `getJSON() recieved a bad status code [${response.status}]`,
+      )
+    }
+
+    return await response.json()
+  }
+
   static async postHtml({
     auctionId,
     pageIndex,
