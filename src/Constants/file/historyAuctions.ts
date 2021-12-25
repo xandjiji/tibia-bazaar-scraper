@@ -1,7 +1,7 @@
 import { FileConstant, OUTPUT_PATH } from './types'
 
 const filenames = {
-  AUCTIONS: 'HistoryAuctions.json',
+  AUCTIONS: 'HistoryAuctions.jsonl',
   SCRAP_DATA: 'ScrapHistoryData.json',
 }
 

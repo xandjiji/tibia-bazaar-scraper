@@ -2,7 +2,13 @@ import fs from 'fs/promises'
 import { broadcast, coloredDiff } from 'logging'
 import { file } from 'Constants'
 import { makeRangeArray } from 'utils'
-import { printFilename, getId, removeDupedIds } from './utils'
+import {
+  printFilename,
+  getId,
+  removeDupedIds,
+  readJsonl,
+  writeJsonl,
+} from './utils'
 import { ScrapHistoryData } from './types'
 
 const { SCRAP_HISTORY_DATA, HISTORY_AUCTIONS } = file
@@ -48,8 +54,9 @@ export default class CurrentAuctionsData {
   private async loadHistory() {
     broadcast(`Loading ${printFilename(HISTORY_AUCTIONS.name)}...`, 'system')
     try {
-      const data = await fs.readFile(HISTORY_AUCTIONS.path, 'utf-8')
-      this.historyAuctions = JSON.parse(data)
+      this.historyAuctions = await readJsonl<PartialCharacterObject>(
+        HISTORY_AUCTIONS.path,
+      )
     } catch {
       broadcast(
         `Failed to load ${printFilename(
@@ -57,7 +64,7 @@ export default class CurrentAuctionsData {
         )}, initializing a new one...`,
         'fail',
       )
-      await fs.writeFile(HISTORY_AUCTIONS.path, JSON.stringify([]))
+      await writeJsonl(HISTORY_AUCTIONS.path, [])
     }
   }
 
@@ -75,10 +82,7 @@ export default class CurrentAuctionsData {
       this.historyAuctions.sort((a, b) => b.auctionEnd - a.auctionEnd),
     )
 
-    await fs.writeFile(
-      HISTORY_AUCTIONS.path,
-      JSON.stringify(this.historyAuctions),
-    )
+    await writeJsonl(HISTORY_AUCTIONS.path, this.historyAuctions)
 
     const scrapHistoryData: ScrapHistoryData = {
       lastScrapedId: this.lastScrapedId,

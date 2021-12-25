@@ -42,7 +42,7 @@ export const readJsonl = async <T>(path: string): Promise<T[]> => {
 export const writeJsonl = async <T>(path: string, objects: T[]) => {
   const eta = new TrackETA(objects.length)
 
-  const fileStream = fs.createWriteStream(path, { flags: 'a' })
+  const fileStream = fs.createWriteStream(path, { flags: 'w' })
 
   return new Promise((resolve, reject) => {
     for (const object of objects) {
