@@ -1,4 +1,7 @@
-import { coloredText } from 'logging'
+import fs from 'fs'
+import promisedFs from 'fs/promises'
+import readline from 'readline'
+import { TrackETA, coloredText } from 'logging'
 
 export const printFilename = (filename: string) =>
   coloredText(filename, 'highlight')
@@ -13,4 +16,25 @@ export const removeDupedIds = <T extends { id: number }>(array: T[]): T[] => {
     idSet.add(id)
     return !wasInSet
   })
+}
+
+export const readJsonl = async <T>(path: string): Promise<T[]> => {
+  const fileStat = await promisedFs.stat(path)
+
+  const fileStream = fs.createReadStream(path, { encoding: 'utf8' })
+  const rl = readline.createInterface({ input: fileStream })
+  const eta = new TrackETA(fileStat.size)
+
+  const array: T[] = []
+  for await (const line of rl) {
+    const object = JSON.parse(line)
+    array.push(object)
+
+    eta.setCurrentTask(fileStream.bytesRead)
+  }
+
+  eta.setCurrentTask(fileStream.bytesRead)
+  eta.finish()
+
+  return array
 }
