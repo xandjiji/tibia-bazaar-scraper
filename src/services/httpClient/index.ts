@@ -3,6 +3,8 @@ import UserAgent from 'user-agents'
 import FormData from 'form-data'
 import { PostHtmlProps, requestTypeKeys } from './types'
 
+const REQUEST_TIMEOUT = 15000
+
 export default class HttpClient {
   private static POST_ENDPOINT =
     'https://www.tibia.com/websiteservices/handle_charactertrades.php'
@@ -10,6 +12,7 @@ export default class HttpClient {
   static async getHtml(url: string): Promise<string> {
     const userAgent = new UserAgent()
     const response = await fetch(url, {
+      timeout: REQUEST_TIMEOUT,
       headers: {
         'User-Agent': userAgent.toString(),
       },
@@ -25,7 +28,7 @@ export default class HttpClient {
   }
 
   static async getJSON<T>(url: string): Promise<T> {
-    const response = await fetch(url)
+    const response = await fetch(url, { timeout: REQUEST_TIMEOUT })
 
     if (response.status !== 200) {
       throw new Error(
@@ -51,6 +54,7 @@ export default class HttpClient {
     body.append('type', requestTypeKeys[type])
 
     const response = await fetch(this.POST_ENDPOINT, {
+      timeout: REQUEST_TIMEOUT,
       method: 'POST',
       headers,
       body,
