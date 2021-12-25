@@ -1,3 +1,4 @@
 *.json
+*.jsonl
 !.gitignore
 !ServerData.json
