@@ -10,18 +10,18 @@ module.exports = {
       script: 'localtunnel.sh',
     },
     /* {
-      name: 'History Server',
+      name: 'HistoryServer',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'historyServer.sh',
     }, */
     /* {
-      name: 'History Auctions',
+      name: 'HistoryAuctions',
       cwd: '/home/xand/tibia-bazaar-scraper',
       script: 'historyAuctions',
       restart_delay: HOUR * 4,
     }, */
     {
-      name: 'Current Auctions',
+      name: 'CurrentAuctions',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'currentAuctions.sh',
       restart_delay: MINUTE * 5,
