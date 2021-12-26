@@ -9,21 +9,21 @@ module.exports = {
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'localtunnel.sh',
     },
-    /* {
+    {
       name: 'HistoryServer',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'historyServer.sh',
-    }, */
+    },
     /* {
-      name: 'HistoryAuctions',
+      name: 'ScrapHistory',
       cwd: '/home/xand/tibia-bazaar-scraper',
-      script: 'historyAuctions',
+      script: 'scrapHistory.sh',
       restart_delay: HOUR * 4,
     }, */
     {
-      name: 'CurrentAuctions',
+      name: 'ScrapAuctions',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
-      script: 'currentAuctions.sh',
+      script: 'scrapAuctions.sh',
       restart_delay: MINUTE * 5,
     },
   ],
