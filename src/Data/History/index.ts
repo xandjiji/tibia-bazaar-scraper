@@ -110,11 +110,12 @@ export default class CurrentAuctionsData {
     this.maturedIdsBuffer = new Set([])
   }
 
-  private getNewHighestAuctionId() {
-    return Math.max(
-      ...this.finishedBuffer.map(getId),
-      ...this.unfinishedBuffer.map(getId),
-    )
+  private getHighestAuctionId() {
+    let highest = 0
+    this.historyAuctions.forEach(({ id }) => {
+      if (id > highest) highest = id
+    })
+    return highest
   }
 
   async load() {
@@ -152,7 +153,7 @@ export default class CurrentAuctionsData {
   public async saveBuffers() {
     const previousUnfinishedCount = this.unfinishedAuctions.length
     this.appendBuffers()
-    this.lastScrapedId = this.getNewHighestAuctionId()
+    this.lastScrapedId = this.getHighestAuctionId()
     await this.save()
 
     const unfinishedDiff =
