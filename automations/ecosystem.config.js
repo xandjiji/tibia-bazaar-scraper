@@ -14,12 +14,12 @@ module.exports = {
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'historyServer.sh',
     },
-    /* {
+    {
       name: 'ScrapHistory',
-      cwd: '/home/xand/tibia-bazaar-scraper',
+      cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'scrapHistory.sh',
       restart_delay: HOUR * 4,
-    }, */
+    },
     {
       name: 'ScrapAuctions',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
