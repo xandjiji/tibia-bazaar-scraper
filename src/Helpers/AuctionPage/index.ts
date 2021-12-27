@@ -1,4 +1,4 @@
-import cheerio from 'cheerio'
+import cheerio, { CheerioAPI } from 'cheerio'
 import { PostData } from 'Helpers'
 import { sanitizeHtmlString, parseDate, exitIfMaintenance } from 'utils'
 import { ServerData } from 'Data'
@@ -18,22 +18,19 @@ export default class AuctionPage {
     await this.serverDataHelper.load()
   }
 
-  maintenanceCheck(content: string) {
-    const $ = cheerio.load(content)
+  maintenanceCheck($: CheerioAPI) {
     const headingElement = $('h1')
     return headingElement.text() === 'Downtime'
   }
 
-  errorCheck(content: string) {
-    const $ = cheerio.load(content)
+  errorCheck($: CheerioAPI) {
     const errorText = $(
       '#currentcharactertrades .Text, #pastcharactertrades .Text',
     ).text()
     return errorText === 'Error'
   }
 
-  id(content: string) {
-    const $ = cheerio.load(content)
+  id($: CheerioAPI) {
     const buttonElement = $('.DisplayOptionsButton a.BigButtonText').first()
     const onClickHandler = buttonElement.attr('onclick')!
     const [, dirtyId] = onClickHandler?.split('auctionid=')
@@ -42,18 +39,15 @@ export default class AuctionPage {
     return +stringId
   }
 
-  isFinished(content: string) {
-    const $ = cheerio.load(content)
+  isFinished($: CheerioAPI) {
     return !$('.MyMaxBidLabel').length
   }
 
-  nickname(content: string) {
-    const $ = cheerio.load(content)
+  nickname($: CheerioAPI) {
     return $('.Auction .AuctionCharacterName').text()
   }
 
-  auctionEnd(content: string) {
-    const $ = cheerio.load(content)
+  auctionEnd($: CheerioAPI) {
     const timestampElement = $('.AuctionTimer')
 
     if (timestampElement.length) {
@@ -67,14 +61,12 @@ export default class AuctionPage {
     return parseDate(sanitizedDateString)
   }
 
-  currentBid(content: string) {
-    const $ = cheerio.load(content)
+  currentBid($: CheerioAPI) {
     const currentBidText = $('.ShortAuctionDataValue b').text()
     return +currentBidText.replace(/,/g, '')
   }
 
-  hasBeenBidded(content: string) {
-    const $ = cheerio.load(content)
+  hasBeenBidded($: CheerioAPI) {
     const auctionStatus = $('.AuctionInfo').text()
     if (auctionStatus === 'cancelled') {
       return false
@@ -88,8 +80,7 @@ export default class AuctionPage {
     return biddedTexts.includes(bidText)
   }
 
-  outfitId(content: string) {
-    const $ = cheerio.load(content)
+  outfitId($: CheerioAPI) {
     const outfitElement = $('.AuctionOutfitImage')
     const src = outfitElement.attr('src')!
     const [, filename] = src.split('/outfits/')
@@ -98,8 +89,7 @@ export default class AuctionPage {
     return outfitId
   }
 
-  serverId(content: string) {
-    const $ = cheerio.load(content)
+  serverId($: CheerioAPI) {
     const auctionServerName = $('.AuctionHeader a').text()
     const { serverId } =
       this.serverDataHelper.getServerByName(auctionServerName)
@@ -107,16 +97,14 @@ export default class AuctionPage {
     return serverId
   }
 
-  vocationId(content: string) {
-    const $ = cheerio.load(content)
+  vocationId($: CheerioAPI) {
     const headerText = $('.AuctionHeader').text()
     const [, vocation] = headerText.split(' | ')
 
     return getVocationId(vocation)
   }
 
-  level(content: string) {
-    const $ = cheerio.load(content)
+  level($: CheerioAPI) {
     const headerText = $('.AuctionHeader').text()
     const [characterInfo] = headerText.split(' | ')
     const [, level] = characterInfo.split(': ')
@@ -124,16 +112,14 @@ export default class AuctionPage {
     return +level
   }
 
-  sex(content: string) {
-    const $ = cheerio.load(content)
+  sex($: CheerioAPI) {
     const headerText = $('.AuctionHeader').text()
     const [, , characterInfo] = headerText.split(' | ')
 
     return characterInfo.toLowerCase() === 'female'
   }
 
-  transfer(content: string) {
-    const $ = cheerio.load(content)
+  transfer($: CheerioAPI) {
     const transferText = $('.LabelV:contains("Regular World Transfer:")')
       .siblings('div')
       .text()
@@ -141,8 +127,7 @@ export default class AuctionPage {
     return transferText === 'can be purchased and used immediately'
   }
 
-  skills(content: string): CharacterSkillsObject {
-    const $ = cheerio.load(content)
+  skills($: CheerioAPI): CharacterSkillsObject {
     const generalElement = $('#General .TableContentContainer tbody').children()
 
     const skillArray: number[] = []
@@ -184,8 +169,7 @@ export default class AuctionPage {
     }
   }
 
-  items(content: string) {
-    const $ = cheerio.load(content)
+  items($: CheerioAPI) {
     const itemImages = $('.AuctionItemsViewBox .CVIcon > img')
 
     const itemArray: number[] = []
@@ -199,8 +183,7 @@ export default class AuctionPage {
     return itemArray
   }
 
-  imbuements(content: string) {
-    const $ = cheerio.load(content)
+  imbuements($: CheerioAPI) {
     const imbuementElements = $('#Imbuements .TableContentContainer tbody td')
 
     const { scrapingTokens } = imbuementDictionary
@@ -217,8 +200,7 @@ export default class AuctionPage {
     return imbuementArray.sort()
   }
 
-  charms(content: string) {
-    const $ = cheerio.load(content)
+  charms($: CheerioAPI) {
     const charmElements = $(
       '#Charms .TableContentContainer tbody td:last-child',
     )
@@ -232,8 +214,7 @@ export default class AuctionPage {
     return charmArray
   }
 
-  quests(content: string) {
-    const $ = cheerio.load(content)
+  quests($: CheerioAPI) {
     const { scrapingTokens } = questDictionary
     const questSet = new Set<string>([])
 
@@ -264,8 +245,7 @@ export default class AuctionPage {
     return [...questSet]
   }
 
-  rareAchievements(content: string) {
-    const $ = cheerio.load(content)
+  rareAchievements($: CheerioAPI) {
     const achievementsElement = $(
       '#Achievements .TableContentContainer tbody td',
     )
@@ -284,35 +264,30 @@ export default class AuctionPage {
     return [...achievementSet]
   }
 
-  outfitFirstPage(content: string) {
-    const $ = cheerio.load(content)
+  outfitFirstPage($: CheerioAPI) {
     const firstPage = $('#Outfits .TableContent tbody .BlockPage')
     return this.postHelper.outfits(firstPage.html()!)
   }
 
-  storeOutfitFirstPage(content: string) {
-    const $ = cheerio.load(content)
+  storeOutfitFirstPage($: CheerioAPI) {
     const firstPage = $('#StoreOutfits .TableContent tbody .BlockPage')
     const html = firstPage.html()
     return html ? this.postHelper.outfits(html) : []
   }
 
-  mountFirstPage(content: string) {
-    const $ = cheerio.load(content)
+  mountFirstPage($: CheerioAPI) {
     const firstPage = $('#Mounts .TableContent tbody .BlockPage')
     const html = firstPage.html()
     return html ? this.postHelper.mounts(html) : []
   }
 
-  storeMountFirstPage(content: string) {
-    const $ = cheerio.load(content)
+  storeMountFirstPage($: CheerioAPI) {
     const firstPage = $('#StoreMounts .TableContent tbody .BlockPage')
     const html = firstPage.html()
     return html ? this.postHelper.mounts(html) : []
   }
 
-  boxSectionLastIndex(id: string, content: string): number {
-    const $ = cheerio.load(content)
+  boxSectionLastIndex(id: string, $: CheerioAPI) {
     const lastPageLink = $(`#${id} .TableContent tbody .PageLink:last-child a`)
 
     let lastIndex = 1
@@ -328,27 +303,29 @@ export default class AuctionPage {
   async partialCharacterObject(
     content: string,
   ): Promise<PartialCharacterObject> {
-    exitIfMaintenance(() => this.maintenanceCheck(content))
+    const $ = cheerio.load(content)
+
+    exitIfMaintenance(() => this.maintenanceCheck($))
 
     return {
-      id: this.id(content),
-      nickname: this.nickname(content),
-      auctionEnd: this.auctionEnd(content),
-      currentBid: this.currentBid(content),
-      hasBeenBidded: this.hasBeenBidded(content),
-      outfitId: this.outfitId(content),
-      serverId: this.serverId(content),
-      vocationId: this.vocationId(content),
-      sex: this.sex(content),
-      level: this.level(content),
-      skills: this.skills(content),
-      items: this.items(content),
-      charms: this.charms(content),
-      transfer: this.transfer(content),
-      imbuements: this.imbuements(content),
-      quests: this.quests(content),
-      ...(await getPagedData(content)),
-      rareAchievements: this.rareAchievements(content),
+      id: this.id($),
+      nickname: this.nickname($),
+      auctionEnd: this.auctionEnd($),
+      currentBid: this.currentBid($),
+      hasBeenBidded: this.hasBeenBidded($),
+      outfitId: this.outfitId($),
+      serverId: this.serverId($),
+      vocationId: this.vocationId($),
+      sex: this.sex($),
+      level: this.level($),
+      skills: this.skills($),
+      items: this.items($),
+      charms: this.charms($),
+      transfer: this.transfer($),
+      imbuements: this.imbuements($),
+      quests: this.quests($),
+      ...(await getPagedData($)),
+      rareAchievements: this.rareAchievements($),
     }
   }
 }
