@@ -1,2 +1,2 @@
 #!/bin/bash
-lt --port 4000 --subdomain history-exevopan
+python3 ~/pagekite/pagekite.py 4000 exevopan.pagekite.me
