@@ -32,6 +32,12 @@ export default class CurrentAuctionsData {
     this.currentAuctions = this.currentAuctions.sort(
       (a, b) => a.auctionEnd - b.auctionEnd,
     )
+    const auctionIdSet = new Set<number>([])
+    this.currentAuctions = this.currentAuctions.filter(({ id }) => {
+      const repeated = auctionIdSet.has(id)
+      auctionIdSet.add(id)
+      return !repeated
+    })
 
     await fs.writeFile(FILE_PATH, JSON.stringify(this.currentAuctions))
   }
