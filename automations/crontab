@@ -1,0 +1,6 @@
+#*/1 * * * * ~/duckdns/duck.sh >/dev/null 2>&1
+
+0 4 * * * ~/tibia-bazaar-scraper/automations/maintenance/flushLogs.sh
+0 4 * * 3 ~/tibia-bazaar-scraper/automations/maintenance/backupHistory.sh
+
+0 6 * * * ~/tibia-bazaar-scraper/automations/updateStatistics.sh
