@@ -1,16 +1,6 @@
-#bazaar data
-*/10 0-5,8-23 * * * /usr/bin/sh /home/pi/updateScrap.sh
+#*/1 * * * * ~/duckdns/duck.sh >/dev/null 2>&1
 
-45 6 * * * /usr/bin/sh /home/pi/dailyScrap.sh
+0 4 * * * ~/tibia-bazaar-scraper/automations/maintenance/flushLogs.sh
+0 4 * * 3 ~/tibia-bazaar-scraper/automations/maintenance/backupHistory.sh
 
-
-#war data
-#*/10 * * * * /usr/bin/sh /home/pi/warStats.sh
-
-#*/30 * * * * /usr/bin/sh /home/pi/updateWar.sh
-#0 * * * * /usr/bin/sh /home/pi/updateWar.sh
-#0 */2 * * * /usr/bin/sh /home/pi/updateWar.sh
-#0 0-21/3 * * * /usr/bin/sh /home/pi/updateWar.sh
-#30 1-22/3 * * * /usr/bin/sh /home/pi/updateWar.sh
-
-#25 6 * * * /usr/bin/sh /home/pi/dailyXP.sh
+0 6 * * * ~/tibia-bazaar-scraper/automations/updateStatistics.sh

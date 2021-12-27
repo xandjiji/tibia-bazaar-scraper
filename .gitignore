@@ -1,5 +1,8 @@
 node_modules/
+old_src/
+old_automations/
 
-test.js
+src/dev.ts
+src/cache.ts
 
 backlog.txt
