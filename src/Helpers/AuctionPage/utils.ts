@@ -1,4 +1,4 @@
-import { CheerioAPI } from 'cheerio'
+import cheerio, { CheerioAPI } from 'cheerio'
 import { AuctionPage, PostData } from 'Helpers'
 import { HttpClient } from 'services'
 import { tabBroadcast, coloredText } from 'logging'
@@ -82,4 +82,11 @@ export const getPagedData = async (
     mounts,
     storeMounts,
   }
+}
+
+export const loadCheerio = (content: CheerioAPI | string): CheerioAPI => {
+  if (typeof content === 'string') {
+    return cheerio.load(content)
+  }
+  return content
 }

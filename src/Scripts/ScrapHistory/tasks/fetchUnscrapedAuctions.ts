@@ -24,7 +24,9 @@ export const fetchUnscrapedAuctions = async (
     taskTracking.incTask()
     const readableProgress = taskTracking.getProgress()
 
-    if (helper.errorCheck(html)) {
+    const checkResult = await helper.checkhistoryAuction(html)
+
+    if (checkResult.result === 'NOT_FOUND') {
       broadcast(
         `Not found  auction id: ${readableId} ${readableProgress}`,
         'control',
@@ -32,15 +34,12 @@ export const fetchUnscrapedAuctions = async (
       return
     }
 
-    if (!helper.isFinished(html)) {
+    if (checkResult.result === 'NOT_FINISHED') {
       broadcast(
         `Unfinished auction id: ${readableId} ${readableProgress}`,
         'neutral',
       )
-      historyData.appendUnfinishedBuffer({
-        id: helper.id(html),
-        auctionEnd: helper.auctionEnd(html),
-      })
+      historyData.appendUnfinishedBuffer(checkResult.data)
       return
     }
 
@@ -48,7 +47,7 @@ export const fetchUnscrapedAuctions = async (
       `Scraping   auction id: ${readableId} ${readableProgress}`,
       'neutral',
     )
-    historyData.appendFinishedBuffer(await helper.partialCharacterObject(html))
+    historyData.appendFinishedBuffer(checkResult.data)
   })
 
   const requestQueues = arrayPartitions(auctionPageRequests, BUFFER_SIZE)

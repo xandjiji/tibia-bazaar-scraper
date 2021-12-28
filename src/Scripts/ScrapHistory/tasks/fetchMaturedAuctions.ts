@@ -24,7 +24,9 @@ export const fetchMaturedAuctions = async (
     taskTracking.incTask()
     const readableProgress = taskTracking.getProgress()
 
-    if (helper.errorCheck(html)) {
+    const checkResult = await helper.checkhistoryAuction(html)
+
+    if (checkResult.result === 'NOT_FOUND') {
       broadcast(
         `Not found  auction id: ${readableId} ${readableProgress}`,
         'control',
@@ -32,12 +34,14 @@ export const fetchMaturedAuctions = async (
       return
     }
 
-    broadcast(
-      `Scraping   auction id: ${readableId} ${readableProgress}`,
-      'neutral',
-    )
-    historyData.appendFinishedBuffer(await helper.partialCharacterObject(html))
-    historyData.appendMaturedId(auctionId)
+    if (checkResult.result === 'IS_FINISHED') {
+      broadcast(
+        `Scraping   auction id: ${readableId} ${readableProgress}`,
+        'neutral',
+      )
+      historyData.appendFinishedBuffer(checkResult.data)
+      historyData.appendMaturedId(auctionId)
+    }
   })
 
   const requestQueues = arrayPartitions(auctionPageRequests, BUFFER_SIZE)

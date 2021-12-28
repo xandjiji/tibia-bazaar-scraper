@@ -8,7 +8,8 @@ import {
   rareAchievement as achievementDictionary,
 } from 'DataDictionary/dictionaries'
 import { getVocationId, filterListTable } from '../utils'
-import { getPagedData } from './utils'
+import { getPagedData, loadCheerio } from './utils'
+import { HistoryCheck } from './types'
 
 export default class AuctionPage {
   private serverDataHelper = new ServerData()
@@ -301,9 +302,9 @@ export default class AuctionPage {
   }
 
   async partialCharacterObject(
-    content: string,
+    content: CheerioAPI | string,
   ): Promise<PartialCharacterObject> {
-    const $ = cheerio.load(content)
+    const $ = loadCheerio(content)
 
     exitIfMaintenance(() => this.maintenanceCheck($))
 
@@ -326,6 +327,34 @@ export default class AuctionPage {
       quests: this.quests($),
       ...(await getPagedData($)),
       rareAchievements: this.rareAchievements($),
+    }
+  }
+
+  async checkhistoryAuction(content: string): Promise<HistoryCheck> {
+    const $ = cheerio.load(content)
+
+    exitIfMaintenance(() => this.maintenanceCheck($))
+
+    if (this.errorCheck($)) {
+      return {
+        result: 'NOT_FOUND',
+        data: null,
+      }
+    }
+
+    if (this.isFinished($)) {
+      return {
+        result: 'NOT_FINISHED',
+        data: {
+          id: this.id($),
+          auctionEnd: this.auctionEnd($),
+        },
+      }
+    }
+
+    return {
+      result: 'IS_FINISHED',
+      data: await this.partialCharacterObject($),
     }
   }
 }
