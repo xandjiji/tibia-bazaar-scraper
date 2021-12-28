@@ -3,14 +3,18 @@
 cd ~/tibia-bazaar-scraper/
 yarn update:statistics
 
-cp ~/tibia-bazaar-scraper/Output/HistoryStatistics.json ~/exevo-pan-history-data/
+cp ~/tibia-bazaar-scraper/Output/HistoryStatistics.json ~/tibia-bazaar-scraper/Output/static
+
+# remove this after deploy:
 cp ~/tibia-bazaar-scraper/Output/overallStatistics.json ~/exevo-pan-history-data/
 
+# remove this after deploy:
 cd ~/exevo-pan-history-data/
 git push origin --delete deploy
 git branch -D deploy
 git checkout -b deploy
 
+# remove this after deploy:
 git add .
 git commit -m "`date`"
 git push --set-upstream origin deploy
