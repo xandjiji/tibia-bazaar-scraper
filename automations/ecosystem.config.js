@@ -5,6 +5,13 @@ const HOUR = MINUTE * 60
 module.exports = {
   apps: [
     {
+      name: 'StaticData',
+      cwd: '/home/xand/tibia-bazaar-scraper/Output/static',
+      script: 'deployStatic.sh',
+      autorestart: false,
+      watch: true,
+    },
+    {
       name: 'Localtunnel',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'localtunnel.sh',
