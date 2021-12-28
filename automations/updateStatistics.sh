@@ -4,6 +4,7 @@ cd ~/tibia-bazaar-scraper/
 yarn update:statistics
 
 cp ~/tibia-bazaar-scraper/Output/HistoryStatistics.json ~/tibia-bazaar-scraper/Output/static
+sh ~/tibia-bazaar-scraper/Output/static/deployStatic.sh
 
 # remove this after deploy:
 cp ~/tibia-bazaar-scraper/Output/overallStatistics.json ~/exevo-pan-history-data/

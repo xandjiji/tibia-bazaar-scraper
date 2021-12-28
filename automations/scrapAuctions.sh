@@ -6,6 +6,7 @@ yarn update:highlighted
 cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/tibia-bazaar-scraper/Output/static
 cp ~/tibia-bazaar-scraper/Output/ItemsData.json ~/tibia-bazaar-scraper/Output/static
 cp ~/tibia-bazaar-scraper/Output/HighlightedAuctions.json ~/tibia-bazaar-scraper/Output/static
+sh ~/tibia-bazaar-scraper/Output/static/deployStatic.sh
 
 # remove this after deploy:
 cp ~/tibia-bazaar-scraper/Output/ServerData.json ~/exevo-pan-data/

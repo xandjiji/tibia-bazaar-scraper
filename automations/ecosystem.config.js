@@ -5,13 +5,6 @@ const HOUR = MINUTE * 60
 module.exports = {
   apps: [
     {
-      name: 'StaticData',
-      cwd: '/home/xand/tibia-bazaar-scraper/Output/static',
-      script: 'deployStatic.sh',
-      autorestart: false,
-      watch: true,
-    },
-    {
       name: 'Localtunnel',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'localtunnel.sh',
@@ -20,6 +13,12 @@ module.exports = {
       name: 'HistoryServer',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'historyServer.sh',
+    },
+    {
+      name: 'UpdateStatistics',
+      cwd: '/home/xand/tibia-bazaar-scraper/automations',
+      script: 'updateStatistics.sh',
+      cron_restart: '0 6 * * *',
     },
     {
       name: 'ScrapHistory',
