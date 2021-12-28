@@ -18,6 +18,7 @@ module.exports = {
       name: 'UpdateStatistics',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'updateStatistics.sh',
+      autorestart: false,
       cron_restart: '0 6 * * *',
     },
     {
