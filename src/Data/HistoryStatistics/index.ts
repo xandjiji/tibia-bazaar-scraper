@@ -3,7 +3,6 @@ import { broadcast, coloredText, coloredDiff } from 'logging'
 import { file } from 'Constants'
 import { countObjectDiff } from 'utils'
 import { EMPTY_STATISTICS } from './schema'
-import { pushAndShift, forceFillValues } from './utils'
 
 const FILE_PATH = file.HISTORY_STATISTICS.path
 const FILE_NAME = coloredText(file.HISTORY_STATISTICS.name, 'highlight')
@@ -56,6 +55,11 @@ export default class HistoryStatisticsData {
 
     const numberValueInfoKeys: Array<keyof StatisticsData> = ['successRate']
 
+    const monthlySummaryKeys: Array<keyof StatisticsData> = [
+      'totalRevenue',
+      'totalTibiaCoins',
+    ]
+
     for (const [untypedKey, value] of Object.entries(newValues)) {
       const key = untypedKey as keyof StatisticsData
 
@@ -83,31 +87,19 @@ export default class HistoryStatisticsData {
         )
         continue
       }
+
+      if (monthlySummaryKeys.includes(key)) {
+        const { lastMonth } = value as MonthlySummary
+        const [today, yesterday] = [...lastMonth].reverse()
+        const valueDiff = today - yesterday
+        broadcast(
+          `Patched ${coloredText(key, 'neutral')} value (${coloredDiff(
+            valueDiff,
+          )} value diff)`,
+          'neutral',
+        )
+        continue
+      }
     }
   }
-
-  /* public appendData(dataKey: AppendableDataKey, latestValue: number) {
-    const previousSummary: MonthlySummary = this.statisticsData[dataKey]
-
-    const latestDailyChange = latestValue - previousSummary.current
-
-    const newSummary: MonthlySummary = {
-      current: latestValue,
-      lastMonth: forceFillValues(
-        pushAndShift(latestDailyChange, previousSummary.lastMonth),
-      ),
-    }
-
-    this.statisticsData = {
-      ...this.statisticsData,
-      [dataKey]: newSummary,
-    }
-
-    broadcast(
-      `Appended ${coloredText(dataKey, 'neutral')} value (${coloredDiff(
-        latestDailyChange,
-      )} value diff)`,
-      'neutral',
-    )
-  } */
 }
