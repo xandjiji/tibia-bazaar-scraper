@@ -4,7 +4,6 @@ import { file } from 'Constants'
 import { countObjectDiff } from 'utils'
 import { EMPTY_STATISTICS } from './schema'
 import { pushAndShift, forceFillValues } from './utils'
-import { PatchableData, AppendableDataKey } from './types'
 
 const FILE_PATH = file.HISTORY_STATISTICS.path
 const FILE_NAME = coloredText(file.HISTORY_STATISTICS.name, 'highlight')
@@ -34,7 +33,7 @@ export default class HistoryStatisticsData {
     broadcast(`Updated statistics were saved to ${FILE_NAME}`, 'success')
   }
 
-  public patchData(newValues: Partial<PatchableData>) {
+  public patchData(newValues: Partial<StatisticsData>) {
     const previousData = { ...this.statisticsData }
 
     this.statisticsData = {
@@ -42,7 +41,7 @@ export default class HistoryStatisticsData {
       ...newValues,
     }
 
-    const characterInfoKeys: Array<keyof PatchableData> = [
+    const characterInfoKeys: Array<keyof StatisticsData> = [
       'top10Axe',
       'top10Bid',
       'top10Club',
@@ -55,10 +54,10 @@ export default class HistoryStatisticsData {
       'top10Sword',
     ]
 
-    const numberValueInfoKeys: Array<keyof PatchableData> = ['successRate']
+    const numberValueInfoKeys: Array<keyof StatisticsData> = ['successRate']
 
     for (const [untypedKey, value] of Object.entries(newValues)) {
-      const key = untypedKey as keyof PatchableData
+      const key = untypedKey as keyof StatisticsData
 
       if (characterInfoKeys.includes(key)) {
         const updatedCount = countObjectDiff(previousData[key], value)
@@ -87,7 +86,7 @@ export default class HistoryStatisticsData {
     }
   }
 
-  public appendData(dataKey: AppendableDataKey, latestValue: number) {
+  /* public appendData(dataKey: AppendableDataKey, latestValue: number) {
     const previousSummary: MonthlySummary = this.statisticsData[dataKey]
 
     const latestDailyChange = latestValue - previousSummary.current
@@ -110,5 +109,5 @@ export default class HistoryStatisticsData {
       )} value diff)`,
       'neutral',
     )
-  }
+  } */
 }

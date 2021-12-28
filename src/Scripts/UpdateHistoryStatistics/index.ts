@@ -25,13 +25,9 @@ const main = async () => {
     ({ hasBeenBidded }) => hasBeenBidded,
   )
 
-  statisticsData.appendData('totalRevenue', calculateTotalRevenue(allAuctions))
-  statisticsData.appendData(
-    'totalTibiaCoins',
-    calculateTotalNegotiated(allAuctions),
-  )
-
   statisticsData.patchData({
+    totalRevenue: calculateTotalRevenue(allAuctions),
+    totalTibiaCoins: calculateTotalNegotiated(allAuctions),
     successRate: calculateSuccessRate(allAuctions),
     top10Bid: calculateTop10.byBid(successfulAuctions),
     top10Level: calculateTop10.byLevel(successfulAuctions),
