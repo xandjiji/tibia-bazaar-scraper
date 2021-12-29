@@ -5,6 +5,7 @@ export default class PostData {
     Noblewoman: 'Nobleman',
     Norsewoman: 'Norseman',
     'Retro Noblewoman': 'Retro Nobleman',
+    'Sun Priestess': 'Sun Priest'
   }
 
   private normalizeFemaleOutfit(name: string) {
