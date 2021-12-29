@@ -24,7 +24,7 @@ export const fetchUnscrapedAuctions = async (
     taskTracking.incTask()
     const readableProgress = taskTracking.getProgress()
 
-    const checkResult = await helper.checkhistoryAuction(html)
+    const checkResult = await helper.checkHistoryAuction(html)
 
     if (checkResult.result === 'NOT_FOUND') {
       broadcast(

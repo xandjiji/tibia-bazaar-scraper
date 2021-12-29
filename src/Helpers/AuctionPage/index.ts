@@ -330,7 +330,7 @@ export default class AuctionPage {
     }
   }
 
-  async checkhistoryAuction(content: string): Promise<HistoryCheck> {
+  async checkHistoryAuction(content: string): Promise<HistoryCheck> {
     const $ = cheerio.load(content)
 
     exitIfMaintenance(() => this.maintenanceCheck($))
@@ -342,7 +342,7 @@ export default class AuctionPage {
       }
     }
 
-    if (this.isFinished($)) {
+    if (!this.isFinished($)) {
       return {
         result: 'NOT_FINISHED',
         data: {
