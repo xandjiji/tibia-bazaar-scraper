@@ -15,13 +15,6 @@ module.exports = {
       script: 'historyServer.sh',
     },
     {
-      name: 'UpdateStatistics',
-      cwd: '/home/xand/tibia-bazaar-scraper/automations',
-      script: 'updateStatistics.sh',
-      autorestart: false,
-      cron_restart: '0 6 * * *',
-    },
-    {
       name: 'ScrapHistory',
       cwd: '/home/xand/tibia-bazaar-scraper/automations',
       script: 'scrapHistory.sh',
