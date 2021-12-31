@@ -6,7 +6,7 @@ import {
   quest as questDictionary,
   imbuement as imbuementDictionary,
   rareAchievement as achievementDictionary,
-} from 'DataDictionary/dictionaries'
+} from 'Core/DataDictionary/dictionaries'
 import { getVocationId, filterListTable } from '../utils'
 import { getPagedData, loadCheerio } from './utils'
 import { HistoryCheck } from './types'
